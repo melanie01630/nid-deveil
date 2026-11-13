@@ -1,5 +1,6 @@
-// Service worker : permet l'utilisation hors-ligne
-const CACHE = 'nid-deveil-v1';
+// Service worker : hors-ligne + mises à jour automatiques
+// (essaie d'abord le réseau pour avoir la dernière version, sinon utilise la copie enregistrée)
+const CACHE = 'nid-deveil-v2';
 const FILES = ['./', './index.html', './manifest.webmanifest', './privacy.html',
   './icons/icon-192.png', './icons/icon-512.png', './icons/apple-touch-icon.png'];
 
@@ -13,10 +14,10 @@ self.addEventListener('activate', (e) => {
 self.addEventListener('fetch', (e) => {
   if (e.request.method !== 'GET') return;
   e.respondWith(
-    caches.match(e.request).then(hit => hit || fetch(e.request).then(res => {
+    fetch(e.request).then(res => {
       const copy = res.clone();
       caches.open(CACHE).then(c => c.put(e.request, copy)).catch(() => {});
       return res;
-    }).catch(() => caches.match('./index.html')))
+    }).catch(() => caches.match(e.request).then(hit => hit || caches.match('./index.html')))
   );
 });
