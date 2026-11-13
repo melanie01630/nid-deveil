@@ -539,8 +539,8 @@ window.GUIDE = {
   "d": "Une boîte où l'on met chaque soir un objet ou un dessin de la journée, puis qu'on regarde en parlant."
  },
  "L'histoire audio sans écran": {
-  "q": "histoire audio sans écran enfants soir",
-  "d": "Écouter une histoire en audio, lumière tamisée, sans écran, avant de dormir."
+  "q": "histoire audio pour enfants à écouter sans écran",
+  "d": "Un conte à écouter yeux fermés, lumière tamisée, sans aucun écran allumé : on pose l'enceinte ou le téléphone et on se laisse emporter."
  },
  "Le conte à inventer ensemble": {
   "q": "inventer un conte ensemble enfants histoire à tour de rôle",
@@ -849,6 +849,22 @@ window.GUIDE = {
  "Les magnets en argile": {
   "q": "magnets en argile enfants fabriquer idées frigo",
   "d": "Des formes en argile durcie, décorées et peintes, avec un aimant collé derrière pour le frigo."
+ },
+ "L'histoire du soir à écouter": {
+  "q": "histoire du soir audio enfants pour s'endormir",
+  "d": "Une histoire douce à écouter avant de dormir, lumière baissée, pour finir la journée en douceur."
+ },
+ "Les contes du monde à écouter": {
+  "q": "contes du monde audio enfants histoire à écouter",
+  "d": "Des contes venus de différents pays, à écouter ensemble puis à situer sur une carte."
+ },
+ "Les histoires drôles à écouter": {
+  "q": "histoires drôles audio enfants à écouter",
+  "d": "Des histoires qui font rire, à écouter ensemble sans écran avant d'inventer sa propre blague."
+ },
+ "Les aventures à écouter": {
+  "q": "aventure audio enfants pirates explorateurs histoire à écouter",
+  "d": "Une aventure de pirates, d'explorateurs ou de chevaliers à suivre en audio, en dessinant ce qu'on imagine."
  }
 };
 (window.ACT || []).forEach(a => { const g = window.GUIDE[a.title]; if (g) a.desc = g.d; });

@@ -196,6 +196,7 @@ nav.bar-nav{position:fixed;left:0;right:0;bottom:0;max-width:560px;margin:auto;b
 @keyframes mtalk{0%,62%,100%{transform:translateY(0)}8%{transform:translateY(24px)}16%{transform:translateY(4px)}26%{transform:translateY(28px)}36%{transform:translateY(6px)}46%{transform:translateY(22px)}54%{transform:translateY(2px)}}
 @keyframes mpeek{0%,100%{transform:rotate(-13deg)}50%{transform:rotate(-8deg) translateY(2px)}}
 @media (prefers-reduced-motion:reduce){.m-low,.mouth-top{animation:none}}
+.tile-audio{grid-column:1/-1;flex-direction:row;align-items:center;justify-content:flex-start;gap:14px;min-height:0;background:var(--accent-soft);border-color:var(--accent)}.tile-audio svg{width:34px;height:34px}.tile-audio b{font-size:17px}
 </style>
 </head>
 <body>
@@ -258,6 +259,7 @@ nav.bar-nav{position:fixed;left:0;right:0;bottom:0;max-width:560px;margin:auto;b
   <div class="section">
     <div class="sec-title"><h3>Raccourcis</h3></div>
     <div class="tiles">
+      <button class="tile tile-audio" data-go="audio"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M4 14v-2a8 8 0 0 1 16 0v2"/><rect x="3" y="14" width="4" height="6" rx="1.5"/><rect x="17" y="14" width="4" height="6" rx="1.5"/></svg><div><b>Histoires audio</b><span>À écouter, sans écran</span></div></button>
       <button class="tile" data-go="cine"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="M3 9h18M7 5l2 4M12 5l2 4M17 5l2 4"/></svg><div><b>Soirée ciné</b><span>Films selon l'âge</span></div></button>
       <button class="tile" data-go="cuisine"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M6 14h12v3a3 3 0 0 1-3 3H9a3 3 0 0 1-3-3z"/><path d="M8 14a4 4 0 0 1 1-7.8A3.5 3.5 0 0 1 15 6a4 4 0 0 1 1 8"/></svg><div><b>Cuisine</b><span>À faire ensemble</span></div></button>
       <button class="tile" data-go="3min"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="13" r="7"/><path d="M12 9v4l2.5 2M9.5 3h5"/></svg><div><b>En 5 minutes</b><span>Idées express</span></div></button>
@@ -347,7 +349,7 @@ const $ = (s, r = document) => r.querySelector(s);
 const $$ = (s, r = document) => [...r.querySelectorAll(s)];
 const esc = (s) => String(s).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 const BANDS = ['0-2','3-5','6-8','9-14'];
-const CATS = { dessin:'Dessin', peinture:'Peinture', construction:'Construction', bricolage:'Bricolage', cuisine:'Cuisine',
+const CATS = { audio:'Histoires audio', dessin:'Dessin', peinture:'Peinture', construction:'Construction', bricolage:'Bricolage', cuisine:'Cuisine',
   nature:'Nature', science:'Sciences', jeux:'Jeux', motricite:'Bouger', petits:'Tout-petits', calme:'Calme', musique:'Musique', lecture:'Lire et compter',
   famille:'En famille', grands:'Grands', fetes:'Fêtes', express:'3 minutes', dehors:'Dehors', creatif:'Créations' };
 const TAGS = [['pluie','Quand il pleut'],['3min','3 minutes'],['dehors','Dehors'],['soir','Le soir'],['calme','Au calme'],['créatif','Créatif'],['cuisine','Cuisine'],['jeux','Jeux'],['science','Sciences']];
@@ -440,7 +442,7 @@ function renderToday() {
 $$('[data-go]').forEach(b => b.onclick = () => {
   const g = b.dataset.go;
   if (g === 'cine') return showTab('cine');
-  F.cat = g === 'cuisine' ? 'cuisine' : 'all'; F.tag = (g === '3min' || g === 'pluie') ? g : null; F.age = 'all'; F._touched = true; F.q = ''; $('#q').value = ''; F.n = 30;
+  F.cat = (g === 'cuisine' || g === 'audio') ? g : 'all'; F.tag = (g === '3min' || g === 'pluie') ? g : null; F.age = 'all'; F._touched = true; F.q = ''; $('#q').value = ''; F.n = 30;
   renderExplore(); showTab('explore');
 });
 
@@ -490,13 +492,13 @@ function openAct(i) {
     <h5>Matériel</h5><ul>${a.material.map(m => `<li>${esc(m)}</li>`).join('')}</ul>
     <h5>Étapes (touche pour cocher)</h5><ol class="steps">${a.steps.map(s => `<li>${esc(s)}</li>`).join('')}</ol>
     ${(window.SCHEMAS && SCHEMAS[a.title]) ? `<h5>Les étapes en dessins</h5><p class="legend">Ligne bleue pointillée : pli · rouge : découpe · flèche verte : sens du geste</p><div class="schema">${SCHEMAS[a.title].map((st, n) => `<figure><svg viewBox="0 0 100 100" role="img" aria-label="${esc(st[0])}">${st[1]}</svg><figcaption><b>${n + 1}</b>${esc(st[0])}</figcaption></figure>`).join('')}</div>` : ''}
-    <h5>Voir comment faire</h5>
+    <h5>${a.cat === 'audio' ? 'Écouter' : 'Voir comment faire'}</h5>
     ${VIDEOS[a.title] ? `<div class="video"><iframe src="https://www.youtube-nocookie.com/embed/${encodeURIComponent(VIDEOS[a.title])}" title="Vidéo explicative" loading="lazy" allowfullscreen></iframe></div>` : ''}
     <div class="help">
-      <a class="btn alt" href="${ytSearch(helpQuery(a))}" target="_blank" rel="noopener noreferrer">Vidéo explicative</a>
-      <a class="btn alt" href="${imgSearch(helpQuery(a))}" target="_blank" rel="noopener noreferrer">Images d'exemple</a>
+      ${a.cat === 'audio' ? `<a class="btn" href="${ytSearch(helpQuery(a))}" target="_blank" rel="noopener noreferrer">Écouter</a>` : `<a class="btn alt" href="${ytSearch(helpQuery(a))}" target="_blank" rel="noopener noreferrer">Vidéo explicative</a>
+      <a class="btn alt" href="${imgSearch(helpQuery(a))}" target="_blank" rel="noopener noreferrer">Images d'exemple</a>`}
     </div>
-    <p class="note">Le bouton lance une recherche précise sur YouTube pour cette activité. Regarde la vidéo avant de la montrer à ton enfant.</p>
+    <p class="note">${a.cat === 'audio' ? 'Le bouton ouvre YouTube : pose le téléphone hors de vue, écran verrouillé ou éteint, et écoute ensemble.' : 'Le bouton lance une recherche précise sur YouTube pour cette activité. Regarde la vidéo avant de la montrer à ton enfant.'}</p>
     <div class="row" style="margin-top:20px"><button class="btn sage" id="s-done">${done ? 'Déjà fait · le refaire' : 'Marquer comme fait'}</button></div>
     <div class="row"><button class="btn alt" id="s-plan">Ajouter au planning</button></div>`);
   $$('.steps li').forEach(li => li.onclick = () => li.classList.toggle('ok'));
@@ -611,7 +613,8 @@ initAbout(); renderToday(); renderExplore(); renderCine(); renderPlan(); renderN
   const msgs = [
     { k: 'Ça roule ?', t: "Yo, c'est Mams !", d: "On fait quoi aujourd'hui ?" },
     { k: 'Idée du moment', a: picks[0] },
-    { k: 'Ciné', t: 'Ciné ce soir ?', d: 'Un film pour toute la famille.', go: 'cine' },
+    { k: 'Sans écran', t: 'Une histoire à écouter ?', d: 'Lumière tamisée, oreilles grandes ouvertes.', go: 'audio' },
+        { k: 'Ciné', t: 'Ciné ce soir ?', d: 'Un film pour toute la famille.', go: 'cine' },
     { k: 'Une autre ?', a: picks[1] },
     { k: 'Cuisine', t: 'On cuisine un truc ?', d: 'Simple, rapide, ensemble.', go: 'cuisine' },
     { k: 'Encore une', a: picks[2] }
@@ -634,6 +637,7 @@ initAbout(); renderToday(); renderExplore(); renderCine(); renderPlan(); renderN
     const m = msgs[n];
     if (m.a) close(() => openAct(m.a.i));
     else if (m.go === 'cine') close(() => showTab('cine'));
+    else if (m.go === 'audio') close(() => { F.cat = 'audio'; F.tag = null; F.age = 'all'; F._touched = true; F.q = ''; $('#q').value = ''; F.n = 30; renderExplore(); showTab('explore'); });
     else if (m.go === 'cuisine') close(() => { F.cat = 'cuisine'; F.tag = null; F.age = 'all'; F._touched = true; F.q = ''; $('#q').value = ''; F.n = 30; renderExplore(); showTab('explore'); });
     else { clearInterval(timer); next(); timer = setInterval(next, 2800); }
   };
