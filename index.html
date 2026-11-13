@@ -338,6 +338,7 @@ nav.bar-nav{position:fixed;left:0;right:0;bottom:0;max-width:560px;margin:auto;b
 <script src="data/activites-5.js"></script>
 <script src="data/films.js"></script>
 <script src="data/videos.js"></script>
+<script src="data/guide.js"></script>
 <script src="data/schemas.js"></script>
 <script src="data/photos.js"></script>
 <script>
@@ -471,6 +472,7 @@ $('#back').onclick = (e) => { if (e.target.id === 'back') closeSheet(); };
 document.addEventListener('keydown', e => { if (e.key === 'Escape') closeSheet(); });
 
 function helpQuery(a) {
+  if (window.GUIDE && GUIDE[a.title]) return GUIDE[a.title].q;
   const t = a.title.replace(/^(Le|La|Les|L')\s*/i, '');
   const verbe = { cuisine: 'recette facile enfants', origami: 'origami facile enfants tutoriel', papier: 'bricolage papier enfants tutoriel', dessin: 'dessin facile enfants tutoriel', peinture: 'peinture enfants activité tutoriel', science: 'expérience enfants facile', construction: 'bricolage enfants tutoriel', bricolage: 'bricolage enfants tutoriel', creatif: /argile|poterie|pâte/i.test(a.title) ? 'argile modelage enfants tutoriel' : 'création facile enfants tutoriel' }[a.cat0] || 'activité enfants idée';
   return t + ' ' + verbe;
@@ -494,7 +496,7 @@ function openAct(i) {
       <a class="btn alt" href="${ytSearch(helpQuery(a))}" target="_blank" rel="noopener noreferrer">Vidéo explicative</a>
       <a class="btn alt" href="${imgSearch(helpQuery(a))}" target="_blank" rel="noopener noreferrer">Images d'exemple</a>
     </div>
-    <p class="note">Ces boutons ouvrent une recherche sur YouTube ou Google Images. Choisis toi-même la vidéo qui convient à ton enfant.</p>
+    <p class="note">Le bouton lance une recherche précise sur YouTube pour cette activité. Regarde la vidéo avant de la montrer à ton enfant.</p>
     <div class="row" style="margin-top:20px"><button class="btn sage" id="s-done">${done ? 'Déjà fait · le refaire' : 'Marquer comme fait'}</button></div>
     <div class="row"><button class="btn alt" id="s-plan">Ajouter au planning</button></div>`);
   $$('.steps li').forEach(li => li.onclick = () => li.classList.toggle('ok'));
