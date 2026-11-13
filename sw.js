@@ -1,9 +1,9 @@
 // Service worker : hors-ligne + mises à jour automatiques
 // (essaie d'abord le réseau pour avoir la dernière version, sinon utilise la copie enregistrée)
-const CACHE = 'nid-deveil-v6';
+const CACHE = 'nid-deveil-v19';
 const FILES = ['./', './index.html', './manifest.webmanifest', './privacy.html',
-  './data/activites-1.js', './data/activites-2.js', './data/activites-3.js', './data/activites-4.js', './data/activites-5.js', './data/films.js', './data/videos.js', './data/schemas.js',
-  './icons/icon-192.png', './icons/icon-512.png', './icons/apple-touch-icon.png'];
+  './data/activites-1.js', './data/activites-2.js', './data/activites-3.js', './data/activites-4.js', './data/activites-5.js', './data/films.js', './data/videos.js', './data/schemas.js', './data/photos.js',
+  './icons/icon-192.png', './icons/icon-512.png', './icons/apple-touch-icon.png', './icons/fond.png'];
 
 self.addEventListener('install', (e) => {
   e.waitUntil(caches.open(CACHE).then(c => c.addAll(FILES)).then(() => self.skipWaiting()));
