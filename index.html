@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-<title>Nid d'Éveil</title>
+<title>Mams</title>
 <meta name="description" content="Des idées d'activités par âge, des soirées cinéma et un planning pour les parents qui sont avec leurs enfants.">
 <meta name="theme-color" content="#0E0D0A">
 <link rel="manifest" href="manifest.webmanifest">
@@ -11,7 +11,7 @@
 <link rel="apple-touch-icon" href="icons/apple-touch-icon.png">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="mobile-web-app-capable" content="yes">
-<meta name="apple-mobile-web-app-title" content="Nid d'Éveil">
+<meta name="apple-mobile-web-app-title" content="Mams">
 <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@500;600;700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
 <style>
 :root{--bg:#0E0D0A;--card:#1A1710;--ink:#F2E2B0;--muted:#BFAE80;--accent:#D9AE3F;--accent-soft:#3A2E12;--sage:#D9AE3F;--sage-soft:#2A2312;--line:#5A4619;--r:16px;--serif:'Playfair Display',Georgia,'Times New Roman',serif}
@@ -174,19 +174,19 @@ nav.bar-nav{position:fixed;left:0;right:0;bottom:0;max-width:560px;margin:auto;b
 <header class="top">
   <div class="brand">
     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3.5 12.5c0 4.4 3.6 7.5 8.5 7.5s8.5-3.1 8.5-7.5"/><path d="M6.5 13c1.6 1.2 3.4 1.8 5.5 1.8s3.9-.6 5.5-1.8"/><circle cx="12" cy="7.6" r="3"/></svg>
-    Nid d'Éveil
+    Mams
   </div>
   <p class="tagline">Activités par âge, cuisine, soirées ciné et planning pour les parents à la maison.</p>
 </header>
 
-<div id="install" class="install"><div><b>Installer l'application</b><span id="install-text">Ajoute Nid d'Éveil à ton écran d'accueil.</span></div><button id="install-btn">Installer</button></div>
+<div id="install" class="install"><div><b>Installer l'application</b><span id="install-text">Ajoute Mams à ton écran d'accueil.</span></div><button id="install-btn">Installer</button></div>
 
 <!-- ===== AUJOURD'HUI ===== -->
 <main id="view-home" class="view active">
   <div class="date" id="date"></div>
   <h1 class="h1" id="hello">Que faire aujourd'hui ?</h1>
   <details class="about" id="about">
-    <summary>À quoi sert Nid d'Éveil ?</summary>
+    <summary>À quoi sert Mams ?</summary>
     <div class="ab">
       <div><b id="ab-n">Activités par âge</b>Des idées de 0 à 14 ans, avec matériel et étapes.</div>
       <div><b>Cuisine</b>Des recettes simples à faire ensemble.</div>
@@ -217,7 +217,7 @@ nav.bar-nav{position:fixed;left:0;right:0;bottom:0;max-width:560px;margin:auto;b
       <button class="tile" data-go="pluie"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M7 16a4.5 4.5 0 1 1 1.2-8.8A5.5 5.5 0 0 1 18.5 9 3.5 3.5 0 0 1 18 16"/><path d="M9 19l-1 2M13 19l-1 2M17 19l-1 2"/></svg><div><b>Quand il pleut</b><span>Idées à la maison</span></div></button>
     </div>
   </div>
-  <div class="foot"><a href="privacy.html">Politique de confidentialité</a><br>Nid d'Éveil · Version 3.0</div>
+  <div class="foot"><a href="privacy.html">Politique de confidentialité</a><br>Mams · Version 3.0</div>
 </main>
 
 <!-- ===== IDÉES ===== -->
@@ -342,7 +342,7 @@ function renderHeader() {
   const k = S.kids.map(x => x.n).filter(Boolean);
   $('#date').textContent = today.toLocaleDateString('fr-FR', { weekday: 'long', day: 'numeric', month: 'long' });
   $('#hello').textContent = isEvening() ? 'Que faire ce soir ?' : 'Que faire aujourd\'hui ?';
-  document.title = 'Nid d\'Éveil';
+  document.title = 'Mams';
 }
 function pool() {
   const b = curBand();
