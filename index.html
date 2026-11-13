@@ -1,324 +1,334 @@
-# Guide Complet : Code Source & Lancement Gratuit de "Nid d'Éveil"
-
----
-
-## Sommaire
-1. **Architecture & Design System (Tokens, Couleurs, Typographie)**
-2. **Écran 1 : Accueil ("Aujourd'hui - Activités & Mode Flexible")**
-3. **Écran 2 : L'Univers Infini d'Activités & Défis ("Explorer")**
-4. **Écran 3 : Le Club des Grands & Ados (8-14 ans)**
-5. **Écran 4 : Fiche Activité Pas-à-Pas (Muffins Pomme & Cannelle)**
-6. **Écran 5 : Planning de la Semaine (100% Optionnel)**
-7. **Étape par Étape : Héberger et Créer l'Application 100% Gratuitement**
-8. **Stratégie & Modèle Économique : Générer des Revenus Rentables**
-
----
-
-## 1. Design System & Charte Graphique (Nid d'Éveil)
-
-```json
-{
-  "name": "Nid d'Éveil",
-  "theme": {
-    "color_mode": "LIGHT",
-    "font": "Plus Jakarta Sans",
-    "primary_color": "#F07865",
-    "surface": "#FAF8FF",
-    "surface_container": "#F3F2FF",
-    "surface_card": "#FFFFFF",
-    "text_primary": "#1E1B2E",
-    "text_muted": "#6E6B82",
-    "accent_mint": "#38B2AC",
-    "accent_amber": "#ED8936",
-    "border_radius": "16px / 24px"
-  }
-}
-```
-
----
-
-## 2. Écran 1 : Accueil - "Aujourd'hui & Mode Flexible"
-
-```html
 <!DOCTYPE html>
 <html lang="fr">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Nid d'Éveil - Aujourd'hui</title>
+  <title>Nid d'Éveil</title>
+  <meta name="description" content="Des activités par tranche d'âge et un planning pour les parents à la maison.">
+  <meta name="theme-color" content="#F07865">
+  <link rel="manifest" href="manifest.webmanifest">
+  <link rel="icon" type="image/png" sizes="32x32" href="icons/favicon-32.png">
+  <link rel="apple-touch-icon" href="icons/apple-touch-icon.png">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-title" content="Nid d'Éveil">
+  <meta name="apple-mobile-web-app-status-bar-style" content="default">
   <script src="https://cdn.tailwindcss.com"></script>
   <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0" />
   <style>
     body { font-family: 'Plus Jakarta Sans', sans-serif; background-color: #FAF8FF; }
+    .no-scrollbar::-webkit-scrollbar { display: none; }
+    .no-scrollbar { scrollbar-width: none; }
+    .view { display: none; }
+    .view.active { display: block; }
   </style>
 </head>
-<body class="text-[#1E1B2E] pb-24">
-  <!-- Top App Bar -->
-  <header class="px-5 pt-6 pb-4 bg-white/80 backdrop-blur sticky top-0 z-40 border-b border-purple-50 flex items-center justify-between">
-    <div class="flex items-center gap-3">
-      <div class="w-10 h-10 rounded-2xl bg-[#F07865]/15 flex items-center justify-center text-[#F07865]">
-        <span class="material-symbols-outlined">nest_eco</span>
+<body class="text-[#1E1B2E] pb-24 max-w-xl mx-auto">
+
+  <!-- En-tête -->
+  <header class="px-5 pt-6 pb-4 bg-white/90 backdrop-blur sticky top-0 z-40 border-b border-purple-50 flex items-center gap-3">
+    <div class="w-10 h-10 rounded-2xl bg-[#F07865]/15 flex items-center justify-center text-[#F07865]">
+      <span class="material-symbols-outlined">nest_eco</span>
+    </div>
+    <div>
+      <h1 class="font-extrabold text-lg leading-tight">Nid d'Éveil</h1>
+      <p id="subtitle" class="text-xs text-[#6E6B82]">Des activités pour toute la famille</p>
+    </div>
+  </header>
+
+  <!-- ===== AUJOURD'HUI ===== -->
+  <main id="view-today" class="view active px-5 pt-5 space-y-6">
+    <!-- Bandeau d'installation -->
+    <div id="install-banner" class="hidden p-4 rounded-3xl bg-white border border-purple-100 flex items-center justify-between gap-3">
+      <div>
+        <p class="font-bold text-sm">Installer l'application</p>
+        <p id="install-text" class="text-xs text-[#6E6B82]">Ajoute Nid d'Éveil à ton écran d'accueil.</p>
+      </div>
+      <button id="install-btn" class="px-4 py-2 rounded-xl bg-[#F07865] text-white text-xs font-bold whitespace-nowrap">Installer</button>
+    </div>
+    <div class="p-5 rounded-3xl bg-gradient-to-br from-[#F07865] to-[#E06350] text-white shadow-lg shadow-[#F07865]/25">
+      <span class="px-2.5 py-1 rounded-full bg-white/20 text-[11px] font-bold tracking-wide uppercase">Anti-ennui express</span>
+      <h2 class="text-xl font-extrabold mt-2 leading-snug">« Maman, je m'ennuie ! »</h2>
+      <p class="text-xs text-white/90 mt-1">Choisis l'âge, on tire une activité surprise.</p>
+      <div id="roulette-ages" class="flex gap-2 mt-3 text-xs font-bold"></div>
+      <button id="roulette-btn" class="mt-4 w-full py-3 bg-white text-[#F07865] font-bold text-sm rounded-2xl flex items-center justify-center gap-2 shadow active:scale-95 transition">
+        <span class="material-symbols-outlined text-lg">casino</span> Lancer la roulette magique
+      </button>
+    </div>
+
+    <section>
+      <h3 class="font-extrabold text-base mb-3"><span class="text-[#F07865]">★</span> Activité du jour</h3>
+      <div id="today-card"></div>
+    </section>
+
+    <section class="p-4 rounded-3xl bg-indigo-900 text-white flex items-center gap-3">
+      <div class="w-12 h-12 rounded-2xl bg-indigo-800 flex items-center justify-center text-amber-300">
+        <span class="material-symbols-outlined">bedtime</span>
       </div>
       <div>
-        <h1 class="font-extrabold text-lg leading-tight">Nid d'Éveil</h1>
-        <p class="text-xs text-[#6E6B82] flex items-center gap-1">
-          <span class="w-2 h-2 rounded-full bg-emerald-500 inline-block"></span>
-          Léo (3 ans) & Chloé (7 ans)
-        </p>
+        <h4 class="font-bold text-sm">Contes du soir</h4>
+        <p class="text-xs text-indigo-200">Bientôt disponible dans l'onglet Histoires</p>
       </div>
-    </div>
-    <button class="relative p-2 rounded-full bg-purple-50 text-[#1E1B2E]">
-      <span class="material-symbols-outlined text-[20px]">notifications</span>
-      <span class="absolute top-1.5 right-1.5 w-2 h-2 bg-[#F07865] rounded-full"></span>
-    </button>
-  </header>
-
-  <main class="px-5 pt-5 space-y-6">
-    <!-- Mode Sélecteur : Spontané vs Planning -->
-    <div class="bg-purple-100/60 p-1.5 rounded-2xl flex items-center text-xs font-bold">
-      <button class="flex-1 py-2.5 rounded-xl bg-white shadow-sm text-[#F07865] flex items-center justify-center gap-1.5 transition">
-        <span class="material-symbols-outlined text-sm">magic_button</span> Mode Spontané
-      </button>
-      <button class="flex-1 py-2.5 rounded-xl text-[#6E6B82] flex items-center justify-center gap-1.5 hover:text-[#1E1B2E]">
-        <span class="material-symbols-outlined text-sm">calendar_today</span> Planning (Optionnel)
-      </button>
-    </div>
-
-    <!-- Bannière SOS Roulette Anti-Ennui -->
-    <div class="p-5 rounded-3xl bg-gradient-to-br from-[#F07865] to-[#E06350] text-white shadow-lg shadow-[#F07865]/25">
-      <span class="px-2.5 py-1 rounded-full bg-white/20 text-[11px] font-bold tracking-wide uppercase">Anti-Ennui Express</span>
-      <h2 class="text-xl font-extrabold mt-2 leading-snug">« Maman, je m'ennuie ! »</h2>
-      <p class="text-xs text-white/90 mt-1">Tire une activité surprise en 3 secondes chrono adaptée au matériel de la maison.</p>
-      <button class="mt-4 w-full py-3 bg-white text-[#F07865] font-bold text-sm rounded-2xl flex items-center justify-center gap-2 shadow hover:bg-white/95 active:scale-95 transition">
-        <span class="material-symbols-outlined text-lg">casino</span>
-        Lancer la Roulette Magique
-      </button>
-    </div>
-
-    <!-- Activité Coup de Cœur du Jour -->
-    <section>
-      <div class="flex items-center justify-between mb-3">
-        <h3 class="font-extrabold text-base flex items-center gap-1.5">
-          <span class="text-[#F07865]">★</span> Activité Complice du Jour
-        </h3>
-        <span class="text-xs text-[#F07865] font-bold">35 min</span>
-      </div>
-      <div class="bg-white rounded-3xl p-4 shadow-sm border border-purple-50 space-y-3">
-        <div class="h-44 rounded-2xl bg-amber-50 relative overflow-hidden flex items-center justify-center">
-          <img src="https://images.unsplash.com/photo-1544717305-2782549b5136?auto=format&fit=crop&w=600&q=80" alt="Herbier" class="w-full h-full object-cover">
-          <span class="absolute top-3 left-3 bg-white/90 backdrop-blur px-2.5 py-1 rounded-lg text-xs font-bold text-[#1E1B2E]">Nature & Créatif</span>
-        </div>
-        <div>
-          <h4 class="font-extrabold text-base">Le Safari des Feuilles & Herbier Magique</h4>
-          <p class="text-xs text-[#6E6B82] mt-1">Ramassez des feuilles au parc ou jardin puis créez un dragon d'automne.</p>
-        </div>
-        <div class="flex items-center gap-3 pt-2 border-t border-purple-50 text-xs text-[#6E6B82]">
-          <span class="flex items-center gap-1"><span class="material-symbols-outlined text-sm">child_care</span> Dès 3 ans</span>
-          <span class="flex items-center gap-1"><span class="material-symbols-outlined text-sm">home</span> Zéro achat</span>
-          <span class="flex items-center gap-1"><span class="material-symbols-outlined text-sm">sentiment_satisfied</span> Sérénité 100%</span>
-        </div>
-      </div>
-    </section>
-
-    <!-- Rituel du Soir -->
-    <section class="p-4 rounded-3xl bg-indigo-900 text-white flex items-center justify-between">
-      <div class="flex items-center gap-3">
-        <div class="w-12 h-12 rounded-2xl bg-indigo-800 flex items-center justify-center text-amber-300">
-          <span class="material-symbols-outlined">bedtime</span>
-        </div>
-        <div>
-          <h4 class="font-bold text-sm">Conte Audio du Soir</h4>
-          <p class="text-xs text-indigo-200">« Le Petit Renard et l'Étoile » • 7 min</p>
-        </div>
-      </div>
-      <button class="w-10 h-10 rounded-full bg-white text-indigo-950 flex items-center justify-center shadow">
-        <span class="material-symbols-outlined">play_arrow</span>
-      </button>
     </section>
   </main>
 
-  <!-- Bottom Navigation Bar -->
-  <nav class="fixed bottom-0 left-0 right-0 bg-white/95 backdrop-blur border-t border-purple-50 px-6 py-2 flex justify-between items-center z-50">
-    <button class="flex flex-col items-center gap-1 text-[#F07865]">
-      <span class="material-symbols-outlined">wb_sunny</span>
-      <span class="text-[10px] font-bold">Aujourd'hui</span>
-    </button>
-    <button class="flex flex-col items-center gap-1 text-[#6E6B82]">
-      <span class="material-symbols-outlined">explore</span>
-      <span class="text-[10px] font-medium">Explorer</span>
-    </button>
-    <button class="flex flex-col items-center gap-1 text-[#6E6B82]">
-      <span class="material-symbols-outlined">calendar_month</span>
-      <span class="text-[10px] font-medium">Planning</span>
-    </button>
-    <button class="flex flex-col items-center gap-1 text-[#6E6B82]">
-      <span class="material-symbols-outlined">auto_stories</span>
-      <span class="text-[10px] font-medium">Histoires</span>
-    </button>
+  <!-- ===== EXPLORER ===== -->
+  <main id="view-explore" class="view px-5 pt-5">
+    <h2 class="text-xl font-extrabold">La boîte à idées</h2>
+    <p class="text-xs text-[#6E6B82] mb-3">Filtre par âge et par situation</p>
+    <div id="age-filters" class="flex gap-2 overflow-x-auto no-scrollbar pb-2 text-xs font-semibold"></div>
+    <div id="tag-filters" class="flex gap-2 overflow-x-auto no-scrollbar pb-3 text-xs font-semibold"></div>
+    <div id="explore-list" class="space-y-4"></div>
+  </main>
+
+  <!-- ===== PLANNING ===== -->
+  <main id="view-planning" class="view px-5 pt-5">
+    <h2 class="text-xl font-extrabold">Planning de la semaine</h2>
+    <p class="text-xs text-[#6E6B82] mb-4">100 % optionnel : ajoute seulement ce qui te fait envie.</p>
+    <div id="planning-list" class="space-y-3"></div>
+  </main>
+
+  <!-- ===== HISTOIRES ===== -->
+  <main id="view-stories" class="view px-5 pt-5">
+    <h2 class="text-xl font-extrabold">Histoires</h2>
+    <div class="mt-4 p-6 rounded-3xl bg-white border border-purple-50 text-center space-y-2">
+      <span class="material-symbols-outlined text-4xl text-[#F07865]">auto_stories</span>
+      <p class="font-bold text-sm">Les contes audio arrivent bientôt</p>
+      <p class="text-xs text-[#6E6B82]">Cette partie sera ajoutée dans une prochaine version.</p>
+    </div>
+    <div class="mt-6 text-center text-xs text-[#6E6B82] space-y-1">
+      <a href="privacy.html" class="underline">Politique de confidentialité</a>
+      <p>Nid d'Éveil · Version 1.0</p>
+    </div>
+  </main>
+
+  <!-- ===== FENÊTRE DÉTAIL / CHOIX ===== -->
+  <div id="modal" class="fixed inset-0 z-[60] bg-black/40 hidden items-end justify-center" onclick="if(event.target===this)closeModal()">
+    <div class="bg-white w-full max-w-xl rounded-t-3xl p-5 max-h-[85vh] overflow-y-auto">
+      <div id="modal-body"></div>
+      <button onclick="closeModal()" class="mt-4 w-full py-3 rounded-2xl bg-purple-50 text-[#6E6B82] font-bold text-sm">Fermer</button>
+    </div>
+  </div>
+
+  <!-- ===== MENU DU BAS ===== -->
+  <nav class="fixed bottom-0 left-0 right-0 bg-white/95 backdrop-blur border-t border-purple-50 px-6 py-2 flex justify-between items-center z-50 max-w-xl mx-auto">
+    <button data-tab="today" class="tab flex flex-col items-center gap-1"><span class="material-symbols-outlined">wb_sunny</span><span class="text-[10px] font-bold">Aujourd'hui</span></button>
+    <button data-tab="explore" class="tab flex flex-col items-center gap-1"><span class="material-symbols-outlined">explore</span><span class="text-[10px] font-bold">Explorer</span></button>
+    <button data-tab="planning" class="tab flex flex-col items-center gap-1"><span class="material-symbols-outlined">calendar_month</span><span class="text-[10px] font-bold">Planning</span></button>
+    <button data-tab="stories" class="tab flex flex-col items-center gap-1"><span class="material-symbols-outlined">auto_stories</span><span class="text-[10px] font-bold">Histoires</span></button>
   </nav>
+
+<script>
+/* ---------- DONNÉES : ajoute tes activités ici ---------- */
+const AGES = [
+  { id: 'all', label: 'Tous' },
+  { id: '0-2', label: '0-2 ans' },
+  { id: '3-5', label: '3-5 ans' },
+  { id: '6-8', label: '6-8 ans' },
+  { id: '9-14', label: '9-14 ans' }
+];
+const TAGS = ['Pluie', '3 min', 'Cuisine', 'Dehors', 'Créatif'];
+
+const ACTIVITIES = [
+  { id: 1, title: "Le safari des feuilles & herbier magique", emoji: "🍂", age: ['3-5','6-8'], tags: ['Dehors','Créatif'], time: "35 min", level: "Facile",
+    img: "https://images.unsplash.com/photo-1544717305-2782549b5136?auto=format&fit=crop&w=600&q=80",
+    desc: "Ramassez des feuilles au parc ou au jardin, puis créez un dragon d'automne.",
+    material: ["Feuilles ramassées", "Feuilles de papier", "Colle", "Feutres"],
+    steps: ["Partez ramasser des feuilles de formes et couleurs différentes.", "Triez-les par taille ou par couleur.", "Collez-les sur une feuille pour former un dragon.", "Dessinez les yeux, les pattes et les flammes au feutre."] },
+  { id: 2, title: "La forteresse secrète en cartons", emoji: "🏰", age: ['3-5','6-8'], tags: ['Pluie','Créatif'], time: "45 min", level: "Facile",
+    img: "https://images.unsplash.com/photo-1516627145497-ae6968895b74?auto=format&fit=crop&w=600&q=80",
+    desc: "Construisez un château avec des boîtes en carton et des lampes torches.",
+    material: ["Boîtes en carton", "Ruban adhésif", "Lampes torches", "Draps"],
+    steps: ["Empilez et fixez les boîtes pour faire les murs.", "Ajoutez un drap pour le toit.", "Décorez les portes et les fenêtres.", "Éteignez la lumière et explorez avec les lampes torches."] },
+  { id: 3, title: "Muffins pomme & cannelle", emoji: "🧁", age: ['3-5','6-8','9-14'], tags: ['Cuisine','Pluie'], time: "30 min", level: "Moyen",
+    img: "https://images.unsplash.com/photo-1556910103-1c02745aae4d?auto=format&fit=crop&w=600&q=80",
+    desc: "Atelier à 4 mains avec des rôles adaptés aux tout-petits et aux grands.",
+    material: ["Farine, sucre, œufs, lait", "Pommes", "Cannelle", "Moules à muffins"],
+    steps: ["Les grands pèsent les ingrédients, les petits versent.", "Mélangez les ingrédients secs, puis les liquides.", "Ajoutez les pommes coupées en petits dés (par un adulte).", "Remplissez les moules et enfournez environ 20 min à 180 °C."] },
+  { id: 4, title: "Bataille de chaussettes", emoji: "🧦", age: ['3-5','6-8'], tags: ['3 min','Pluie'], time: "3 min", level: "Très facile",
+    desc: "Roulez des chaussettes en boule et visez un panier ou une boîte.",
+    material: ["Chaussettes", "Panier ou boîte"],
+    steps: ["Roulez les chaussettes en boules.", "Placez le panier à distance.", "Chacun lance : qui en met le plus dedans ?"] },
+  { id: 5, title: "Bac sensoriel de riz", emoji: "🍚", age: ['0-2','3-5'], tags: ['Créatif','Pluie'], time: "25 min", level: "Facile",
+    desc: "Un bac de riz avec cuillères et petits récipients pour verser, remplir et explorer.",
+    material: ["Riz", "Grand bac", "Cuillères, tasses", "Petits jouets"],
+    steps: ["Versez le riz dans le bac sur une nappe.", "Cachez quelques petits jouets dedans.", "Laissez l'enfant verser, remplir et chercher.", "Surveillez toujours : le riz ne se mange pas."] },
+  { id: 6, title: "Chasse aux sons", emoji: "👂", age: ['0-2','3-5'], tags: ['3 min','Dehors'], time: "10 min", level: "Très facile",
+    desc: "Fermez les yeux et écoutez : oiseau, voiture, vent ? Nommez chaque son.",
+    material: ["Aucun"],
+    steps: ["Asseyez-vous dehors ou près d'une fenêtre ouverte.", "Fermez les yeux 30 secondes.", "Chacun dit les sons entendus.", "Recommencez en cherchant de nouveaux sons."] },
+  { id: 7, title: "Peinture au doigt", emoji: "🎨", age: ['0-2','3-5'], tags: ['Créatif'], time: "20 min", level: "Facile",
+    desc: "Une grande feuille, de la peinture lavable et les mains pour créer.",
+    material: ["Peinture lavable", "Grande feuille", "Tablier ou vieux t-shirt"],
+    steps: ["Protégez la table et l'enfant.", "Posez 2 ou 3 couleurs dans des assiettes.", "Laissez l'enfant peindre avec les doigts et les mains.", "Faites sécher et affichez l'œuvre."] },
+  { id: 8, title: "Cabane en coussins", emoji: "🛋️", age: ['0-2','3-5','6-8'], tags: ['Pluie','Créatif'], time: "30 min", level: "Facile",
+    desc: "Une cabane avec des coussins, des couvertures et des chaises.",
+    material: ["Coussins", "Couvertures", "Chaises"],
+    steps: ["Posez des chaises en cercle.", "Couvrez avec une grande couverture.", "Garnissez l'intérieur de coussins.", "Lisez une histoire à l'intérieur."] },
+  { id: 9, title: "Fusée à eau", emoji: "🚀", age: ['9-14'], tags: ['Dehors','Créatif'], time: "60 min", level: "Avancé",
+    img: "https://images.unsplash.com/photo-1581092160607-ee22621dd758?auto=format&fit=crop&w=600&q=80",
+    desc: "Un projet de bricolage scientifique en extérieur, avec un adulte à proximité.",
+    material: ["Bouteille en plastique", "Carton", "Ruban adhésif", "Pompe (avec un adulte)"],
+    steps: ["Fabriquez les ailerons en carton et fixez-les sur la bouteille.", "Fabriquez un nez conique.", "Allez dans un grand espace dégagé.", "Avec un adulte, remplissez d'eau et lancez en gardant vos distances."] },
+  { id: 10, title: "Parcours d'agilité dans le couloir", emoji: "🏃", age: ['6-8','9-14'], tags: ['Pluie','3 min'], time: "20 min", level: "Facile",
+    desc: "Le grand invente un parcours pour guider le petit comme un aventurier de la jungle.",
+    material: ["Coussins", "Ficelle ou ruban", "Chaise"],
+    steps: ["Imaginez ensemble 5 obstacles (ramper, sauter, contourner...).", "Installez-les dans le couloir.", "Le grand guide le petit à travers le parcours.", "Chronométrez et changez les rôles."] },
+  { id: 11, title: "Mini escape game maison", emoji: "🔐", age: ['6-8','9-14'], tags: ['Pluie','Créatif'], time: "45 min", level: "Moyen",
+    desc: "Cachez des indices dans la maison menant à un trésor.",
+    material: ["Papier, crayons", "Une petite boîte", "Cadenas à code (facultatif)"],
+    steps: ["Écrivez 4 ou 5 énigmes simples.", "Cachez chaque indice à un endroit différent.", "Cachez le trésor au dernier endroit.", "Lancez le jeu avec un chronomètre."] }
+];
+
+const DAYS = ['Lundi','Mardi','Mercredi','Jeudi','Vendredi','Samedi','Dimanche'];
+
+/* ---------- État ---------- */
+let ageFilter = 'all', tagFilter = null, rouletteAge = 'all';
+let plan = {};
+try { plan = JSON.parse(localStorage.getItem('nid-plan') || '{}'); } catch (e) { plan = {}; }
+function savePlan() { try { localStorage.setItem('nid-plan', JSON.stringify(plan)); } catch (e) {} }
+
+const $ = (s) => document.querySelector(s);
+const byId = (id) => ACTIVITIES.find(a => a.id === id);
+const pill = (label, on) => `px-4 py-2 rounded-xl whitespace-nowrap ${on ? 'bg-[#F07865] text-white' : 'bg-purple-50 text-[#6E6B82]'}`;
+const ageLabel = (a) => a.age.length ? 'Dès ' + a.age[0].split('-')[0] + ' ans' : '';
+
+/* ---------- Cartes ---------- */
+function card(a) {
+  const thumb = a.img
+    ? `<img src="${a.img}" alt="" class="w-full h-full object-cover" onerror="this.remove()">`
+    : '';
+  return `<button onclick="openActivity(${a.id})" class="w-full text-left bg-white rounded-3xl p-4 border border-purple-50 shadow-sm flex gap-4">
+    <div class="w-24 h-24 rounded-2xl bg-amber-50 flex-shrink-0 overflow-hidden flex items-center justify-center text-4xl">${a.emoji}${thumb ? '' : ''}</div>
+    <div class="flex-1">
+      <span class="text-[10px] font-bold px-2 py-0.5 rounded bg-purple-100 text-purple-700">${a.tags.join(' · ')}</span>
+      <h4 class="font-extrabold text-sm mt-1">${a.title}</h4>
+      <p class="text-xs text-[#6E6B82] mt-0.5">${a.desc}</p>
+      <div class="flex gap-3 mt-2 text-[11px] text-[#6E6B82]"><span>⏱️ ${a.time}</span><span>⭐ ${a.level}</span><span>👶 ${ageLabel(a)}</span></div>
+    </div>
+  </button>`;
+}
+
+function renderToday() {
+  const d = new Date();
+  const idx = (d.getFullYear() * 400 + d.getMonth() * 31 + d.getDate()) % ACTIVITIES.length;
+  $('#today-card').innerHTML = card(ACTIVITIES[idx]);
+  $('#roulette-ages').innerHTML = AGES.map(a =>
+    `<button data-r="${a.id}" class="px-3 py-1.5 rounded-full ${rouletteAge === a.id ? 'bg-white text-[#F07865]' : 'bg-white/20 text-white'}">${a.label}</button>`).join('');
+  document.querySelectorAll('[data-r]').forEach(b => b.onclick = () => { rouletteAge = b.dataset.r; renderToday(); });
+}
+
+function filtered() {
+  return ACTIVITIES.filter(a =>
+    (ageFilter === 'all' || a.age.includes(ageFilter)) &&
+    (!tagFilter || a.tags.includes(tagFilter)));
+}
+
+function renderExplore() {
+  $('#age-filters').innerHTML = AGES.map(a => `<button data-a="${a.id}" class="${pill(a.label, ageFilter === a.id)}">${a.label}</button>`).join('');
+  $('#tag-filters').innerHTML = TAGS.map(t => `<button data-t="${t}" class="${pill(t, tagFilter === t)}">${t}</button>`).join('');
+  document.querySelectorAll('[data-a]').forEach(b => b.onclick = () => { ageFilter = b.dataset.a; renderExplore(); });
+  document.querySelectorAll('[data-t]').forEach(b => b.onclick = () => { tagFilter = tagFilter === b.dataset.t ? null : b.dataset.t; renderExplore(); });
+  const list = filtered();
+  $('#explore-list').innerHTML = list.length ? list.map(card).join('') : '<p class="text-sm text-[#6E6B82] text-center py-8">Aucune activité pour ce filtre.</p>';
+}
+
+function renderPlanning() {
+  $('#planning-list').innerHTML = DAYS.map(day => {
+    const items = (plan[day] || []).map(id => byId(id)).filter(Boolean);
+    return `<div class="bg-white rounded-3xl p-4 border border-purple-50">
+      <div class="flex items-center justify-between">
+        <h4 class="font-extrabold text-sm">${day}</h4>
+        <button onclick="pickForDay('${day}')" class="text-xs font-bold text-[#F07865]">+ Ajouter</button>
+      </div>
+      ${items.length ? items.map(a => `<div class="flex items-center justify-between mt-2 text-sm">
+        <button onclick="openActivity(${a.id})" class="text-left">${a.emoji} ${a.title}</button>
+        <button onclick="removeFromDay('${day}',${a.id})" class="text-[#6E6B82] px-2">✕</button></div>`).join('')
+        : '<p class="text-xs text-[#6E6B82] mt-2">Rien de prévu, et c\'est très bien.</p>'}
+    </div>`;
+  }).join('');
+}
+
+/* ---------- Fenêtres ---------- */
+function openModal(html) { $('#modal-body').innerHTML = html; $('#modal').classList.remove('hidden'); $('#modal').classList.add('flex'); }
+function closeModal() { $('#modal').classList.add('hidden'); $('#modal').classList.remove('flex'); }
+
+function openActivity(id) {
+  const a = byId(id);
+  openModal(`
+    ${a.img ? `<img src="${a.img}" alt="" class="w-full h-40 object-cover rounded-2xl mb-3" onerror="this.remove()">` : `<div class="text-5xl mb-2">${a.emoji}</div>`}
+    <h3 class="font-extrabold text-lg">${a.title}</h3>
+    <p class="text-xs text-[#6E6B82] mt-1">⏱️ ${a.time} · ⭐ ${a.level} · 👶 ${ageLabel(a)}</p>
+    <p class="text-sm mt-3">${a.desc}</p>
+    <h4 class="font-bold text-sm mt-4">Matériel</h4>
+    <ul class="list-disc pl-5 text-sm mt-1">${a.material.map(m => `<li>${m}</li>`).join('')}</ul>
+    <h4 class="font-bold text-sm mt-4">Étapes</h4>
+    <ol class="list-decimal pl-5 text-sm mt-1 space-y-1">${a.steps.map(s => `<li>${s}</li>`).join('')}</ol>
+    <button onclick="pickDayFor(${a.id})" class="mt-4 w-full py-3 rounded-2xl bg-[#F07865] text-white font-bold text-sm">Ajouter au planning</button>`);
+}
+
+function pickDayFor(id) {
+  openModal(`<h3 class="font-extrabold text-base mb-3">Quel jour ?</h3>` +
+    DAYS.map(d => `<button onclick="addToDay('${d}',${id})" class="w-full text-left py-3 border-b border-purple-50 text-sm font-semibold">${d}</button>`).join(''));
+}
+function pickForDay(day) {
+  openModal(`<h3 class="font-extrabold text-base mb-3">Ajouter pour ${day}</h3>` +
+    ACTIVITIES.map(a => `<button onclick="addToDay('${day}',${a.id})" class="w-full text-left py-3 border-b border-purple-50 text-sm">${a.emoji} ${a.title}</button>`).join(''));
+}
+function addToDay(day, id) {
+  plan[day] = plan[day] || [];
+  if (!plan[day].includes(id)) plan[day].push(id);
+  savePlan(); renderPlanning(); closeModal(); showTab('planning');
+}
+function removeFromDay(day, id) {
+  plan[day] = (plan[day] || []).filter(x => x !== id);
+  savePlan(); renderPlanning();
+}
+
+/* ---------- Roulette ---------- */
+$('#roulette-btn').onclick = () => {
+  const pool = ACTIVITIES.filter(a => rouletteAge === 'all' || a.age.includes(rouletteAge));
+  const pick = pool[Math.floor(Math.random() * pool.length)];
+  openActivity(pick.id);
+};
+
+/* ---------- Navigation ---------- */
+function showTab(name) {
+  document.querySelectorAll('.view').forEach(v => v.classList.remove('active'));
+  $('#view-' + name).classList.add('active');
+  document.querySelectorAll('.tab').forEach(t => {
+    const on = t.dataset.tab === name;
+    t.classList.toggle('text-[#F07865]', on);
+    t.classList.toggle('text-[#6E6B82]', !on);
+  });
+  window.scrollTo(0, 0);
+}
+document.querySelectorAll('.tab').forEach(t => t.onclick = () => showTab(t.dataset.tab));
+
+/* ---------- Installation (PWA) + hors-ligne ---------- */
+if ('serviceWorker' in navigator) {
+  window.addEventListener('load', () => navigator.serviceWorker.register('sw.js').catch(() => {}));
+}
+let installEvent = null;
+const standalone = window.matchMedia('(display-mode: standalone)').matches || navigator.standalone;
+const isIOS = /iphone|ipad|ipod/i.test(navigator.userAgent);
+window.addEventListener('beforeinstallprompt', (e) => {
+  e.preventDefault(); installEvent = e;
+  if (!standalone) $('#install-banner').classList.remove('hidden');
+});
+$('#install-btn').onclick = async () => {
+  if (installEvent) { installEvent.prompt(); await installEvent.userChoice; installEvent = null; $('#install-banner').classList.add('hidden'); }
+  else { alert("Sur iPhone : touche le bouton Partager, puis « Sur l'écran d'accueil »."); }
+};
+if (isIOS && !standalone) {
+  $('#install-text').textContent = "Touche Partager puis « Sur l'écran d'accueil ».";
+  $('#install-btn').classList.add('hidden');
+  $('#install-banner').classList.remove('hidden');
+}
+window.addEventListener('appinstalled', () => $('#install-banner').classList.add('hidden'));
+
+renderToday(); renderExplore(); renderPlanning(); showTab('today');
+</script>
 </body>
 </html>
-```
-
----
-
-## 3. Écran 2 : L'Univers Infini d'Activités & Défis ("Explorer")
-
-```html
-<!DOCTYPE html>
-<html lang="fr">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Nid d'Éveil - Explorer</title>
-  <script src="https://cdn.tailwindcss.com"></script>
-  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0" />
-</head>
-<body class="bg-[#FAF8FF] font-['Plus_Jakarta_Sans'] text-[#1E1B2E] pb-24">
-  <!-- Header -->
-  <header class="p-5 bg-white border-b border-purple-50 sticky top-0 z-40">
-    <h1 class="text-xl font-extrabold">La Boîte à Idées Infinie</h1>
-    <p class="text-xs text-[#6E6B82]">+520 ateliers classés par situation réelle</p>
-    <!-- Filtres Pills -->
-    <div class="flex gap-2 mt-3 overflow-x-auto pb-1 no-scrollbar text-xs font-semibold">
-      <button class="px-4 py-2 rounded-xl bg-[#F07865] text-white whitespace-nowrap">Tout voir</button>
-      <button class="px-4 py-2 rounded-xl bg-purple-50 text-[#6E6B82] whitespace-nowrap">🌧️ Jours de Pluie</button>
-      <button class="px-4 py-2 rounded-xl bg-purple-50 text-[#6E6B82] whitespace-nowrap">⚡ 3 Min Chrono</button>
-      <button class="px-4 py-2 rounded-xl bg-purple-50 text-[#6E6B82] whitespace-nowrap">🍳 En Cuisine</button>
-      <button class="px-4 py-2 rounded-xl bg-purple-50 text-[#6E6B82] whitespace-nowrap">🚀 Grands 8-14 ans</button>
-    </div>
-  </header>
-
-  <main class="p-5 space-y-4">
-    <!-- Carte 1 : Jour de pluie -->
-    <div class="bg-white rounded-3xl p-4 border border-purple-50 shadow-sm flex gap-4">
-      <div class="w-24 h-24 rounded-2xl bg-blue-50 flex-shrink-0 overflow-hidden">
-        <img src="https://images.unsplash.com/photo-1516627145497-ae6968895b74?auto=format&fit=crop&w=300&q=80" class="w-full h-full object-cover">
-      </div>
-      <div class="flex-1">
-        <span class="text-[10px] font-bold px-2 py-0.5 rounded bg-blue-100 text-blue-700">Intérieur Cocoon</span>
-        <h4 class="font-extrabold text-sm mt-1">La Forteresse Secrète en Cartons</h4>
-        <p class="text-xs text-[#6E6B82] line-clamp-2 mt-0.5">Construisez un château avec 2 boîtes à chaussures et des lampes torches.</p>
-        <div class="flex items-center gap-3 mt-2 text-[11px] text-[#6E6B82]">
-          <span>⏱️ 45 min</span>
-          <span>⭐ Facile</span>
-        </div>
-      </div>
-    </div>
-
-    <!-- Carte 2 : Cuisine complice -->
-    <div class="bg-white rounded-3xl p-4 border border-purple-50 shadow-sm flex gap-4">
-      <div class="w-24 h-24 rounded-2xl bg-amber-50 flex-shrink-0 overflow-hidden">
-        <img src="https://images.unsplash.com/photo-1556910103-1c02745aae4d?auto=format&fit=crop&w=300&q=80" class="w-full h-full object-cover">
-      </div>
-      <div class="flex-1">
-        <span class="text-[10px] font-bold px-2 py-0.5 rounded bg-amber-100 text-amber-700">Gourmand</span>
-        <h4 class="font-extrabold text-sm mt-1">Muffins Pomme & Cannelle</h4>
-        <p class="text-xs text-[#6E6B82] line-clamp-2 mt-0.5">Atelier à 4 mains avec rôles adaptés pour tout-petits et grands.</p>
-        <div class="flex items-center gap-3 mt-2 text-[11px] text-[#6E6B82]">
-          <span>⏱️ 30 min</span>
-          <span>🥣 Placard</span>
-        </div>
-      </div>
-    </div>
-  </main>
-</body>
-</html>
-```
-
----
-
-## 4. Écran 3 : Club des Grands & Ados (8-14 ans)
-
-```html
-<!DOCTYPE html>
-<html lang="fr">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Club des Grands - Nid d'Éveil</title>
-  <script src="https://cdn.tailwindcss.com"></script>
-  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0" />
-</head>
-<body class="bg-[#FAF8FF] font-['Plus_Jakarta_Sans'] text-[#1E1B2E] pb-24">
-  <header class="p-5 bg-white border-b border-purple-50">
-    <div class="flex items-center justify-between">
-      <span class="px-3 py-1 rounded-full bg-emerald-100 text-emerald-800 text-xs font-bold">95% Autonomie</span>
-      <span class="text-xs text-[#6E6B82] font-semibold">Sans écran passif</span>
-    </div>
-    <h1 class="text-2xl font-extrabold mt-2">Le Club des Grands & Makers 🚀</h1>
-    <p class="text-xs text-[#6E6B82]">Fini les activités de bébés ! Vrais projets, escape games et défis de terrain.</p>
-  </header>
-
-  <main class="p-5 space-y-5">
-    <!-- Star Défi -->
-    <div class="bg-white rounded-3xl overflow-hidden border border-purple-50 shadow-md">
-      <div class="h-44 bg-slate-800 relative">
-        <img src="https://images.unsplash.com/photo-1581092160607-ee22621dd758?auto=format&fit=crop&w=600&q=80" class="w-full h-full object-cover">
-        <span class="absolute top-3 left-3 bg-[#F07865] text-white text-xs font-bold px-3 py-1 rounded-lg">Défi Maker de la Semaine</span>
-      </div>
-      <div class="p-5 space-y-3">
-        <h3 class="font-extrabold text-lg">La Fusée Hydro-Propulsée & Pas de Tir</h3>
-        <p class="text-xs text-[#6E6B82]">Transforme une bouteille d'eau gazeuse et une pompe à vélo en catapulte d'altitude avec calcul d'apogée.</p>
-        <div class="flex items-center justify-between pt-2">
-          <span class="text-xs font-bold text-indigo-600">+250 XP • Badge Ingénieur Aéro</span>
-          <button class="px-4 py-2 bg-[#F07865] text-white text-xs font-bold rounded-xl shadow">Accéder au Plan</button>
-        </div>
-      </div>
-    </div>
-
-    <!-- Mission Boss Fratrie -->
-    <div class="p-4 rounded-3xl bg-emerald-50 border border-emerald-200">
-      <div class="flex items-center gap-2 text-emerald-800 font-extrabold text-sm">
-        <span class="material-symbols-outlined text-lg">psychology</span>
-        Mission Boss : Le Maître du Jeu
-      </div>
-      <p class="text-xs text-emerald-950 mt-1">Conçois un parcours d'agilité secret dans le couloir pour guider ton petit frère Léo (3 ans) comme un aventurier de jungle.</p>
-    </div>
-  </main>
-</body>
-</html>
-```
-
----
-
-## 5. Comment créer et héberger l'application 100% GRATUITEMENT
-
-Pour lancer **Nid d'Éveil** sans débourser un seul euro de serveur ou de licence :
-
-### Méthode A : Mise en ligne Web App Progressive (PWA) Gratuite (0 €)
-1. **GitHub** : Créez un compte gratuit sur [GitHub.com](https://github.com) et créez un répertoire nommé `nid-deveil`.
-2. **Déposez les fichiers HTML** :
-   - Sauvegardez le code ci-dessus sous `index.html`.
-3. **Hébergement Vercel ou GitHub Pages (Gratuit à vie)** :
-   - Activez **GitHub Pages** (Settings > Pages > Branch main) ou connectez votre compte sur [Vercel.com](https://vercel.com) (1 clic gratuit).
-   - Vous obtenez instantanément une adresse web sécurisée (`https://nid-deveil.vercel.app`).
-4. **Installation Mobile sur iPhone/Android** :
-   - Ouvrez le lien sur mobile > Appuyez sur **Partager** > **« Sur l'écran d'accueil »**. L'application s'installe comme une vraie application native sans passer par les frais des stores !
-
-### Méthode B : Convertir en véritable application iOS / Android (0 €)
-- Utilisez **CapacitorJS** (open-source et gratuit) ou **FlutterFlow** (version gratuite) pour transformer directement votre code web en fichier `.apk` (Android) ou `.ipa` (iOS).
-
----
-
-## 6. Stratégie pour Générer des Revenus Rentables
-
-Voici le plan de monétisation éprouvé pour les applications parentales :
-
-### 1. Le Modèle Freemium Doux (Recommandé)
-- **Gratuit** : Accès à 15 activités de base, au mode spontané roulette anti-ennui et au lecteur de contes (1 conte par semaine).
-- **Abonnement "Nid d'Éveil Sérénité" (4,99 € / mois ou 39 € / an)** :
-  - Déblocage des +500 activités et fiches ateliers pas-à-pas imprimables en PDF.
-  - Histoires audio illimitées et ambiances sonores d'endormissement.
-  - Fiches défis exclusifs Grands & Makers (8-14 ans).
-
-### 2. Micro-Packs Thématiques Saisonniers (3,99 € l'unité)
-- Pack spécial "Grandes Vacances & Trajets de Voiture Zen".
-- Pack "100% Jours de Pluie & Zéro Dépense".
-- Pack "Anniversaires & Escape Games de Salon prêts à imprimer".
-
-### 3. Affiliation Bienveillante & Matériel (5 à 12% de commission)
-- Dans les checklists matériel des ateliers : liens discrets vers du matériel éducatif (peinture non toxique, ingrédients sains, pompes à vélo, livres jeunesse) sur des boutiques partenaires (Amazon Partenaires, Nature & Découvertes, etc.).
