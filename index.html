@@ -787,35 +787,24 @@ function nouvList(f) {
   const list = NOUV.filter(n => (f === 'all' || n.ou === f) && n.d >= lim && (n.pub !== 'adulte' || ADULT_OK)).sort((a, b) => a.d.localeCompare(b.d));
   const src = '<div class="warn" style="margin-top:14px"><b>Sources</b><br>' + NOUV_SOURCES.map(([l, u]) => `<a href="${u}" target="_blank" rel="noopener noreferrer">${esc(l)}</a>`).join('<br>') + '</div>';
   setTimeout(() => $$('[data-nf]').forEach(b => b.onclick = () => { C.nf = b.dataset.nf; renderCine(); }), 0);
-  return chips + (list.map(nouvCard).join('') || '<p class="empty">Rien de relevé pour ce filtre.</p>') + src + (ADULT_OK ? '' : '<p class="sub" style="margin-top:10px">Les titres pour adultes s\'affichent dans « Entre adultes », avec ton code.</p>');
+  return chips + (list.map(nouvCard).join('') || '<p class="empty">Rien de relevé pour ce filtre.</p>') + src + (ADULT_OK ? '' : '<p class="sub" style="margin-top:10px">Les titres pour adultes s\'affichent dans « Entre adultes ».</p>');
 }
-/* Espace adultes protégé par un code (le téléphone d'un enfant ne s'ouvre pas dessus) */
+/* Espace adultes : simple confirmation d'âge, sans code */
 let ADULT_OK = false;
-const hashPin = async (p) => { try { const b = await crypto.subtle.digest('SHA-256', new TextEncoder().encode('mams:' + p)); return Array.from(new Uint8Array(b)).map(x => x.toString(16).padStart(2, '0')).join(''); } catch (e) { return btoa('mams:' + p); } };
 function askAdultPin() {
-  const first = !S.pin;
   openSheet(`<h3>Espace adultes</h3>
-    <p class="lead">${first ? 'Cet espace propose des films et séries pour les adultes. Choisis un code à 4 chiffres : il sera demandé à chaque fois.' : 'Entre ton code à 4 chiffres.'}</p>
-    ${first ? '<label style="display:flex;gap:10px;align-items:center;margin:14px 0"><input type="checkbox" id="p-age" style="width:22px;height:22px"> J\'ai 18 ans ou plus</label>' : ''}
-    <input id="p-code" type="password" inputmode="numeric" pattern="[0-9]*" maxlength="4" autocomplete="off" placeholder="••••" style="width:100%;padding:14px;border-radius:12px;border:1px solid var(--line);font:inherit;font-size:22px;text-align:center;letter-spacing:.4em;margin:8px 0 16px">
-    <button class="btn" id="p-ok">Valider</button>
-    ${first ? '' : '<button class="btn alt" id="p-reset" style="margin-top:10px">Code oublié ? Choisir un nouveau code</button>'}`);
-  $('#p-code').addEventListener('keydown', e => { if (e.key === 'Enter') $('#p-ok').click(); });
-  const rs = $('#p-reset'); if (rs) rs.onclick = () => { if (confirm('Supprimer ton code actuel et en choisir un nouveau ?')) { S.pin = null; save(); askAdultPin(); } };
-  $('#p-ok').onclick = async () => {
-    const code = $('#p-code').value.trim();
-    if (!/^[0-9]{4}$/.test(code)) return toast('Le code a 4 chiffres');
-    if (first) { if (!$('#p-age').checked) return toast('Coche « J\'ai 18 ans ou plus »'); S.pin = await hashPin(code); save(); }
-    else if (await hashPin(code) !== S.pin) return toast('Code incorrect');
-    ADULT_OK = true; C.mode = 'adult'; closeSheet(); renderCine();
-  };
+    <p class="lead">Cet espace propose des films et séries pour les adultes. Il est réservé aux personnes de 18 ans ou plus.</p>
+    <button class="btn" id="p-ok" style="margin-top:14px">J'ai 18 ans ou plus, entrer</button>
+    <button class="btn alt" id="p-no" style="margin-top:10px">Retour</button>`);
+  $('#p-no').onclick = () => closeSheet();
+  $('#p-ok').onclick = () => { ADULT_OK = true; C.mode = 'adult'; closeSheet(); renderCine(); };
 }
 function renderCine() {
   $('#platforms').innerHTML = PLATEFORMES.map(p => `<button class="chip ${S.platforms.includes(p.id) ? 'on' : ''}" data-p="${p.id}">${p.nom}</button>`).join('');
   $$('#platforms .chip').forEach(b => b.onclick = () => { const id = b.dataset.p; S.platforms = S.platforms.includes(id) ? S.platforms.filter(x => x !== id) : S.platforms.concat(id); save(); renderCine(); renderNest(); });
   $('#c-age').innerHTML = [[3,'3 ans'],[5,'5 ans'],[7,'7 ans'],[10,'10 ans'],[13,'13 ans et +']].map(([v, l]) => `<button class="chip ${C.age === v ? 'on' : ''}" data-a="${v}">${l}</button>`).join('');
   $$('#c-age .chip').forEach(b => b.onclick = () => { C.age = +b.dataset.a; renderCine(); });
-  $('#c-mode').innerHTML = [['new','Nouveautés'],['mine','Sur mes plateformes'],['cinema','Au cinéma'],['classics','Classiques à chercher'],['adult','Entre adultes 🔒']].map(([v, l]) => `<button class="chip ${C.mode === v ? 'on' : ''}" data-m="${v}">${l}</button>`).join('');
+  $('#c-mode').innerHTML = [['new','Nouveautés'],['mine','Sur mes plateformes'],['cinema','Au cinéma'],['classics','Classiques à chercher'],['adult','Entre adultes 🔞']].map(([v, l]) => `<button class="chip ${C.mode === v ? 'on' : ''}" data-m="${v}">${l}</button>`).join('');
   $$('#c-mode .chip').forEach(b => b.onclick = () => { if (b.dataset.m === 'adult' && !ADULT_OK) return askAdultPin(); C.mode = b.dataset.m; renderCine(); });
   $('#verif').innerHTML = `Titres relevés le <b>${VERIFIE_LE}</b> dans les programmes de novembre 2026. Les catalogues changent souvent : vérifie toujours sur ta plateforme. L'âge est indicatif, fie-toi à celui affiché par la plateforme.`;
   if (C.mode === 'adult' && !ADULT_OK) C.mode = 'mine';
