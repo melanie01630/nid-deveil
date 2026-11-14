@@ -309,15 +309,6 @@ nav.bar-nav{position:fixed;left:0;right:0;bottom:0;max-width:560px;margin:auto;b
   <h2 class="h2">Sorties</h2>
   <p class="sub">Trouve un lieu près de toi, ou découvre de grandes destinations d'Europe.</p>
   <div class="panel" style="margin-bottom:14px"><b>Près de toi</b><p class="sub" style="margin:4px 0 10px">Chaque bouton ouvre ta carte avec les lieux autour de toi.</p><div class="chips" id="s-near" style="flex-wrap:wrap"></div></div>
-  <div class="panel" style="margin-bottom:14px"><b>Carte autour de toi</b>
-    <p class="sub" style="margin:4px 0 10px">Écris une ville (ou touche « Autour de moi »), choisis ce que tu cherches : les lieux s'affichent sur la carte.</p>
-    <div style="display:flex;gap:8px;margin-bottom:10px"><input id="m-ville" type="text" placeholder="Ville ou code postal" style="flex:1 1 auto;width:100%;min-width:0;padding:12px;border-radius:12px;border:1px solid var(--line);font:inherit"><button class="btn small" id="m-go" style="width:auto;flex:none;padding:12px 16px">Chercher</button></div>
-    <div class="chips" id="m-cats" style="flex-wrap:wrap"></div>
-    <button class="btn alt small" id="m-me" style="margin-top:10px;width:auto">Autour de moi</button>
-    <div id="m-status" class="sub" style="margin:10px 0 0"></div>
-    <div id="m-map" style="position:relative;height:340px;margin-top:10px;border-radius:14px;overflow:hidden;background:#cfd8cf;touch-action:none"></div>
-    <div style="font-size:11px;color:var(--muted);margin-top:4px">© les contributeurs d'OpenStreetMap</div>
-    <div id="m-list" style="margin-top:12px"></div></div>
   <div class="panel" style="margin-bottom:14px"><b>Clubs et activités dans ta ville</b>
     <p class="sub" style="margin:4px 0 10px">Écris ta ville (ou celle d'à côté), puis choisis un sport ou une activité : ta carte s'ouvre avec les clubs autour.</p>
     <input id="s-ville" type="text" placeholder="Ta ville ou ton code postal" autocomplete="address-level2" style="width:100%;padding:12px;border-radius:12px;border:1px solid var(--line);font:inherit;margin-bottom:10px">
@@ -643,98 +634,6 @@ function renderClubs() {
 }
 renderClubs();
 
-/* =================== CARTE (OpenStreetMap) =================== */
-const MCATS = [
-  ['pool','Piscines','🏊','["leisure"~"swimming_pool|water_park"]["access"!~"private"]'],
-  ['play','Aires de jeux','🛝','["leisure"="playground"]'],
-  ['kid','Kid parks (jeux d\'intérieur)','🎈','["leisure"="indoor_play"]'],
-  ['park','Parcs d\'attractions','🎢','["tourism"="theme_park"]'],
-  ['zoo','Zoos et fermes','🦁','["tourism"~"zoo|aquarium"]'],
-  ['judo','Judo','🥋','["sport"~"judo"]'],
-  ['foot','Foot','⚽','["sport"~"soccer"]["leisure"~"pitch|sports_centre|stadium"]'],
-  ['basket','Basket','🏀','["sport"~"basketball"]'],
-  ['gym','Gym et danse','🤸','["sport"~"gymnastics|dance"]'],
-  ['tennis','Tennis','🎾','["sport"~"tennis"]'],
-  ['horse','Équitation','🐴','["sport"~"equestrian"]'],
-  ['club','Autres clubs de sport','🏅','["club"="sport"]'],
-  ['ice','Patinoires','⛸️','["leisure"="ice_rink"]'],
-  ['lib','Bibliothèques','📚','["amenity"="library"]'],
-  ['museum','Musées','🖼️','["tourism"="museum"]']
-];
-const M = { lat: 46.6, lon: 2.4, z: 5, cat: 'pool', pts: [], tx: 0, ty: 0 };
-const mpx = (lat, lon, z) => { const n = 256 * Math.pow(2, z), r = lat * Math.PI / 180; return [(lon + 180) / 360 * n, (1 - Math.log(Math.tan(r) + 1 / Math.cos(r)) / Math.PI) / 2 * n]; };
-const mll = (x, y, z) => { const n = 256 * Math.pow(2, z); return [Math.atan(Math.sinh(Math.PI * (1 - 2 * y / n))) * 180 / Math.PI, x / n * 360 - 180]; };
-function drawMap() {
-  const box = $('#m-map'); if (!box) return;
-  const w = box.clientWidth || 340, h = box.clientHeight || 340;
-  const [cx, cy] = mpx(M.lat, M.lon, M.z), n = Math.pow(2, M.z);
-  let html = '<div id="m-layer" style="position:absolute;left:0;top:0;width:100%;height:100%">';
-  const x0 = Math.floor((cx - w / 2) / 256), x1 = Math.floor((cx + w / 2) / 256), y0 = Math.floor((cy - h / 2) / 256), y1 = Math.floor((cy + h / 2) / 256);
-  for (let x = x0; x <= x1; x++) for (let y = y0; y <= y1; y++) {
-    if (y < 0 || y >= n) continue;
-    const xx = ((x % n) + n) % n;
-    html += `<img alt="" draggable="false" src="https://tile.openstreetmap.org/${M.z}/${xx}/${y}.png" style="position:absolute;left:${Math.round(x * 256 - cx + w / 2)}px;top:${Math.round(y * 256 - cy + h / 2)}px;width:256px;height:256px;max-width:none;user-select:none">`;
-  }
-  M.pts.forEach((p, i) => {
-    const [px, py] = mpx(p.lat, p.lon, M.z);
-    html += `<button type="button" data-pi="${i}" aria-label="${esc(p.name)}" style="position:absolute;left:${Math.round(px - cx + w / 2) - 14}px;top:${Math.round(py - cy + h / 2) - 28}px;width:28px;height:28px;border:0;background:none;font-size:24px;line-height:28px;padding:0;cursor:pointer;filter:drop-shadow(0 1px 2px rgba(0,0,0,.5))">${p.e}</button>`;
-  });
-  html += '</div><div style="position:absolute;right:8px;top:8px;display:flex;flex-direction:column;gap:6px"><button type="button" id="m-zin" class="btn small" style="min-width:40px;padding:6px 0">+</button><button type="button" id="m-zout" class="btn small" style="min-width:40px;padding:6px 0">−</button></div>';
-  box.innerHTML = html;
-  $('#m-zin').onclick = (e) => { e.stopPropagation(); M.z = Math.min(18, M.z + 1); drawMap(); };
-  $('#m-zout').onclick = (e) => { e.stopPropagation(); M.z = Math.max(3, M.z - 1); drawMap(); };
-  $$('#m-map [data-pi]').forEach(b => b.onclick = (e) => { e.stopPropagation(); showPt(+b.dataset.pi); });
-}
-function showPt(i) {
-  const p = M.pts[i]; if (!p) return;
-  $('#m-status').innerHTML = `<b>${esc(p.name)}</b> · ${esc(p.label)}${p.dist != null ? ' · ' + (p.dist < 1 ? Math.round(p.dist * 1000) + ' m' : p.dist.toFixed(1) + ' km') : ''} <a href="https://www.google.com/maps/dir/?api=1&destination=${p.lat},${p.lon}" target="_blank" rel="noopener noreferrer">Itinéraire</a>`;
-}
-function bindMapDrag() {
-  const box = $('#m-map'); let d = null;
-  box.addEventListener('pointerdown', e => { if (e.target.closest('button')) return; d = { x: e.clientX, y: e.clientY, cx: mpx(M.lat, M.lon, M.z) }; box.setPointerCapture(e.pointerId); });
-  box.addEventListener('pointermove', e => { if (!d) return; const l = $('#m-layer'); if (l) l.style.transform = `translate(${e.clientX - d.x}px,${e.clientY - d.y}px)`; });
-  const end = e => { if (!d) return; const dx = e.clientX - d.x, dy = e.clientY - d.y; [M.lat, M.lon] = mll(d.cx[0] - dx, d.cx[1] - dy, M.z); d = null; drawMap(); };
-  box.addEventListener('pointerup', end); box.addEventListener('pointercancel', end);
-}
-const hav = (a, b, c, d) => { const r = Math.PI / 180, x = (c - a) * r, y = (d - b) * r, k = Math.sin(x / 2) ** 2 + Math.cos(a * r) * Math.cos(c * r) * Math.sin(y / 2) ** 2; return 12742 * Math.asin(Math.sqrt(k)); };
-async function fetchJson(url, opt, ms) { const c = new AbortController(), t = setTimeout(() => c.abort(), ms || 20000); try { const r = await fetch(url, { ...(opt || {}), signal: c.signal }); if (!r.ok) throw new Error('http ' + r.status); return await r.json(); } finally { clearTimeout(t); } }
-async function searchMap(lat, lon, label) {
-  const cat = MCATS.find(c => c[0] === M.cat), R = M.cat === 'park' || M.cat === 'zoo' ? 40000 : 6000;
-  M.lat = lat; M.lon = lon; M.z = R > 10000 ? 10 : 13; M.pts = []; drawMap();
-  $('#m-status').textContent = 'Recherche en cours…'; $('#m-list').innerHTML = '';
-  const f = cat[3], q = `[out:json][timeout:20];(node${f}(around:${R},${lat},${lon});way${f}(around:${R},${lat},${lon}););out center 120;`;
-  try {
-    const j = await fetchJson('https://overpass-api.de/api/interpreter', { method: 'POST', headers: { 'Content-Type': 'application/x-www-form-urlencoded' }, body: 'data=' + encodeURIComponent(q) }, 25000);
-    M.pts = (j.elements || []).map(el => { const t = el.tags || {}, la = el.lat != null ? el.lat : el.center && el.center.lat, lo = el.lon != null ? el.lon : el.center && el.center.lon; return la == null ? null : { lat: la, lon: lo, name: t.name || cat[1].replace(/s$/, ''), label: cat[1], e: cat[2], dist: hav(lat, lon, la, lo), web: t.website || t['contact:website'] || '' }; }).filter(Boolean).sort((a, b) => a.dist - b.dist).slice(0, 60);
-    drawMap();
-    $('#m-status').textContent = M.pts.length ? `${M.pts.length} lieu(x) trouvé(s) autour de ${label}. Touche un repère pour les détails.` : `Rien trouvé dans la base pour « ${cat[1]} » autour de ${label}. La base est complétée par des bénévoles : essaie un autre filtre, ou les boutons « Clubs et activités » plus bas.`;
-    $('#m-list').innerHTML = M.pts.slice(0, 15).map((p, i) => `<div class="film" style="margin-bottom:8px"><b>${p.e} ${esc(p.name)}</b><div class="sub" style="margin:2px 0 8px">${p.dist < 1 ? Math.round(p.dist * 1000) + ' m' : p.dist.toFixed(1) + ' km'}</div><div class="help"><button class="btn alt small" data-pl="${i}">Voir sur la carte</button><a class="btn alt small" href="https://www.google.com/maps/dir/?api=1&destination=${p.lat},${p.lon}" target="_blank" rel="noopener noreferrer">Itinéraire</a></div></div>`).join('');
-    $$('[data-pl]').forEach(b => b.onclick = () => { const p = M.pts[+b.dataset.pl]; M.lat = p.lat; M.lon = p.lon; M.z = 16; drawMap(); showPt(+b.dataset.pl); $('#m-map').scrollIntoView({ behavior: 'smooth', block: 'center' }); });
-  } catch (e) { $('#m-status').textContent = 'Impossible de charger les lieux pour le moment (connexion ?). Utilise les boutons « Clubs et activités » plus bas.'; }
-}
-async function goVille() {
-  const v = ($('#m-ville').value || '').trim(); if (!v) return toast('Écris une ville');
-  S.ville = v; save(); $('#m-status').textContent = 'Recherche de la ville…';
-  try {
-    const r = await fetchJson('https://nominatim.openstreetmap.org/search?format=json&limit=1&accept-language=fr&q=' + encodeURIComponent(v), {}, 15000);
-    if (!r.length) { $('#m-status').textContent = 'Ville introuvable. Essaie avec le code postal.'; return; }
-    M.last = [+r[0].lat, +r[0].lon, v]; searchMap(+r[0].lat, +r[0].lon, v);
-  } catch (e) { $('#m-status').textContent = 'Impossible de trouver la ville pour le moment (connexion ?).'; }
-}
-function initMap() {
-  if (!$('#m-map')) return;
-  $('#m-cats').innerHTML = MCATS.map(c => `<button class="chip ${M.cat === c[0] ? 'on' : ''}" data-mc="${c[0]}">${c[2]} ${esc(c[1])}</button>`).join('');
-  $$('[data-mc]').forEach(b => b.onclick = () => { M.cat = b.dataset.mc; initMap(); if (M.pts.length || $('#m-ville').value.trim()) { if (M.last) searchMap(M.last[0], M.last[1], M.last[2]); else goVille(); } });
-  if (S.ville && !$('#m-ville').value) $('#m-ville').value = S.ville;
-}
-$('#m-go').onclick = goVille;
-$('#m-ville').addEventListener('keydown', e => { if (e.key === 'Enter') goVille(); });
-$('#m-me').onclick = () => {
-  if (!navigator.geolocation) return toast('Position indisponible');
-  $('#m-status').textContent = 'Recherche de ta position…';
-  navigator.geolocation.getCurrentPosition(p => { M.last = [p.coords.latitude, p.coords.longitude, 'toi']; searchMap(p.coords.latitude, p.coords.longitude, 'toi'); }, () => { $('#m-status').textContent = 'Position refusée. Écris plutôt ta ville.'; }, { timeout: 12000 });
-};
-initMap(); bindMapDrag(); drawMap();
 
 /* =================== JOURNAL =================== */
 function renderJournal() {
@@ -904,7 +803,6 @@ $('#o-send').onclick = () => {
 function showTab(t) {
   if (t === 'commu') initCommu();
   if (t === 'actu') renderActu();
-  if (t === 'sorties') setTimeout(() => { if (typeof drawMap === 'function') drawMap(); }, 50);
   if (t !== 'cine' && typeof ADULT_OK !== 'undefined' && ADULT_OK) { ADULT_OK = false; if (C.mode === 'adult') C.mode = 'mine'; }
   $$('.view').forEach(v => v.classList.toggle('active', v.id === 'view-' + t));
   $$('.tab').forEach(b => b.classList.toggle('on', b.dataset.tab === t));
