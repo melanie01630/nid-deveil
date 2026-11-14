@@ -1,0 +1,83 @@
+/* Recettes. c = catégorie, g = s (salé) ou d (sucré), m = minutes en tout, n = niveau (1 facile, 2 moyen, 3 plus long), e = avec les enfants (1 oui), i = ingrédients, d = déroulé en deux phrases. */
+window.RECETTES_CATS = {
+  soir: 'Repas rapide du soir',
+  gateau: 'Idées gâteaux',
+  mijote: 'Plats à mijoter',
+  gouter: 'Goûters',
+  matin: 'Petit-déjeuner',
+  sans4: 'Sans four',
+  soupe: 'Soupes et entrées',
+  enfant: 'Avec les enfants'
+};
+window.RECETTES = [
+  /* repas rapides du soir */
+  { t: "Pâtes carbonara express", c: 'soir', g: 's', m: 15, n: 1, i: "pâtes, lardons, œufs, parmesan, poivre", d: "Cuis les pâtes, fais dorer les lardons. Hors du feu, mélange avec les œufs battus et le parmesan." },
+  { t: "Omelette aux légumes", c: 'soir', g: 's', m: 12, n: 1, i: "œufs, courgette, tomate, fromage râpé", d: "Fais revenir les légumes en dés, verse les œufs battus, laisse prendre et plie." },
+  { t: "Wraps poulet crudités", c: 'soir', g: 's', m: 15, n: 1, e: 1, i: "tortillas, poulet cuit, salade, tomate, fromage frais", d: "Tartine le fromage frais, garnis, roule et coupe en deux. Les enfants composent le leur." },
+  { t: "Croque-monsieur au four", c: 'soir', g: 's', m: 15, n: 1, e: 1, i: "pain de mie, jambon, fromage, un peu de béchamel", d: "Assemble, nappe de fromage et enfourne à 200 °C jusqu'à ce que ce soit doré." },
+  { t: "Riz cantonais maison", c: 'soir', g: 's', m: 20, n: 1, i: "riz cuit, œufs, petits pois, jambon, sauce soja", d: "Brouille les œufs, ajoute le riz et les dés de jambon, saute le tout avec la sauce soja." },
+  { t: "Quesadillas fromage", c: 'soir', g: 's', m: 10, n: 1, e: 1, i: "tortillas, fromage râpé, maïs ou jambon", d: "Garnis une tortilla, ferme-la et dore-la des deux côtés à la poêle." },
+  { t: "Gratin de pâtes jambon-fromage", c: 'soir', g: 's', m: 25, n: 1, i: "pâtes cuites, jambon, crème, fromage râpé", d: "Mélange les pâtes avec jambon et crème, couvre de fromage et gratine 10 minutes." },
+  { t: "Poisson en papillote", c: 'soir', g: 's', m: 25, n: 1, i: "filet de poisson, citron, légumes en lamelles, huile d'olive", d: "Ferme le tout dans du papier cuisson et enfourne 15 à 20 minutes à 180 °C." },
+  { t: "Galettes de courgette", c: 'soir', g: 's', m: 20, n: 1, i: "courgettes râpées, œuf, farine, fromage", d: "Essore les courgettes, mélange avec l'œuf et la farine, fais dorer en petits tas à la poêle." },
+  { t: "Pizza sur pain naan", c: 'soir', g: 's', m: 15, n: 1, e: 1, i: "pains naan, sauce tomate, mozzarella, garnitures au choix", d: "Étale la sauce, garnis, enfourne 8 à 10 minutes à 210 °C. Chacun fait sa pizza." },
+  { t: "Œufs cocotte", c: 'soir', g: 's', m: 15, n: 1, i: "œufs, crème, épinards ou jambon, fromage", d: "Casse un œuf dans chaque ramequin avec un peu de crème, cuis 10 minutes au four." },
+  { t: "Boulettes de bœuf sauce tomate", c: 'soir', g: 's', m: 30, n: 2, e: 1, i: "viande hachée, oignon, chapelure, sauce tomate", d: "Forme des boulettes, dore-les puis laisse mijoter 10 minutes dans la sauce." },
+  { t: "Tarte aux légumes sans pâte à étaler", c: 'soir', g: 's', m: 35, n: 2, i: "pâte brisée prête à dérouler, légumes, œufs, crème, fromage", d: "Garnis la pâte de légumes, verse le mélange œufs-crème et enfourne 30 minutes à 180 °C." },
+  /* gâteaux */
+  { t: "Gâteau au yaourt", c: 'gateau', g: 'd', m: 45, n: 1, e: 1, i: "1 pot de yaourt, 2 pots de sucre, 3 pots de farine, 1/2 pot d'huile, 3 œufs, 1 sachet de levure", d: "Mélange tout avec le pot de yaourt comme mesure et cuis 30 à 35 minutes à 180 °C." },
+  { t: "Gâteau au chocolat fondant", c: 'gateau', g: 'd', m: 35, n: 1, e: 1, i: "chocolat noir, beurre, sucre, œufs, un peu de farine", d: "Fais fondre chocolat et beurre, ajoute le reste et cuis 20 minutes à 180 °C, le centre doit rester fondant." },
+  { t: "Cake marbré", c: 'gateau', g: 'd', m: 60, n: 2, e: 1, i: "beurre, sucre, œufs, farine, levure, cacao", d: "Prépare la pâte, sépare-la en deux et colore une moitié avec le cacao. Alterne dans le moule et cuis 45 minutes." },
+  { t: "Gâteau à la banane", c: 'gateau', g: 'd', m: 50, n: 1, i: "bananes bien mûres, œufs, sucre, farine, beurre fondu, levure", d: "Écrase les bananes, mélange avec le reste et cuis environ 40 minutes à 170 °C." },
+  { t: "Gâteau aux pommes", c: 'gateau', g: 'd', m: 55, n: 1, e: 1, i: "pommes, œufs, sucre, farine, beurre, levure, cannelle", d: "Coupe les pommes en dés, incorpore à la pâte et cuis 40 minutes à 180 °C." },
+  { t: "Gâteau magique à la vanille", c: 'gateau', g: 'd', m: 75, n: 3, i: "œufs, sucre, beurre, farine, lait, vanille", d: "Monte les blancs en neige, incorpore délicatement, cuis à basse température : trois couches se forment toutes seules." },
+  { t: "Gâteau nuage (au citron)", c: 'gateau', g: 'd', m: 50, n: 2, i: "œufs, sucre, farine, citron, yaourt", d: "Monte les blancs en neige et incorpore-les à l'appareil pour un gâteau très léger." },
+  { t: "Brownie", c: 'gateau', g: 'd', m: 30, n: 1, e: 1, i: "chocolat, beurre, sucre, œufs, farine, noix en option", d: "Mélange, verse dans un moule et cuis 20 minutes à 180 °C : l'intérieur doit rester moelleux." },
+  { t: "Gâteau d'anniversaire en couches", c: 'gateau', g: 'd', m: 120, n: 3, i: "génoise ou gâteau au yaourt, crème au beurre ou chantilly, décorations", d: "Fais cuire deux gâteaux ronds, coupe-les en deux, garnis de crème et décore. Laisse refroidir complètement avant." },
+  /* mijotés */
+  { t: "Blanquette de veau", c: 'mijote', g: 's', m: 120, n: 3, i: "veau, carottes, oignons, crème, champignons, riz", d: "Fais mijoter la viande avec les légumes, puis lie la sauce avec la crème et un jaune d'œuf." },
+  { t: "Pot-au-feu", c: 'mijote', g: 's', m: 180, n: 2, i: "bœuf à bouillir, carottes, poireaux, navets, pommes de terre", d: "Plonge la viande dans l'eau froide, écume, ajoute les légumes en cours de cuisson." },
+  { t: "Bœuf bourguignon", c: 'mijote', g: 's', m: 180, n: 3, i: "bœuf, vin rouge, lardons, carottes, oignons, champignons", d: "Saisis la viande, mouille avec le vin et laisse mijoter longuement à feu doux." },
+  { t: "Poulet basquaise", c: 'mijote', g: 's', m: 60, n: 2, i: "poulet, poivrons, tomates, oignons, ail, piment doux", d: "Fais dorer le poulet puis mijoter avec les poivrons et les tomates." },
+  { t: "Chili con carne doux", c: 'mijote', g: 's', m: 60, n: 2, i: "viande hachée, haricots rouges, tomates, oignon, maïs", d: "Fais revenir la viande, ajoute le reste et laisse mijoter 30 minutes. Sers avec du riz." },
+  { t: "Curry de légumes au lait de coco", c: 'mijote', g: 's', m: 40, n: 1, i: "légumes de saison, lait de coco, curry doux, riz", d: "Fais revenir les légumes, ajoute le lait de coco et le curry, mijote 20 minutes." },
+  { t: "Lasagnes maison", c: 'mijote', g: 's', m: 90, n: 3, e: 1, i: "feuilles de lasagne, viande hachée, sauce tomate, béchamel, fromage", d: "Alterne couches de pâtes, viande et béchamel, couvre de fromage et cuis 40 minutes à 180 °C." },
+  { t: "Daube de bœuf à la provençale", c: 'mijote', g: 's', m: 180, n: 3, i: "bœuf, vin rouge, olives, carottes, herbes de Provence", d: "Laisse mariner puis mijote doucement plusieurs heures. Meilleure le lendemain." },
+  { t: "Soupe de lentilles corail", c: 'mijote', g: 's', m: 30, n: 1, i: "lentilles corail, carottes, oignon, bouillon, cumin", d: "Cuis tout ensemble 20 minutes puis mixe. Sers avec un filet de crème." },
+  { t: "Hachis parmentier", c: 'mijote', g: 's', m: 60, n: 2, e: 1, i: "viande hachée, oignon, purée de pommes de terre, fromage", d: "Dispose la viande cuite au fond d'un plat, recouvre de purée et gratine." },
+  /* goûters */
+  { t: "Cookies aux pépites de chocolat", c: 'gouter', g: 'd', m: 25, n: 1, e: 1, i: "beurre, sucre, œuf, farine, pépites de chocolat, levure", d: "Mélange, forme des boules, enfourne 10 à 12 minutes à 180 °C." },
+  { t: "Crêpes", c: 'gouter', g: 'd', m: 30, n: 1, e: 1, i: "farine, œufs, lait, une pincée de sel, un peu de beurre fondu", d: "Mélange sans grumeaux, laisse reposer, cuis dans une poêle chaude." },
+  { t: "Muffins aux myrtilles", c: 'gouter', g: 'd', m: 35, n: 1, e: 1, i: "farine, sucre, œuf, lait, huile, levure, myrtilles", d: "Mélange secs et liquides, ajoute les myrtilles, cuis 20 minutes à 180 °C." },
+  { t: "Madeleines", c: 'gouter', g: 'd', m: 30, n: 2, i: "œufs, sucre, farine, beurre fondu, levure, citron", d: "Laisse reposer la pâte au frais, remplis les moules et cuis 10 minutes à 200 °C." },
+  { t: "Smoothie banane-fraise", c: 'gouter', g: 'd', m: 5, n: 1, e: 1, i: "banane, fraises, lait ou yaourt", d: "Mixe le tout. Ajoute des glaçons s'il fait chaud." },
+  { t: "Pancakes moelleux", c: 'gouter', g: 'd', m: 20, n: 1, e: 1, i: "farine, lait, œuf, sucre, levure", d: "Verse de petites louches de pâte dans une poêle et retourne quand des bulles apparaissent." },
+  { t: "Sablés à la cannelle", c: 'gouter', g: 'd', m: 40, n: 1, e: 1, i: "beurre, sucre, farine, cannelle", d: "Forme une pâte, étale, découpe avec des emporte-pièces et cuis 12 minutes à 170 °C." },
+  { t: "Gaufres", c: 'gouter', g: 'd', m: 25, n: 1, e: 1, i: "farine, œufs, lait, beurre fondu, sucre, levure", d: "Prépare la pâte et cuis dans le gaufrier. Sers avec du sucre glace ou du chocolat." },
+  { t: "Compote maison", c: 'gouter', g: 'd', m: 25, n: 1, e: 1, i: "pommes, un peu d'eau, cannelle", d: "Épluche, coupe, cuis doucement 15 à 20 minutes puis écrase." },
+  /* petit-déjeuner */
+  { t: "Porridge aux fruits", c: 'matin', g: 'd', m: 10, n: 1, i: "flocons d'avoine, lait, fruits, miel (pas avant 1 an)", d: "Chauffe les flocons dans le lait en remuant et garnis de fruits." },
+  { t: "Pain perdu", c: 'matin', g: 'd', m: 15, n: 1, e: 1, i: "pain rassis, œufs, lait, sucre", d: "Trempe le pain dans le mélange œufs-lait et fais-le dorer à la poêle." },
+  { t: "Tartines salées œuf-avocat", c: 'matin', g: 's', m: 10, n: 1, i: "pain, avocat, œuf, sel, poivre", d: "Écrase l'avocat sur le pain grillé et ajoute un œuf au plat." },
+  { t: "Bowl de yaourt et granola", c: 'matin', g: 'd', m: 5, n: 1, e: 1, i: "yaourt, granola, fruits frais", d: "Alterne yaourt, granola et fruits dans un bol." },
+  /* sans four */
+  { t: "Mousse au chocolat", c: 'sans4', g: 'd', m: 30, n: 2, e: 1, i: "chocolat noir, œufs, une pincée de sel", d: "Fais fondre le chocolat, ajoute les jaunes puis les blancs montés en neige. Repos 3 heures au frais." },
+  { t: "Tiramisu aux fraises", c: 'sans4', g: 'd', m: 30, n: 2, i: "mascarpone, œufs, sucre, biscuits cuillère, fraises", d: "Alterne biscuits, crème au mascarpone et fraises. Repos au frais plusieurs heures." },
+  { t: "Cheesecake sans cuisson", c: 'sans4', g: 'd', m: 30, n: 2, i: "biscuits, beurre, fromage frais, crème, sucre, fruits rouges", d: "Écrase les biscuits avec le beurre au fond du moule, couvre de crème au fromage et laisse prendre au frigo." },
+  { t: "Salade de fruits", c: 'sans4', g: 'd', m: 15, n: 1, e: 1, i: "fruits de saison, un peu de jus d'orange", d: "Coupe les fruits en morceaux et arrose de jus. Les enfants adorent éplucher." },
+  { t: "Boules coco", c: 'sans4', g: 'd', m: 20, n: 1, e: 1, i: "noix de coco râpée, lait concentré sucré", d: "Mélange, forme des boules et roule-les dans de la noix de coco. Repos au frais." },
+  { t: "Riz au lait", c: 'sans4', g: 'd', m: 45, n: 1, i: "riz rond, lait, sucre, vanille", d: "Fais cuire le riz dans le lait en remuant souvent, environ 30 à 35 minutes." },
+  /* soupes et entrées */
+  { t: "Velouté de potimarron", c: 'soupe', g: 's', m: 35, n: 1, i: "potimarron, oignon, bouillon, crème", d: "Fais cuire les morceaux dans le bouillon puis mixe." },
+  { t: "Soupe de légumes verts", c: 'soupe', g: 's', m: 30, n: 1, i: "courgette, poireau, petits pois, pomme de terre", d: "Cuis tous les légumes dans l'eau et mixe avec un peu de fromage frais." },
+  { t: "Salade de pâtes colorée", c: 'soupe', g: 's', m: 20, n: 1, e: 1, i: "pâtes, maïs, tomates cerises, thon, mayonnaise légère", d: "Refroidis les pâtes et mélange avec le reste. Idéal pour un pique-nique." },
+  { t: "Cake salé jambon-olives", c: 'soupe', g: 's', m: 60, n: 1, i: "farine, œufs, huile, lait, jambon, olives, fromage, levure", d: "Mélange et cuis 40 minutes à 180 °C. Se mange chaud ou froid." },
+  { t: "Œufs mimosa", c: 'soupe', g: 's', m: 20, n: 1, i: "œufs durs, mayonnaise, ciboulette", d: "Coupe les œufs en deux, mélange les jaunes avec la mayonnaise et remplis les blancs." },
+  /* avec les enfants */
+  { t: "Pizza maison avec la pâte des enfants", c: 'enfant', g: 's', m: 40, n: 2, e: 1, i: "farine, levure, eau, sauce tomate, fromage, garnitures", d: "Pétris la pâte avec les enfants, étale, garnis et cuis 12 minutes à 220 °C." },
+  { t: "Brochettes de fruits", c: 'enfant', g: 'd', m: 10, n: 1, e: 1, i: "fruits variés, piques en bois", d: "Les enfants enfilent les fruits en alternant les couleurs. Retire les pointes des piques pour les petits." },
+  { t: "Sablés à décorer", c: 'enfant', g: 'd', m: 45, n: 1, e: 1, i: "pâte sablée, glaçage, bonbons ou vermicelles", d: "Découpe des formes, cuis et laisse les enfants décorer à leur façon." },
+  { t: "Pâte à crêpes en bouteille", c: 'enfant', g: 'd', m: 20, n: 1, e: 1, i: "farine, œufs, lait", d: "Verse la pâte dans une bouteille propre et fais des dessins dans la poêle." },
+  { t: "Mini-pizzas de pain de mie", c: 'enfant', g: 's', m: 20, n: 1, e: 1, i: "pain de mie, sauce tomate, fromage, jambon", d: "Garnis les tranches et passe-les 8 minutes au four. Parfait pour débuter en cuisine." },
+  { t: "Truffes en chocolat", c: 'enfant', g: 'd', m: 30, n: 1, e: 1, i: "chocolat, crème, cacao en poudre", d: "Fais fondre chocolat et crème, laisse prendre, forme des boules et roule-les dans le cacao." }
+];
