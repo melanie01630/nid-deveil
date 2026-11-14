@@ -95,7 +95,7 @@ function buildIndex() {
 }
 function searchAll(q) {
   if (!INDEX) INDEX = buildIndex();
-  const adult = (typeof ADULT_OK !== 'undefined' && ADULT_OK) ? (window.ADULTES || []).map(f => mk('Adulte', '🔞', f.titre, f.note, f.titre + ' ' + f.note + ' ' + f.g, () => revealSheet('Entre adultes', f.titre, f.note, yt(f.titre + ' bande annonce')))) : [];
+  const adult = (typeof ADULT_OK !== 'undefined' && ADULT_OK) ? (window.ADULTES || []).map(f => mk('Adulte', '🍷', f.titre, f.note, f.titre + ' ' + f.note + ' ' + f.g, () => revealSheet('Entre adultes', f.titre, f.note, yt(f.titre + ' bande annonce')))) : [];
   const r = INDEX.concat(adult).map(it => [fzScore(q, it), it]).filter(x => x[0] > 0).sort((a, b) => b[0] - a[0]);
   const top = r.length ? r[0][0] : 0;
   return r.filter(x => x[0] >= top * 0.45).slice(0, 40).map(x => x[1]);
@@ -614,6 +614,7 @@ const EMO = [['tous les ages', '🌈'], ['toutes les cat', '🌈'], ['toute la f
   ['0 2 ans', '🍼'], ['3 5 ans', '🧸'], ['6 8 ans', '🎒'], ['9 14 ans', '🛹'], ['3 6 ans', '🧸'], ['7 10 ans', '🎒'], ['11 ans', '🛹'], ['entre mams', '👭'], ['3 ans', '🧸'], ['5 ans', '🎈'], ['7 ans', '🎒'], ['10 ans', '🛹'], ['13 ans', '🎧'],
   ['histoires audio', '🎧'], ['dessin et arts', '🎨'], ['dessin', '✏️'], ['peinture', '🎨'], ['construction', '🧱'], ['bricolage', '✂️'], ['cuisine', '🍳'], ['nature', '🌿'], ['science', '🔬'], ['jeux', '🎲'], ['bouger', '🤸'], ['tout petits', '🍼'], ['au calme', '🧘'], ['calme', '🧘'], ['musique', '🎵'], ['lire', '📚'], ['en famille', '👨‍👩‍👧'], ['grands', '🧑‍🎓'], ['fetes', '🎉'], ['3 minutes', '⏱️'], ['creation', '🧵'], ['creatif', '🎨'], ['pleut', '☔'], ['soir', '🌙'],
   ['netflix', '📺'], ['disney', '🏰'], ['prime', '📦'], ['canal', '📡'], ['apple tv', '🍎'], ['hbo', '🎞️'], ['max', '🎞️'], ['paramount', '⛰️'], ['france tv', '🇫🇷'],
+  ['entre adultes', '🍷'], ['tous les genres', '🌈'], ['rire et se detendre', '😂'], ['romance', '💕'], ['emotion', '🥹'], ['suspense', '🔍'], ['grand spectacle', '💥'], ['films', '🎬'], ['series', '📺'],
   ['nouveautes', '🆕'], ['plateformes', '📺'], ['au cinema', '🍿'], ['classiques', '🎞️'], ['cinemas', '🍿'], ['cinema', '🍿'], ['tout', '🌈'],
   ['parcs d attractions', '🎢'], ['parcs et aires', '🛝'], ['kid parks', '🎈'], ['zoos', '🦁'], ['musees', '🖼️'], ['mediatheques', '📚'], ['piscines', '🏊'], ['judo', '🥋'], ['foot', '⚽'], ['basket', '🏀'], ['natation', '🏊'], ['danse', '💃'], ['gym', '🤸'], ['tennis', '🎾'], ['equitation', '🐴'], ['arts martiaux', '🥋'], ['theatre', '🎭'], ['eveil bebe', '🍼'], ['centres de loisirs', '🏕️'], ['sorties enfants', '🎈'], ['week end', '📅'], ['agenda', '📅'], ['spectacles', '🎪'], ['marches de noel', '🎄'], ['ateliers', '🧑‍🎨'],
   ['youtube', '▶️'], ['tiktok', '🎶'],

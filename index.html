@@ -831,7 +831,21 @@ $('#j-add').onclick = () => {
 renderJournal();
 
 /* =================== CINÉMA =================== */
-const C = { age: 3, mode: 'new' };
+const C = { age: 3, mode: 'new', kind: 'all', ag: 'all' };
+/* Tri du plus récent au plus ancien, rangé en Films puis Séries */
+const sortKey = (x) => x.d || String(x.an || '9999');
+const isSerie = (x) => x.type === 'serie' || /s[ée]rie/i.test(x.k || '');
+const yearTxt = (x) => x.an ? ` <span style="font-weight:400;color:var(--muted);font-size:.8em">${esc(x.an)}</span>` : '';
+function kindChips() {
+  return `<div class="chips" style="flex-wrap:wrap;margin-bottom:6px">${[['all','Tout'],['film','Films'],['serie','Séries']].map(([v, l]) => `<button class="chip ${C.kind === v ? 'on' : ''}" data-kd="${v}">${l}</button>`).join('')}</div>`;
+}
+function bySections(list, card, empty) {
+  list = list.slice().sort((a, b) => sortKey(b).localeCompare(sortKey(a)));
+  const films = list.filter(x => !isSerie(x)), series = list.filter(isSerie);
+  const part = (t, l) => l.length ? `<h3 class="h3" style="margin:16px 0 8px">${t} <span style="font-weight:400;color:var(--muted);font-size:.75em">(${l.length})</span></h3>` + l.map(card).join('') : '';
+  const html = (C.kind !== 'serie' ? part('🎬 Films', films) : '') + (C.kind !== 'film' ? part('📺 Séries', series) : '');
+  return html || `<p class="empty">${empty}</p>`;
+}
 const MOIS = ['janvier','février','mars','avril','mai','juin','juillet','août','septembre','octobre','novembre','décembre'];
 const fDate = (iso) => { const [y, m, d] = iso.split('-').map(Number); return d + ' ' + MOIS[m - 1]; };
 const PUB = { famille: 'Famille', ado: 'Ados, vérifie l\'âge', adulte: 'Adultes' };
@@ -842,10 +856,10 @@ function nouvList(f) {
   const lim = new Date(Date.now() - 10 * 864e5).toISOString().slice(0, 10);
   const ous = ['all'].concat([...new Set(NOUV.map(n => n.ou))]);
   const chips = `<div class="chips" style="flex-wrap:wrap;margin-bottom:12px">${ous.map(o => `<button class="chip ${f === o ? 'on' : ''}" data-nf="${esc(o)}">${o === 'all' ? 'Tout' : esc(o)}</button>`).join('')}</div>`;
-  const list = NOUV.filter(n => (f === 'all' || n.ou === f) && n.d >= lim && (n.pub !== 'adulte' || ADULT_OK)).sort((a, b) => a.d.localeCompare(b.d));
+  const list = NOUV.filter(n => (f === 'all' || n.ou === f) && n.d >= lim && (n.pub !== 'adulte' || ADULT_OK));
   const src = '<div class="warn" style="margin-top:14px"><b>Sources</b><br>' + NOUV_SOURCES.map(([l, u]) => `<a href="${u}" target="_blank" rel="noopener noreferrer">${esc(l)}</a>`).join('<br>') + '</div>';
   setTimeout(() => $$('[data-nf]').forEach(b => b.onclick = () => { C.nf = b.dataset.nf; renderCine(); }), 0);
-  return chips + (list.map(nouvCard).join('') || '<p class="empty">Rien de relevé pour ce filtre.</p>') + src + (ADULT_OK ? '' : '<p class="sub" style="margin-top:10px">Les titres pour adultes s\'affichent dans « Entre adultes ».</p>');
+  return chips + bySections(list, nouvCard, 'Rien de relevé pour ce filtre.') + src + (ADULT_OK ? '' : '<p class="sub" style="margin-top:10px">Les titres pour adultes s\'affichent dans « Entre adultes ».</p>');
 }
 /* Espace adultes : simple confirmation d'âge, sans code */
 let ADULT_OK = false;
@@ -862,7 +876,7 @@ function renderCine() {
   $$('#platforms .chip').forEach(b => b.onclick = () => { const id = b.dataset.p; S.platforms = S.platforms.includes(id) ? S.platforms.filter(x => x !== id) : S.platforms.concat(id); save(); renderCine(); renderNest(); });
   $('#c-age').innerHTML = [[3,'3 ans'],[5,'5 ans'],[7,'7 ans'],[10,'10 ans'],[13,'13 ans et +']].map(([v, l]) => `<button class="chip ${C.age === v ? 'on' : ''}" data-a="${v}">${l}</button>`).join('');
   $$('#c-age .chip').forEach(b => b.onclick = () => { C.age = +b.dataset.a; renderCine(); });
-  $('#c-mode').innerHTML = [['new','Nouveautés'],['mine','Sur mes plateformes'],['cinema','Au cinéma'],['classics','Classiques à chercher'],['adult','Entre adultes 🔞']].map(([v, l]) => `<button class="chip ${C.mode === v ? 'on' : ''}" data-m="${v}">${l}</button>`).join('');
+  $('#c-mode').innerHTML = [['new','Nouveautés'],['mine','Sur mes plateformes'],['cinema','Au cinéma'],['classics','Classiques à chercher'],['adult','Entre adultes']].map(([v, l]) => `<button class="chip ${C.mode === v ? 'on' : ''}" data-m="${v}">${l}</button>`).join('');
   $$('#c-mode .chip').forEach(b => b.onclick = () => { if (b.dataset.m === 'adult' && !ADULT_OK) return askAdultPin(); C.mode = b.dataset.m; renderCine(); });
   $('#verif').innerHTML = `Titres relevés le <b>${VERIFIE_LE}</b> dans les programmes de novembre 2026. Les catalogues changent souvent : vérifie toujours sur ta plateforme. L'âge est indicatif, fie-toi à celui affiché par la plateforme.`;
   if (C.mode === 'adult' && !ADULT_OK) C.mode = 'mine';
@@ -876,26 +890,31 @@ function renderCine() {
   } else if (C.mode === 'adult') {
     $('#verif').innerHTML = 'Une soirée sans enfants : sélection de films et séries très connus. La plateforme n\'est pas garantie, cherche le titre dans ton abonnement. Vérifie l\'interdiction d\'âge.';
     if (!window.ADULTES || !ADULTES.length) { html = '<div class="warn">Les films pour adultes sont introuvables sur ton site (fichier data/adultes.js). Envoie à nouveau tout le contenu du zip sur GitHub, dossier « data » compris.</div>'; }
-    else { const gs = [...new Set(ADULTES.map(x => x.g))];
-    html = gs.map(g => `<h3 class="h3" style="margin:16px 0 8px">${esc(g)}</h3>` + ADULTES.filter(x => x.g === g).map(x => `<div class="film"><h4>${esc(x.titre)} <span style=\"font-weight:400;color:var(--muted);font-size:.8em\">${esc(x.an || '')}</span></h4><p>${esc(x.note)}</p><div class="help" style="margin-top:12px"><a class="btn alt small" href="${ytSearch(x.titre + ' bande-annonce VF')}" target="_blank" rel="noopener noreferrer">Bande-annonce</a><button class="btn alt small" data-pf="c:${esc(x.titre)}">Programmer</button></div></div>`).join('')).join(''); }
+    else { const gs = ['all'].concat([...new Set(ADULTES.map(x => x.g))]);
+    if (!gs.includes(C.ag)) C.ag = 'all';
+    const gchips = `<div class="chips" style="flex-wrap:wrap;margin-bottom:6px">${gs.map(g => `<button class="chip ${C.ag === g ? 'on' : ''}" data-ag="${esc(g)}">${g === 'all' ? 'Tous les genres' : esc(g)}</button>`).join('')}</div>`;
+    const card = (x) => `<div class="film"><h4>${esc(x.titre)}${yearTxt(x)}</h4><p>${esc(x.note)}</p><div class="tags"><span class="tag type">${isSerie(x) ? 'Série' : 'Film'}</span><span class="tag">${esc(x.g)}</span></div><div class="help" style="margin-top:12px"><a class="btn alt small" href="${ytSearch(x.titre + ' bande-annonce VF')}" target="_blank" rel="noopener noreferrer">Bande-annonce</a><button class="btn alt small" data-pf="c:${esc(x.titre)}">Programmer</button></div></div>`;
+    html = gchips + bySections(ADULTES.filter(x => C.ag === 'all' || x.g === C.ag), card, 'Rien pour ce choix.'); }
   } else if (C.mode === 'mine') {
     if (!S.platforms.length) html = '<p class="empty">Coche au moins une plateforme ci-dessus pour voir les films qui te conviennent.</p>';
     else {
       const l = FILMS.filter(f => f.type !== 'cinema' && ok(f) && f.on.some(p => S.platforms.includes(p)));
-      html = l.map(filmCard).join('') || '<p class="empty">Rien de relevé pour cet âge sur tes plateformes. Essaie « Classiques à chercher ».</p>';
+      html = bySections(l, filmCard, 'Rien de relevé pour cet âge sur tes plateformes. Essaie « Classiques à chercher ».');
     }
   } else if (C.mode === 'cinema') {
     html = FILMS.filter(f => f.type === 'cinema' && ok(f)).map(filmCard).join('') || '<p class="empty">Aucune sortie relevée pour cet âge.</p>';
   } else {
     html = '<div class="warn">Ces classiques sont souvent disponibles, mais on ne peut pas garantir sur quelle plateforme. Cherche leur titre dans ta plateforme ou à la médiathèque.</div>' +
-      CLASSIQUES.filter(ok).map(c => `<div class="film"><h4>${esc(c.titre)}</h4><p>${esc(c.genre)}</p><div class="tags"><span class="tag age">Dès ${c.age} ans</span></div><div class="help" style="margin-top:12px"><a class="btn alt small" href="${ytSearch(c.titre + ' bande-annonce VF')}" target="_blank" rel="noopener noreferrer">Bande-annonce</a><button class="btn alt small" data-pf="c:${esc(c.titre)}">Programmer</button></div></div>`).join('');
+      bySections(CLASSIQUES.filter(ok), c => `<div class="film"><h4>${esc(c.titre)}${yearTxt(c)}</h4><p>${esc(c.genre)}</p><div class="tags"><span class="tag age">Dès ${c.age} ans</span><span class="tag type">${isSerie(c) ? 'Série' : 'Film'}</span></div><div class="help" style="margin-top:12px"><a class="btn alt small" href="${ytSearch(c.titre + ' bande-annonce VF')}" target="_blank" rel="noopener noreferrer">Bande-annonce</a><button class="btn alt small" data-pf="c:${esc(c.titre)}">Programmer</button></div></div>`, 'Rien pour cet âge.');
   }
-  $('#films').innerHTML = html;
+  $('#films').innerHTML = (C.mode === 'cinema' ? '' : kindChips()) + html;
+  $$('[data-kd]').forEach(b => b.onclick = () => { C.kind = b.dataset.kd; renderCine(); });
+  $$('[data-ag]').forEach(b => b.onclick = () => { C.ag = b.dataset.ag; renderCine(); });
   $$('[data-pf]').forEach(b => b.onclick = () => pickDay({ k: 'f', v: b.dataset.pf.replace(/^c:/, '') }));
 }
 function filmCard(f) {
   const plats = f.on.map(id => PLATEFORMES.find(p => p.id === id)).filter(Boolean);
-  return `<div class="film"><h4>${esc(f.titre)}</h4><p>${esc(f.genre)} · ${esc(f.note)}</p>
+  return `<div class="film"><h4>${esc(f.titre)}${yearTxt(f)}</h4><p>${esc(f.genre)} · ${esc(f.note)}</p>
     <div class="tags"><span class="tag age">Dès ${f.age} ans</span><span class="tag type">${f.type === 'serie' ? 'Série' : f.type === 'cinema' ? 'Au cinéma' : 'Film'}</span>${plats.map(p => `<span class="tag" style="--c:${p.couleur}">${p.nom}</span>`).join('')}</div>
     <div class="help" style="margin-top:12px"><a class="btn alt small" href="${ytSearch(f.titre + ' bande-annonce VF')}" target="_blank" rel="noopener noreferrer">Bande-annonce</a><button class="btn alt small" data-pf="${esc(f.titre)}">Programmer</button></div></div>`;
 }
