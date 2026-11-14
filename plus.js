@@ -241,7 +241,7 @@ function renderPlus() {
       <p class="sub">Tout ce qui fait vivre Mams. On ajoute des choses régulièrement.</p>
       <button class="searchbar" id="pl-search" type="button"><span>🔎</span> Chercher dans toute l'appli…</button>
       <div style="margin:10px 0"><span class="ptschip">⭐ ${S.pts} point${S.pts > 1 ? 's' : ''} · ${LEVELS[level()][1]}</span></div>
-      <div class="bubbles">${PLUS_PAGES.map(k => `<button class="bub" data-pg="${k}" style="--t:${PAGES[k][3]};--pat:${motif(k)}"><span class="e">${PAGES[k][0]}</span><b>${PAGES[k][1]}</b><small>${PAGES[k][2]}</small></button>`).join('')}</div><p class="vtag">Version de l'appli : 55</p></div>`;
+      <div class="bubbles">${PLUS_PAGES.map(k => `<button class="bub" data-pg="${k}" style="--t:${PAGES[k][3]};--pat:${motif(k)}"><span class="e">${PAGES[k][0]}</span><b>${PAGES[k][1]}</b><small>${PAGES[k][2]}</small></button>`).join('')}</div><p class="vtag">Version de l'appli : 56</p></div>`;
     $('#pl-search').onclick = () => openSearch();
     $$('[data-pg]', el).forEach(b => b.onclick = () => { b.classList.add('pop'); setTimeout(() => { P.page = b.dataset.pg; renderPlus(); window.scrollTo(0, 0); }, 190); });
     return;
@@ -261,20 +261,25 @@ function revealSheet(kind, q, r, link) {
 }
 function santeSheet(m) {
   openSheet(`<div class="kicker">Santé</div><h3 style="margin-top:4px">${esc(m.n)}</h3>
+    ${(window.SANTE_PLUS && SANTE_PLUS[m.n]) ? `<h5>Comprendre</h5><p class="lead">${esc(SANTE_PLUS[m.n][0])}</p>` : ''}
     <h5>Les signes</h5><p class="lead">${esc(m.s)}</p><h5>Que faire</h5><p class="lead">${esc(m.f)}</p>
-    <h5>Quand consulter</h5><p class="lead">${esc(m.u)}</p><div class="warnbox">${esc(SANTE_ALERTE)}</div>`);
+    ${(window.SANTE_PLUS && SANTE_PLUS[m.n]) ? `<h5>Pour le soulager et le réconforter</h5><p class="lead">${esc(SANTE_PLUS[m.n][1])}</p>` : ''}
+    <h5>Quand consulter</h5><p class="lead">${esc(m.u)}</p>
+    ${(window.SANTE_PLUS && SANTE_PLUS[m.n]) ? `<h5>Bon à savoir</h5><p class="lead">${esc(SANTE_PLUS[m.n][2])}</p>` : ''}<div class="warnbox">${esc(SANTE_ALERTE)}</div>`);
 }
 function astuceSheet(m) {
-  openSheet(`<div class="kicker">Astuce de grand-mère</div><h3 style="margin-top:4px">${esc(m.n)}</h3><p class="lead">${esc(m.t)}</p>${m.w ? `<div class="warnbox">À savoir : ${esc(m.w)}</div>` : ''}<p class="note">Un coup de pouce du quotidien, pas un médicament. Si ça ne passe pas, demande un avis médical.</p>`);
+  openSheet(`<div class="kicker">Astuce de grand-mère</div><h3 style="margin-top:4px">${esc(m.n)}</h3><p class="lead">${esc(m.t)}</p>${(window.ASTUCE_PLUS && ASTUCE_PLUS[m.n]) ? `<h5>Comment faire</h5><p class="lead">${esc(ASTUCE_PLUS[m.n][0])}</p><h5>Pourquoi ça marche</h5><p class="lead">${esc(ASTUCE_PLUS[m.n][1])}</p>` : ''}${m.w ? `<div class="warnbox">À savoir : ${esc(m.w)}</div>` : ''}<p class="note">Un coup de pouce du quotidien, pas un médicament. Si ça ne passe pas, demande un avis médical.</p>`);
 }
 function openRecette(n) {
   const r = RECETTES[n]; const q = r.t + ' recette';
   openSheet(`<div class="kicker">${esc(RECETTES_CATS[r.c])} · ${r.g === 'd' ? 'Sucré' : 'Salé'}</div><h3 style="margin-top:4px">${esc(r.t)}</h3>
     <div class="meta" style="margin-top:8px"><span>${r.m} min</span><span>${['Facile', 'Moyen', 'Plus long'][r.n - 1]}</span>${r.e ? '<span>Avec les enfants</span>' : ''}</div>
     <h5>Ingrédients</h5><p class="lead">${esc(r.i)}</p><h5>En deux mots</h5><p class="lead">${esc(r.d)}</p>
+    ${(window.RECETTE_PLUS && RECETTE_PLUS[r.t]) ? `<h5>Pas à pas (touche pour cocher)</h5><ol class="steps">${RECETTE_PLUS[r.t][0].map(x => `<li>${esc(x)}</li>`).join('')}</ol><div class="warnbox" style="background:#FFF4D6;border-color:#E0C46C"><b>L'astuce de Mams</b><br>${esc(RECETTE_PLUS[r.t][1])}</div><h5>Les enfants peuvent</h5><p class="lead">${esc(RECETTE_PLUS[r.t][2])}</p>` : ''}
     <h5>Voir comment faire</h5><div class="row2">${ext('YouTube', yt(q + ' facile'), false)}${ext('TikTok', tt(q))}${ext('Images', gi(r.t))}</div>
     <p class="note">Les boutons ouvrent une recherche de vidéos. Vérifie les quantités sur la vidéo choisie.</p>
     <button class="btn sage" id="rc-done" style="margin-top:14px">Je l'ai faite</button>`);
+  $$('.steps li').forEach(li => li.onclick = () => li.classList.toggle('ok'));
   $('#rc-done').onclick = () => { closeSheet(); if (!addPts(5, 'recette réalisée', 'rec' + n)) toast('Déjà comptée, bravo !'); };
 }
 function annivSheet(n) {

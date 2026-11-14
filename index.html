@@ -430,6 +430,10 @@ nav.bar-nav{position:fixed;left:0;right:0;bottom:0;max-width:560px;margin:auto;b
 <script src="data/plus-fetes.js"></script>
 <script src="data/schemas.js"></script>
 <script src="data/photos.js"></script>
+<script src="data/enrichi-1.js"></script>
+<script src="data/enrichi-2.js"></script>
+<script src="data/enrichi-sante.js"></script>
+<script src="data/enrichi-recettes.js"></script>
 <script>
 /* =================== OUTILS =================== */
 const $ = (s, r = document) => r.querySelector(s);
@@ -580,8 +584,10 @@ function openAct(i) {
     <h3 style="margin-top:4px">${esc(a.title)}</h3>
     <div class="meta" style="margin-top:8px"><span>${esc(a.time)}</span><span>${LVL[a.level - 1] || ''}</span><span>${a.ages[0].split('-')[0]}–${a.ages[a.ages.length - 1].split('-')[1]} ans</span></div>
     <p class="lead">${esc(a.desc)}</p>
+    ${(window.ACT_PLUS && ACT_PLUS[a.title]) ? `<h5>Pourquoi c'est super</h5><p class="lead">${esc(ACT_PLUS[a.title][0])}</p><div class="warnbox" style="background:#FFF4D6;border-color:#E0C46C"><b>L'astuce de Mams</b><br>${esc(ACT_PLUS[a.title][1])}</div>` : ''}
     <h5>Matériel</h5><ul>${a.material.map(m => `<li>${esc(m)}</li>`).join('')}</ul>
     <h5>Étapes (touche pour cocher)</h5><ol class="steps">${a.steps.map(s => `<li>${esc(s)}</li>`).join('')}</ol>
+    ${(window.ACT_PLUS && ACT_PLUS[a.title]) ? `<h5>Pour varier</h5><p class="lead">${esc(ACT_PLUS[a.title][2])}</p>` : ''}
     ${(window.SCHEMAS && SCHEMAS[a.title]) ? `<h5>Les étapes en dessins</h5><p class="legend">Ligne bleue pointillée : pli · rouge : découpe · flèche verte : sens du geste</p><div class="schema">${SCHEMAS[a.title].map((st, n) => `<figure><svg viewBox="0 0 100 100" role="img" aria-label="${esc(st[0])}">${st[1]}</svg><figcaption><b>${n + 1}</b>${esc(st[0])}</figcaption></figure>`).join('')}</div>` : ''}
     <h5>${a.cat === 'audio' ? 'Écouter' : 'Voir comment faire'}</h5>
     ${VIDEOS[a.title] ? `<div class="video"><iframe src="https://www.youtube-nocookie.com/embed/${encodeURIComponent(VIDEOS[a.title])}" title="Vidéo explicative" loading="lazy" allowfullscreen></iframe></div>` : ''}
