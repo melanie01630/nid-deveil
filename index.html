@@ -901,11 +901,11 @@ function renderCine() {
   } else if (C.mode === 'adult') {
     $('#verif').innerHTML = 'Une soirée sans enfants : sélection de films et séries très connus. La plateforme n\'est pas garantie, cherche le titre dans ton abonnement. Vérifie l\'interdiction d\'âge.';
     if (!window.ADULTES || !ADULTES.length) { html = '<div class="warn">Les films pour adultes sont introuvables sur ton site (fichier data/adultes.js). Envoie à nouveau tout le contenu du zip sur GitHub, dossier « data » compris.</div>'; }
-    else { const gs = ['all'].concat([...new Set(ADULTES.map(x => x.g))]);
+    else { const gs = ['all', 'nouv'].concat([...new Set(ADULTES.map(x => x.g))]);
     if (!gs.includes(C.ag)) C.ag = 'all';
-    const gchips = `<div class="chips" style="flex-wrap:wrap;margin-bottom:6px">${gs.map(g => `<button class="chip ${C.ag === g ? 'on' : ''}" data-ag="${esc(g)}">${g === 'all' ? 'Tous les genres' : esc(g)}</button>`).join('')}</div>`;
-    const card = (x) => `<div class="film"><h4>${esc(x.titre)}${yearTxt(x)}</h4><p>${esc(x.note)}</p><div class="tags"><span class="tag type">${isSerie(x) ? 'Série' : 'Film'}</span><span class="tag">${esc(x.g)}</span></div><div class="help" style="margin-top:12px"><a class="btn alt small" href="${ytSearch(x.titre + ' bande-annonce VF')}" target="_blank" rel="noopener noreferrer">Bande-annonce</a><button class="btn alt small" data-pf="c:${esc(x.titre)}">Programmer</button></div></div>`;
-    html = gchips + bySections(ADULTES.filter(x => C.ag === 'all' || x.g === C.ag), card, 'Rien pour ce choix.'); }
+    const gchips = `<div class="chips" style="flex-wrap:wrap;margin-bottom:6px">${gs.map(g => `<button class="chip ${C.ag === g ? 'on' : ''}" data-ag="${esc(g)}">${g === 'all' ? 'Tous les genres' : g === 'nouv' ? 'Nouveautés et au cinéma' : esc(g)}</button>`).join('')}</div>`;
+    const card = (x) => `<div class="film"><h4>${esc(x.titre)}${yearTxt(x)}</h4><p>${esc(x.note)}</p><div class="tags">${x.ou ? `<span class="tag age">🆕 ${esc(x.ou)}${x.d ? ' · ' + (x.d > new Date().toISOString().slice(0, 10) ? 'le ' : 'depuis le ') + fDate(x.d) : ''}</span>` : ''}<span class="tag type">${isSerie(x) ? 'Série' : 'Film'}</span><span class="tag">${esc(x.g)}</span></div><div class="help" style="margin-top:12px"><a class="btn alt small" href="${ytSearch(x.titre + ' bande-annonce VF')}" target="_blank" rel="noopener noreferrer">Bande-annonce</a><button class="btn alt small" data-pf="c:${esc(x.titre)}">Programmer</button></div></div>`;
+    html = gchips + bySections(ADULTES.filter(x => C.ag === 'all' || (C.ag === 'nouv' ? x.ou : x.g === C.ag)), card, 'Rien pour ce choix.'); }
   } else if (C.mode === 'mine') {
     if (!S.platforms.length) html = '<p class="empty">Coche au moins une plateforme ci-dessus pour voir les films qui te conviennent.</p>';
     else {

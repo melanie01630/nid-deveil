@@ -3,6 +3,34 @@
    On ne garantit pas la plateforme : cherche le titre dans ton abonnement ou à la médiathèque.
    Vérifie toujours l'interdiction d'âge avant de regarder. */
 window.ADULTES = [
+  /* ===================== NOUVEAUTÉS ET AU CINÉMA (relevées le 15/11/2026) =====================
+     ou : où le voir (Au cinéma, Netflix...) ; d : date de sortie AAAA-MM-JJ. À mettre à jour chaque semaine. */
+  { type: 'film', g: 'Rire et se détendre', titre: "Mon beau-père, ma belle-fille et moi", an: '2026', d: '2026-11-25', ou: 'Au cinéma', note: "La famille Focker revient : Robert De Niro, Ben Stiller et Ariana Grande dans une nouvelle comédie de John Hamburg." },
+  { type: 'film', g: 'Suspense', titre: "Paper Tiger", an: '2026', d: '2026-11-25', ou: 'Au cinéma', note: "Deux frères du Queens se retrouvent pris dans une affaire de la mafia russe. Film de James Gray avec Adam Driver, Miles Teller et Scarlett Johansson." },
+  { type: 'film', g: 'Émotion', titre: "Un bon petit soldat", an: '2026', d: '2026-11-25', ou: 'Au cinéma', note: "Un responsable des ressources humaines se heurte à un management toxique. Film de Stéphane Brizé avec Vincent Lindon." },
+  { type: 'film', g: 'Émotion', titre: "Demain je tombe amoureux", an: '2026', d: '2026-11-25', ou: 'Au cinéma', note: "Fabrice Luchini joue un professeur de lettres de Dieppe qui part à la retraite. Film de Martin Provost." },
+  { type: 'film', g: 'Grand spectacle', titre: "Hunger Games : Lever de soleil sur la moisson", an: '2026', d: '2026-11-18', ou: 'Au cinéma', note: "Le préquel qui raconte les Jeux de Haymitch Abernathy à 16 ans. Plus sombre que les premiers films." },
+  { type: 'film', g: 'Suspense', titre: "Jupiter", an: '2026', d: '2026-11-18', ou: 'Au cinéma', note: "Un président de la République se retrouve enfermé dans le bunker de l'Élysée face à un ultimatum nucléaire. Avec Denis Ménochet, André Dussollier et Reda Kateb." },
+  { type: 'film', g: 'Rire et se détendre', titre: "Camembert", an: '2026', d: '2026-11-18', ou: 'Au cinéma', note: "Un jeu de société déclenche une guerre de famille. Comédie avec Kristin Scott Thomas et Guillermo Guiz." },
+  { type: 'film', g: 'Émotion', titre: "Les Braves", an: '2026', d: '2026-11-18', ou: 'Au cinéma', note: "Un jeune soldat sur le front pendant la Première Guerre mondiale. Film de Lukas Dhont. Scènes de guerre." },
+  { type: 'film', g: 'Rire et se détendre', titre: "Il faut brûler Maman", an: '2026', d: '2026-11-11', ou: 'Au cinéma', note: "Le nouveau Dupontel : trois frères et sœurs d'une famille de pompes funèbres doivent organiser l'enterrement de leur mère en pleine grève. Avec Artus." },
+  { type: 'film', g: 'Grand spectacle', titre: "Comment braquer une banque", an: '2026', d: '2026-11-11', ou: 'Au cinéma', note: "Une bande devient célèbre en diffusant ses braquages en direct. Film d'action de David Leitch avec Nicholas Hoult et Zoë Kravitz." },
+  { type: 'film', g: 'Suspense', titre: "Scrooge", an: '2026', d: '2026-11-11', ou: 'Au cinéma', note: "Le conte de Noël de Dickens transformé en histoire de fantômes, avec Johnny Depp. Plutôt sombre, pas pour les petits." },
+  { type: 'film', g: 'Émotion', titre: "L'Affaire Marie-Claire", an: '2026', d: '2026-11-04', ou: 'Au cinéma', note: "Le procès de Bobigny en 1972, qui a fait avancer le droit à l'avortement. Avec Charlotte Gainsbourg et Cécile de France." },
+  { type: 'film', g: 'Suspense', titre: "Wild Horse Nine", an: '2026', d: '2026-11-04', ou: 'Au cinéma', note: "Deux agents de la CIA sur l'île de Pâques, juste avant le coup d'État au Chili en 1973. Comédie noire de Martin McDonagh avec Sam Rockwell." },
+  { type: 'film', g: 'Grand spectacle', titre: "Godzilla Minus Zero", an: '2026', d: '2026-11-04', ou: 'Au cinéma', note: "Le retour du monstre géant, par le réalisateur de Godzilla Minus One. Spectaculaire en IMAX." },
+  { type: 'film', g: 'Rire et se détendre', titre: "Un bon patron", an: '2026', d: '2026-11-04', ou: 'Au cinéma', note: "Comédie de Philippe de Chauveron avec Didier Bourdon et Catherine Frot." },
+  { type: 'film', g: 'Suspense', titre: "Moulin", an: '2026', d: '2026-10-28', ou: 'Au cinéma', note: "Juin 1943 : Jean Moulin (Gilles Lellouche), chef de la Résistance, est arrêté et interrogé par Klaus Barbie. Scènes de violence." },
+  { type: 'film', g: 'Émotion', titre: "Les Misérables", an: '2026', d: '2026-10-14', ou: 'Au cinéma', note: "La grande fresque de Victor Hugo par Fred Cavayé, avec Vincent Lindon en Jean Valjean et Tahar Rahim en Javert. Près de 3 heures." },
+  { type: 'film', g: 'Grand spectacle', titre: "Quasimodo, l'âme de Paris", an: '2026', d: '2026-11-27', ou: 'Netflix', note: "Dans le Paris de 1830, l'histoire de l'homme qui aurait inspiré Victor Hugo. Avec Vincent Cassel et Benjamin Voisin." },
+  { type: 'film', g: 'Grand spectacle', titre: "The Mosquito Bowl", an: '2026', d: '2026-11-25', ou: 'Netflix', note: "La Seconde Guerre mondiale racontée sous un angle inattendu." },
+  { type: 'film', g: 'Émotion', titre: "Madden", an: '2026', d: '2026-11-18', ou: 'Prime Video', note: "Un film biographique porté par Nicolas Cage." },
+  { type: 'film', g: 'Romance', titre: "Possible Love", an: '2026', d: '2026-11-06', ou: 'Netflix', note: "Le nouveau Lee Chang-dong (Burning), Lion d'argent à Venise : les destins croisés de deux couples. Long (2 h 44) et tout en finesse." },
+  { type: 'film', g: 'Émotion', titre: "Le Théorème de Marguerite", an: '2023', d: '2026-11-01', ou: 'Netflix', note: "Une brillante étudiante en maths voit sa vie bousculée après une erreur, et doit tout réinventer. Touchant et original." },
+  { type: 'serie', g: 'Grand spectacle', titre: "Blade Runner 2099", an: '2026', d: '2026-11-25', ou: 'Prime Video', note: "La nouvelle série de l'univers Blade Runner. Science-fiction." },
+  { type: 'serie', g: 'Suspense', titre: "The Altruists", an: '2026', d: '2026-11-19', ou: 'Netflix', note: "Mini-série sur l'ascension et la chute de la plateforme de cryptomonnaies FTX." },
+  { type: 'serie', g: 'Suspense', titre: "Black Doves, saison 2", an: '2024', d: '2026-11-05', ou: 'Netflix', note: "Le retour de l'espionne jouée par Keira Knightley, dans un Londres plein de dangers." },
+
   /* ===================== FILMS ===================== */
   /* ----- Rire et se détendre ----- */
   { type: 'film', g: 'Rire et se détendre', titre: "Un ours dans le Jura", an: '2025', note: "Un couple au bord de la rupture se retrouve avec deux corps et un gros sac d'argent sur les bras. Comédie noire de Franck Dubosc." },
