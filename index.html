@@ -852,10 +852,10 @@ let ADULT_OK = false;
 function askAdultPin() {
   openSheet(`<h3>Espace adultes</h3>
     <p class="lead">Cet espace propose des films et séries pour les adultes. Il est réservé aux personnes de 18 ans ou plus.</p>
-    <button class="btn" id="p-ok" style="margin-top:14px">J'ai 18 ans ou plus, entrer</button>
-    <button class="btn alt" id="p-no" style="margin-top:10px">Retour</button>`);
-  $('#p-no').onclick = () => closeSheet();
-  $('#p-ok').onclick = () => { ADULT_OK = true; C.mode = 'adult'; closeSheet(); renderCine(); toast('Bienvenue dans l\'espace adultes 🍿'); setTimeout(() => { const v = $('#verif'); if (v) v.scrollIntoView({ behavior: 'smooth', block: 'start' }); }, 150); };
+    <button class="btn" id="ad-ok" style="margin-top:14px">J'ai 18 ans ou plus, entrer</button>
+    <button class="btn alt" id="ad-no" style="margin-top:10px">Retour</button>`);
+  $('#ad-no').onclick = () => closeSheet();
+  $('#ad-ok').onclick = () => { ADULT_OK = true; C.mode = 'adult'; closeSheet(); renderCine(); toast('Bienvenue dans l\'espace adultes 🍿'); setTimeout(() => { const v = $('#verif'); if (v) v.scrollIntoView({ behavior: 'smooth', block: 'start' }); }, 150); };
 }
 function renderCine() {
   $('#platforms').innerHTML = PLATEFORMES.map(p => `<button class="chip ${S.platforms.includes(p.id) ? 'on' : ''}" data-p="${p.id}">${p.nom}</button>`).join('');
