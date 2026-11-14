@@ -25,7 +25,11 @@ const MOIS = ['janvier', 'février', 'mars', 'avril', 'mai', 'juin', 'juillet', 
 const JOURS = ['lun', 'mar', 'mer', 'jeu', 'ven', 'sam', 'dim'];
 const fmtDate = (str) => { const [y, m, d] = str.split('-').map(Number); return d + ' ' + MOIS[m - 1] + ' ' + y; };
 const yt = (q) => 'https://www.youtube.com/results?search_query=' + encodeURIComponent(q);
-const tt = (q) => 'https://www.tiktok.com/search?q=' + encodeURIComponent(q);
+const IS_AND = /Android/i.test(navigator.userAgent);
+const appUrl = (web, pkg) => IS_AND ? 'intent://' + web.replace(/^https?:\/\//, '') + '#Intent;scheme=https;package=' + pkg + ';S.browser_fallback_url=' + encodeURIComponent(web) + ';end' : web;
+const tt = (q) => appUrl('https://www.tiktok.com/search?q=' + encodeURIComponent(q), 'com.zhiliaoapp.musically');
+const ttTag = (h) => appUrl('https://www.tiktok.com/tag/' + encodeURIComponent(h), 'com.zhiliaoapp.musically');
+const ig = (h) => appUrl('https://www.instagram.com/explore/tags/' + encodeURIComponent(h) + '/', 'com.instagram.android');
 const gi = (q) => 'https://www.google.com/search?tbm=isch&safe=active&q=' + encodeURIComponent(q);
 const gs = (q) => 'https://www.google.com/search?tbm=shop&q=' + encodeURIComponent(q);
 const gq = (q) => 'https://www.google.com/search?q=' + encodeURIComponent(q);
@@ -83,6 +87,7 @@ function buildIndex() {
   ASTUCES.forEach(m => I.push(mk('Astuce', '👵', m.n, m.t, m.n + ' ' + m.t, () => astuceSheet(m))));
   ANNIV.forEach((a, n) => I.push(mk('Anniversaire', a.em, a.t, a.ages, a.t + ' ' + a.deco + ' ' + a.jeux.join(' ') + ' ' + a.cadeaux.join(' ') + ' anniversaire gateau cadeau', () => annivSheet(n))));
   EVENTS.forEach((a, n) => I.push(mk('Événement', a.em, a.t, a.ages, a.t + ' ' + a.themes.join(' ') + ' ' + a.prog.join(' ') + ' evenement fete', () => eventSheet(n))));
+  VIDEOS.forEach(v => I.push(mk('Vidéos', '📱', v.t, v.d, v.t + ' ' + v.d + ' ' + v.q + ' ' + v.h + ' video tiktok maman', () => { P.vq = ''; P.vc = 'all'; goPlus('videos'); })));
   BONSPLANS.forEach(b => I.push(mk('Bon plan', '🏷️', b.t, b.d, b.t + ' ' + b.d + ' ' + b.c + ' reduction promo', () => goPlus('bonsplans'))));
   (window.FILMS || []).forEach(f => I.push(mk('Film', '🎬', f.titre, f.genre, f.titre + ' ' + f.genre + ' film cinema serie', () => revealSheet('Film ou série', f.titre, f.genre + ' · ' + f.note, yt(f.titre + ' bande annonce')))));
   (window.NOUV || []).filter(n => n.pub !== 'adulte').forEach(f => I.push(mk('Nouveauté', '🆕', f.t, f.x, f.t + ' ' + f.x + ' ' + f.k + ' nouveaute', () => revealSheet('Nouveauté', f.t, f.x, yt(f.t + ' bande annonce')))));
@@ -197,6 +202,7 @@ animation:pfloat 5s ease-in-out infinite;transition:transform .2s,opacity .2s}
 .joinb .e{font-size:19px;line-height:1}
 .view>.h2+.sub,.pwrap>.h2+.sub{padding-right:92px}
 .joinb:active{transform:scale(.94)}
+.vcard .row2{margin-top:10px}.vkw{margin-top:8px;font-size:13px;color:var(--muted)}.vkw span{font-weight:700;color:var(--ink)}.vcopy{border:1px solid var(--line);background:#fff;border-radius:99px;padding:3px 10px;font:inherit;font-size:12px;margin-left:6px}
 .vtag{font-size:11px;color:var(--muted);text-align:center;margin:18px 0 6px}
 `;
 document.head.appendChild(st);
@@ -204,6 +210,7 @@ document.head.appendChild(st);
 /* ---------- Navigation Plus ---------- */
 const PAGES = {
   jeux: ['😄', 'Jeux et blagues', 'Quiz, énigmes, devinettes', '#F7D9E3'],
+  videos: ['📱', 'Vidéos de mams', 'Quotidien, astuces, buzz', '#F6D9EC'],
   recettes: ['🍳', 'Recettes', 'Rapides, gâteaux, mijotés', '#FCE7C2'],
   anniv: ['🎂', 'Anniversaire', 'Thèmes, gâteaux, cadeaux', '#E9D9F2'],
   events: ['🎈', 'Organiser un événement', 'Pyjama, copains, fêtes', '#D6ECE2'],
@@ -214,14 +221,14 @@ const PAGES = {
   calendrier: ['📅', 'Calendrier', 'Vacances et jours fériés', '#D8EAF0'],
   points: ['⭐', 'Mes points', 'Niveaux et avis', '#F6E6B8']
 };
-const MOTIFS = { jeux: '🎲😂🎈⭐', recettes: '🥕🍰🍳🥖', anniv: '🎈🎁🎉🎂', events: '🎊🎶🏠🎈', sante: '🩹❤️🌡️🧸', astuces: '🍯🧺🌿🧵', bonsplans: '🏷️🛒💶✂️', agenda: '📌🕐✏️📒', calendrier: '📅☀️❄️🎄', points: '⭐✨🏆🌟' };
+const MOTIFS = { videos: '📱🎶❤️😂', jeux: '🎲😂🎈⭐', recettes: '🥕🍰🍳🥖', anniv: '🎈🎁🎉🎂', events: '🎊🎶🏠🎈', sante: '🩹❤️🌡️🧸', astuces: '🍯🧺🌿🧵', bonsplans: '🏷️🛒💶✂️', agenda: '📌🕐✏️📒', calendrier: '📅☀️❄️🎄', points: '⭐✨🏆🌟' };
 function motif(k) {
   const e = [...(MOTIFS[k] || '✨')]; const pos = [[8, 30, -12], [58, 24, 10], [26, 72, 8], [70, 80, -8]];
   const svg = `<svg xmlns="http://www.w3.org/2000/svg" width="96" height="96">${pos.map((p, i) => `<text x="${p[0]}" y="${p[1]}" font-size="20" transform="rotate(${p[2]} ${p[0]} ${p[1]})">${e[i % e.length]}</text>`).join('')}</svg>`;
   return "url('data:image/svg+xml," + encodeURIComponent(svg).replace(/'/g, '%27') + "')";
 }
-window.PLUS_PAGES = ['jeux', 'recettes', 'anniv', 'events', 'sante', 'astuces', 'bonsplans', 'agenda', 'calendrier', 'points'];
-const P = { page: null, jt: 'blagues', ja: 'p', rq: '', rc: 'all', rg: 'all', rm: 'all', sq: '', st: 'maladies', aq: '', ag: 'bobos', nq: '', cy: today.getFullYear(), cm: today.getMonth(), quiz: null };
+window.PLUS_PAGES = ['videos', 'jeux', 'recettes', 'anniv', 'events', 'sante', 'astuces', 'bonsplans', 'agenda', 'calendrier', 'points'];
+const P = { vq: '', vc: 'all', page: null, jt: 'blagues', ja: 'p', rq: '', rc: 'all', rg: 'all', rm: 'all', sq: '', st: 'maladies', aq: '', ag: 'bobos', nq: '', cy: today.getFullYear(), cm: today.getMonth(), quiz: null };
 window.goPlus = function (page) { P.page = page || null; showTab('plus'); };
 const _showTab = showTab;
 showTab = function (t) { if (t === 'plus') renderPlus(); _showTab(t); };
@@ -234,7 +241,7 @@ function renderPlus() {
       <p class="sub">Tout ce qui fait vivre Mams. On ajoute des choses régulièrement.</p>
       <button class="searchbar" id="pl-search" type="button"><span>🔎</span> Chercher dans toute l'appli…</button>
       <div style="margin:10px 0"><span class="ptschip">⭐ ${S.pts} point${S.pts > 1 ? 's' : ''} · ${LEVELS[level()][1]}</span></div>
-      <div class="bubbles">${PLUS_PAGES.map(k => `<button class="bub" data-pg="${k}" style="--t:${PAGES[k][3]};--pat:${motif(k)}"><span class="e">${PAGES[k][0]}</span><b>${PAGES[k][1]}</b><small>${PAGES[k][2]}</small></button>`).join('')}</div><p class="vtag">Version de l'appli : 52</p></div>`;
+      <div class="bubbles">${PLUS_PAGES.map(k => `<button class="bub" data-pg="${k}" style="--t:${PAGES[k][3]};--pat:${motif(k)}"><span class="e">${PAGES[k][0]}</span><b>${PAGES[k][1]}</b><small>${PAGES[k][2]}</small></button>`).join('')}</div><p class="vtag">Version de l'appli : 53</p></div>`;
     $('#pl-search').onclick = () => openSearch();
     $$('[data-pg]', el).forEach(b => b.onclick = () => { b.classList.add('pop'); setTimeout(() => { P.page = b.dataset.pg; renderPlus(); window.scrollTo(0, 0); }, 190); });
     return;
@@ -422,12 +429,36 @@ BIND.astuces = (el) => {
   $$('[data-ag]', el).forEach(b => b.onclick = () => { P.ag = b.dataset.ag; P.aq = ''; rerender(); });
 };
 
+
+/* Vidéos de mams */
+const vcard = (v) => `<div class="qa open vcard"><b>${esc(v.t)}</b><div class="sub" style="margin-top:4px;color:var(--ink)">${esc(v.d)}</div>
+  <div class="vkw">Mot-clé à chercher : <span>#${esc(v.h)}</span> <button class="vcopy" type="button" data-copy="${esc(v.h)}">Copier</button></div>
+  <div class="row2">${ext('TikTok', ttTag(v.h), false)}${ext('Instagram', ig(v.h))}${ext('YouTube', yt(v.y || v.q))}</div></div>`;
+window.videoHome = () => `<div class="sub" style="margin:0 0 10px">Des idées de vidéos de mams, d'astuces et de ce qui cartonne en ce moment. Chaque bouton ouvre ton appli TikTok ou Instagram sur le bon mot-clé.</div>
+  ${VIDEOS.filter(v => v.c === 'buzz').slice(0, 3).map(vcard).join('')}<button class="btn" data-go="videos" style="margin-top:6px">Toutes les vidéos de mams →</button>`;
+window.videoBind = (el) => { $$('[data-go]', el).forEach(b => b.onclick = () => goPlus(b.dataset.go)); $$('[data-copy]', el).forEach(b => b.onclick = () => { const t = '#' + b.dataset.copy; (navigator.clipboard ? navigator.clipboard.writeText(t) : Promise.reject()).then(() => toast('Mot-clé copié : ' + t), () => toast('Cherche : ' + t)); }); };
+RENDER.videos = () => {
+  const q = P.vq.trim(); let l = VIDEOS.filter(v => P.vc === 'all' || v.c === P.vc);
+  if (q) l = VIDEOS.map(v => [fzScore(q, mk('', '', v.t, '', v.t + ' ' + v.d + ' ' + v.q + ' ' + v.h, null)), v]).filter(x => x[0] > 0).sort((a, b) => b[0] - a[0]).map(x => x[1]);
+  return `<h2 class="h2">Vidéos de mams</h2><p class="sub">Mis à jour le ${esc(VIDEOS_DATE)}. Les vidéos viennent de mams de partout : quotidien, astuces, fous rires, ce qui cartonne. Regarde avant de montrer aux enfants.</p>
+  <input id="vq" type="search" placeholder="Cherche : gâteau, ménage, Noël…" value="${esc(P.vq)}" ${INP}>
+  ${chips([['all', 'Tout'], ...Object.entries(VIDEOS_CATS)], P.vc, 'vc')}
+  ${l.map(vcard).join('') || '<p class="empty">Rien de proche. Essaie un autre mot.</p>'}
+  <p class="note">Les boutons ouvrent la recherche dans ton appli (TikTok ou Instagram) si elle est installée, sinon dans ton navigateur. Les vidéos affichées changent chaque jour : ce sont les plus récentes.</p>`;
+};
+BIND.videos = (el) => {
+  $('#vq', el).oninput = (e) => { P.vq = e.target.value; rerender(); setTimeout(() => { const i = $('#vq'); i.focus(); i.setSelectionRange(i.value.length, i.value.length); }, 0); };
+  $$('[data-vc]', el).forEach(b => b.onclick = () => { P.vc = b.dataset.vc; P.vq = ''; rerender(); });
+  videoBind(el);
+};
+
 /* Bons plans */
+const bpUrl = (u) => u.startsWith('TT:') ? tt(u.slice(3)) : u.startsWith('IG:') ? ig(u.slice(3)) : u;
 RENDER.bonsplans = () => {
   const cats = [...new Set(BONSPLANS.map(b => b.c))];
   return `<h2 class="h2">Bons plans du quotidien</h2><p class="sub">Mis à jour : ${esc(BONSPLANS_DATE)}. On met à jour souvent.</p>
   <div class="warnbox" style="background:#FFF4D6;border-color:#E0C46C">Je ne donne aucun code promo inventé : les codes changent vite et certains sites sont trompeurs. Les boutons ouvrent une recherche ou le site officiel. Vérifie toujours les conditions et la date, et ne donne jamais tes coordonnées bancaires à un site inconnu.</div>
-  ${cats.map(c => `<h3 class="h3" style="margin:16px 0 8px">${esc(c)}</h3>${BONSPLANS.filter(b => b.c === c).map(b => `<div class="qa open"><b>${esc(b.t)}</b><div class="sub" style="margin-top:4px">${esc(b.d)}</div><div class="row2">${b.l.map(([l, u]) => ext(l, u)).join('')}</div></div>`).join('')}`).join('')}`;
+  ${cats.map(c => `<h3 class="h3" style="margin:16px 0 8px">${esc(c)}</h3>${BONSPLANS.filter(b => b.c === c).map(b => `<div class="qa open"><b>${esc(b.t)}</b><div class="sub" style="margin-top:4px">${esc(b.d)}</div><div class="row2">${b.l.map(([l, u]) => ext(l, bpUrl(u))).join('')}</div></div>`).join('')}`).join('')}`;
 };
 
 /* Agenda */

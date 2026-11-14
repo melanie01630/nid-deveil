@@ -74,7 +74,7 @@ window.ASTUCES = [
 ];
 
 /* Bons plans du quotidien : on donne OÙ trouver les promotions, jamais de faux codes. */
-window.BONSPLANS_DATE = "novembre 2026";
+window.BONSPLANS_DATE = "14 novembre 2026";
 window.BONSPLANS = [
   { c: "Anti-gaspi", t: "Paniers anti-gaspi", d: "Des paniers de produits frais à petit prix, près de chez toi.", l: [["Too Good To Go", "https://www.toogoodtogo.com/fr"], ["Autres applis anti-gaspi", "https://www.google.com/search?q=application+anti-gaspi+paniers+invendus"]] },
   { c: "Anti-gaspi", t: "Fruits et légumes moches", d: "Des produits abîmés en apparence mais bons, vendus moins cher.", l: [["Rechercher près de chez moi", "https://www.google.com/search?q=fruits+l%C3%A9gumes+moches+pas+cher+pr%C3%A8s+de+chez+moi"]] },
@@ -87,5 +87,11 @@ window.BONSPLANS = [
   { c: "Aides officielles", t: "Les aides de la CAF", d: "Allocations familiales, aides à la garde, prime de rentrée : le simulateur t'aide à voir ce à quoi tu as droit.", l: [["caf.fr", "https://www.caf.fr"]] },
   { c: "Aides officielles", t: "Aides au sport et à la culture des enfants", d: "Des aides existent pour inscrire les enfants au sport ou à des activités : renseigne-toi sur le site officiel.", l: [["Pass'Sport", "https://www.google.com/search?q=Pass%27Sport+allocation+rentr%C3%A9e+sportive+service-public"], ["Service-public.fr", "https://www.service-public.fr"]] },
   { c: "Transports", t: "Cartes de réduction famille", d: "Une carte pour voyager moins cher en famille nombreuse ou avec enfants.", l: [["Cartes famille", "https://www.google.com/search?q=carte+avantages+famille+nombreuse+r%C3%A9duction+train"]] },
-  { c: "Bons plans du jour", t: "Chercher une promo précise", d: "Écris le produit ou la sortie que tu veux et on regarde ce qui existe.", l: [["Promotions et bons plans maman", "https://www.google.com/search?q=bons+plans+maman+promotions+du+moment"]] }
+  { c: "Bons plans du jour", t: "Chercher une promo précise", d: "Écris le produit ou la sortie que tu veux et on regarde ce qui existe.", l: [["Promotions et bons plans maman", "https://www.google.com/search?q=bons+plans+maman+promotions+du+moment"]] },
+  { c: "Bons plans du jour", t: "Black Friday et cadeaux de Noël", d: "Le Black Friday tombe le vendredi 27 novembre 2026. Compare les prix avant d’acheter : une « promo » n’en est pas toujours une.", l: [["Deals du moment (Dealabs)", "https://www.dealabs.com"],["Comparer un prix", "https://www.google.com/search?q=comparateur+prix+jouets+black+friday"],["Idées en vidéo", "TT:black friday bons plans maman"]] },
+  { c: "Bons plans du jour", t: "Dons et trocs gratuits", d: "Des objets, vêtements et jouets donnés par des voisins, gratuitement.", l: [["Geev (dons)", "https://www.geev.com"],["Donner ou recevoir près de chez moi", "https://www.google.com/search?q=dons+gratuits+objets+pr%C3%A8s+de+chez+moi+groupe+troc"]] },
+  { c: "Bons plans du jour", t: "Seconde main : Vinted et Leboncoin", d: "Vêtements, jouets et puériculture à petit prix, vendus par d’autres familles.", l: [["Vinted", "https://www.vinted.fr"],["Leboncoin", "https://www.leboncoin.fr"]] },
+  { c: "Aides officielles", t: "Savoir à quelles aides tu as droit", d: "Le simulateur officiel te montre les aides auxquelles ta famille peut prétendre.", l: [["mes-aides.gouv.fr", "https://mes-aides.gouv.fr"],["service-public.fr", "https://www.service-public.fr"]] },
+  { c: "Bons plans en vidéo", t: "Bons plans de mams sur TikTok", d: "Les mams partagent leurs bonnes affaires, jeux gratuits et astuces courses. Vérifie toujours la date et l’offre.", l: [["Bons plans maman", "TT:bon plan maman"],["Courses pas chères", "TT:courses pas chères famille"],["Promos du moment", "TT:promo du moment famille"]] },
+  { c: "Bons plans en vidéo", t: "Bons plans de mams sur Instagram et YouTube", d: "Pour trouver des idées de sorties et d’économies, vues par d’autres mams.", l: [["Instagram", "IG:bonplanmaman"],["YouTube", "https://www.youtube.com/results?search_query=bons+plans+famille+%C3%A9conomies"]] }
 ];

@@ -334,8 +334,7 @@ nav.bar-nav{position:fixed;left:0;right:0;bottom:0;max-width:560px;margin:auto;b
   <h3 class="h3" style="margin:14px 0 8px">Cette semaine au ciné et en streaming</h3>
   <div id="actu-week"></div>
   <h3 class="h3" style="margin:18px 0 8px">Vidéos et bons plans</h3>
-  <p class="sub" style="margin:0 0 10px">Chaque bouton ouvre une recherche sur YouTube ou TikTok. Regarde avant de montrer aux enfants.</p>
-  <div class="chips" id="actu-search" style="flex-wrap:wrap"></div>
+  <div id="actu-search"></div>
   <h3 class="h3" style="margin:18px 0 8px">À lire</h3>
   <div id="actu-art"></div>
 </main>
@@ -433,6 +432,7 @@ nav.bar-nav{position:fixed;left:0;right:0;bottom:0;max-width:560px;margin:auto;b
 <script src="data/sorties.js"></script>
 <script src="data/nouveautes.js"></script>
 <script src="data/actu.js"></script>
+<script src="data/plus-videos.js"></script>
 <script src="data/plus-jeux.js"></script>
 <script src="data/plus-recettes.js"></script>
 <script src="data/plus-sante.js"></script>
@@ -618,7 +618,7 @@ function renderActu() {
   const lim = new Date(Date.now() - 3 * 864e5).toISOString().slice(0, 10), fin = new Date(Date.now() + 8 * 864e5).toISOString().slice(0, 10);
   const wk = NOUV.filter(n => n.pub !== 'adulte' && n.d >= lim && n.d <= fin).sort((a, b) => a.d.localeCompare(b.d));
   $('#actu-week').innerHTML = wk.map(nouvCard).join('') || '<p class="empty">Rien de relevé pour cette semaine. Regarde l\'onglet Ciné, « Nouveautés ».</p>';
-  $('#actu-search').innerHTML = RECHERCHES.map(([l, p, q]) => `<a class="chip" href="${p === 'tiktok' ? 'https://www.tiktok.com/search?q=' + encodeURIComponent(q) : ytSearch(q)}" target="_blank" rel="noopener noreferrer">${esc(l)} · ${p === 'tiktok' ? 'TikTok' : 'YouTube'}</a>`).join('');
+  $('#actu-search').innerHTML = window.videoHome ? videoHome() : ''; if (window.videoBind) videoBind($('#actu-search'));
   $('#actu-art').innerHTML = ARTICLES.map(a => `<div class="film"><div class="kicker">${esc(a.s)} · ${esc(a.d)}</div><h4>${esc(a.t)}</h4><p>${esc(a.x)}</p><div class="help" style="margin-top:12px"><a class="btn alt small" href="${esc(a.u)}" target="_blank" rel="noopener noreferrer">Lire</a></div></div>`).join('');
 }
 /* =================== SORTIES =================== */
