@@ -855,7 +855,7 @@ function askAdultPin() {
     <button class="btn" id="p-ok" style="margin-top:14px">J'ai 18 ans ou plus, entrer</button>
     <button class="btn alt" id="p-no" style="margin-top:10px">Retour</button>`);
   $('#p-no').onclick = () => closeSheet();
-  $('#p-ok').onclick = () => { ADULT_OK = true; C.mode = 'adult'; closeSheet(); renderCine(); };
+  $('#p-ok').onclick = () => { ADULT_OK = true; C.mode = 'adult'; closeSheet(); renderCine(); toast('Bienvenue dans l\'espace adultes 🍿'); setTimeout(() => { const v = $('#verif'); if (v) v.scrollIntoView({ behavior: 'smooth', block: 'start' }); }, 150); };
 }
 function renderCine() {
   $('#platforms').innerHTML = PLATEFORMES.map(p => `<button class="chip ${S.platforms.includes(p.id) ? 'on' : ''}" data-p="${p.id}">${p.nom}</button>`).join('');
@@ -962,7 +962,6 @@ $('#o-send').onclick = () => {
 function showTab(t) {
   if (t === 'commu') initCommu();
   if (t === 'actu') renderActu();
-  if (t !== 'cine' && typeof ADULT_OK !== 'undefined' && ADULT_OK) { ADULT_OK = false; if (C.mode === 'adult') C.mode = 'mine'; }
   $$('.view').forEach(v => v.classList.toggle('active', v.id === 'view-' + t));
   $$('.tab').forEach(b => b.classList.toggle('on', b.dataset.tab === t));
   window.scrollTo(0, 0);
