@@ -308,11 +308,14 @@ nav.bar-nav{position:fixed;left:0;right:0;bottom:0;max-width:560px;margin:auto;b
 <main id="view-sorties" class="view">
   <h2 class="h2">Sorties</h2>
   <p class="sub">Trouve un lieu près de toi, ou découvre de grandes destinations d'Europe.</p>
-  <div class="panel" style="margin-bottom:14px"><b>Près de toi</b><p class="sub" style="margin:4px 0 10px">Chaque bouton ouvre ta carte avec les lieux autour de toi.</p><div class="chips" id="s-near" style="flex-wrap:wrap"></div></div>
-  <div class="panel" style="margin-bottom:14px"><b>Clubs et activités dans ta ville</b>
-    <p class="sub" style="margin:4px 0 10px">Écris ta ville (ou celle d'à côté), puis choisis un sport ou une activité : ta carte s'ouvre avec les clubs autour.</p>
-    <input id="s-ville" type="text" placeholder="Ta ville ou ton code postal" autocomplete="address-level2" style="width:100%;padding:12px;border-radius:12px;border:1px solid var(--line);font:inherit;margin-bottom:10px">
-    <div class="chips" id="s-clubs" style="flex-wrap:wrap"></div></div>
+  <div class="panel" style="margin-bottom:14px"><b>Où es-tu ?</b>
+    <p class="sub" style="margin:4px 0 10px">Écris ta ville ou ton code postal, ou touche « Me localiser ». Ensuite, choisis ce que tu cherches : la liste des lieux s'affiche ici, du plus proche au plus loin.</p>
+    <div style="display:flex;gap:8px"><input id="s-ville" type="text" placeholder="Ta ville ou ton code postal" autocomplete="address-level2" style="flex:1 1 auto;width:100%;min-width:0;padding:12px;border-radius:12px;border:1px solid var(--line);font:inherit"><button class="btn alt small" id="s-me" style="width:auto;flex:none;padding:12px 14px">📍 Me localiser</button></div>
+    <div id="s-geo" class="sub" style="margin-top:8px"></div></div>
+  <div class="panel" style="margin-bottom:14px"><b>Sorties près de toi</b><div class="chips" id="s-near" style="flex-wrap:wrap;margin-top:10px"></div>
+    <b style="display:block;margin-top:14px">Clubs et activités</b><div class="chips" id="s-clubs" style="flex-wrap:wrap;margin-top:10px"></div>
+    <b style="display:block;margin-top:14px">Idées et agenda</b><div class="chips" id="s-web" style="flex-wrap:wrap;margin-top:10px"></div></div>
+  <div id="s-res"></div>
   <h3 class="h3" style="margin:18px 0 8px">Grandes destinations d'Europe</h3>
   <div class="chips" id="s-type" style="flex-wrap:wrap"></div>
   <div id="s-list"></div>
@@ -622,23 +625,157 @@ function renderActu() {
 const SO = { t: 'all' };
 const mapsUrl = (q) => 'https://www.google.com/maps/search/' + encodeURIComponent(q);
 function renderSorties() {
-  $('#s-near').innerHTML = SORTIES_NEAR.map(([l, q]) => `<a class="chip" href="${mapsUrl(q)}" target="_blank" rel="noopener noreferrer">${esc(l)}</a>`).join('');
   $('#s-type').innerHTML = [['all','Tout']].concat(SORTIES_TYPES).map(([v, l]) => `<button class="chip ${SO.t === v ? 'on' : ''}" data-t="${v}">${esc(l)}</button>`).join('');
   $$('#s-type .chip').forEach(b => b.onclick = () => { SO.t = b.dataset.t; renderSorties(); });
   const lab = Object.fromEntries(SORTIES_TYPES);
   $('#s-list').innerHTML = SORTIES.filter(x => SO.t === 'all' || x.t === SO.t).map(x => `<div class="film"><h4>${esc(x.n)}</h4><p>${esc(x.v)} · ${esc(x.p)}</p><div class="tags"><span class="tag">${esc(lab[x.t])}</span></div><div class="help" style="margin-top:12px"><a class="btn alt small" href="${mapsUrl(x.n + ' ' + x.v + ' ' + x.p)}" target="_blank" rel="noopener noreferrer">Voir sur la carte</a></div></div>`).join('');
 }
 renderSorties();
-const CLUBS = [['Judo','club de judo'],['Foot','club de football'],['Basket','club de basket'],['Natation','cours de natation enfants'],['Danse','école de danse enfants'],['Gym','club de gymnastique enfants'],['Tennis','club de tennis'],['Équitation','centre équestre poney'],['Arts martiaux','club arts martiaux enfants'],['Musique','école de musique enfants'],['Théâtre','cours de théâtre enfants'],['Dessin et arts','atelier arts plastiques enfants'],['Éveil bébé','atelier éveil bébé'],['Centres de loisirs','centre de loisirs enfants'],['Sorties enfants','sortie enfants activité'],['Que faire ce week-end','que faire avec des enfants ce week-end','web'],['Agenda de la ville','agenda enfants événements mairie','web'],['Spectacles enfants','spectacle enfants','web'],['Marchés de Noël','marché de Noël','web'],['Ateliers parents-enfants','atelier parent enfant','web']];
-function renderClubs() {
-  const v = $('#s-ville'); if (v && v.value === '' && S.ville) v.value = S.ville;
-  $('#s-clubs').innerHTML = CLUBS.map(([l, q], i) => `<button class="chip" data-cl="${i}">${esc(l)}</button>`).join('');
-  $$('[data-cl]').forEach(b => b.onclick = () => {
-    const ville = ($('#s-ville').value || '').trim(); S.ville = ville; save();
-    const c = CLUBS[+b.dataset.cl], q = c[1] + (ville ? ' ' + ville : ''); window.open(c[2] === 'web' ? 'https://www.google.com/search?q=' + encodeURIComponent(q) : mapsUrl(q), '_blank', 'noopener');
-  });
+
+/* ===== Lieux près de toi : liste avec nom et distance (données OpenStreetMap) =====
+   [nom, emoji, filtres OpenStreetMap, rayon en km, recherche Google Maps de secours, garder les lieux sans nom] */
+const LIEUX = {
+  near: [
+    ['Piscines', '🏊', ['["leisure"="swimming_pool"]["access"!~"private|customers"]', '["leisure"="water_park"]', '["leisure"="sports_centre"]["sport"~"swimming"]'], 15, 'piscine'],
+    ['Parcs et aires de jeux', '🛝', ['["leisure"="playground"]', '["leisure"="park"]["name"]'], 4, 'aire de jeux enfants', true],
+    ['Jeux d\'intérieur (kid parks)', '🎈', ['["leisure"="indoor_play"]', '["leisure"="amusement_arcade"]'], 30, 'parc de jeux enfants intérieur'],
+    ['Parcs d\'attractions', '🎢', ['["tourism"="theme_park"]'], 80, 'parc d\'attractions'],
+    ['Zoos et fermes', '🦁', ['["tourism"~"^(zoo|aquarium)$"]', '["zoo"="petting_zoo"]'], 60, 'zoo ferme pédagogique'],
+    ['Musées', '🖼️', ['["tourism"="museum"]'], 20, 'musée enfants'],
+    ['Médiathèques', '📚', ['["amenity"="library"]'], 12, 'médiathèque bibliothèque'],
+    ['Cinémas', '🎬', ['["amenity"="cinema"]'], 20, 'cinéma'],
+    ['Patinoires', '⛸️', ['["leisure"="ice_rink"]'], 40, 'patinoire'],
+    ['Bowling et loisirs', '🎳', ['["leisure"="bowling_alley"]', '["sport"="10pin"]'], 25, 'bowling']
+  ],
+  clubs: [
+    ['Judo', '🥋', ['["sport"~"judo"]'], 15, 'club de judo'],
+    ['Foot', '⚽', ['["sport"="soccer"]["leisure"~"sports_centre|stadium|pitch"]', '["club"="sport"]["sport"="soccer"]'], 12, 'club de football'],
+    ['Basket', '🏀', ['["sport"~"basketball"]["leisure"~"sports_centre|stadium|sports_hall"]', '["club"="sport"]["sport"~"basketball"]'], 15, 'club de basket'],
+    ['Natation', '🏊', ['["sport"~"swimming"]', '["leisure"="swimming_pool"]["access"!~"private|customers"]'], 15, 'cours de natation enfants'],
+    ['Danse', '💃', ['["leisure"="dance"]', '["amenity"="dancing_school"]', '["sport"="dance"]'], 15, 'école de danse enfants'],
+    ['Gym', '🤸', ['["sport"~"gymnastics"]'], 15, 'club de gymnastique enfants'],
+    ['Tennis', '🎾', ['["sport"="tennis"]["leisure"~"sports_centre|club"]', '["club"="sport"]["sport"="tennis"]', '["sport"="tennis"]["leisure"="pitch"]["name"]'], 12, 'club de tennis'],
+    ['Équitation', '🐴', ['["sport"~"equestrian"]', '["leisure"="horse_riding"]'], 25, 'centre équestre poney'],
+    ['Arts martiaux', '🥊', ['["sport"~"karate|taekwondo|martial_arts|aikido|boxing|judo"]'], 15, 'club arts martiaux enfants'],
+    ['Musique', '🎵', ['["amenity"="music_school"]'], 20, 'école de musique enfants'],
+    ['Théâtre', '🎭', ['["amenity"="theatre"]'], 20, 'cours de théâtre enfants'],
+    ['Dessin et arts', '🎨', ['["amenity"="arts_centre"]'], 20, 'atelier arts plastiques enfants'],
+    ['Centres de loisirs', '🏡', ['["amenity"="community_centre"]', '["amenity"="social_centre"]'], 10, 'centre de loisirs enfants'],
+    ['Éveil bébé', '👶', null, 0, 'atelier éveil bébé']
+  ],
+  web: [['Que faire ce week-end', 'que faire avec des enfants ce week-end'], ['Agenda de la ville', 'agenda enfants événements mairie'], ['Spectacles enfants', 'spectacle enfants'], ['Marchés de Noël', 'marché de Noël'], ['Ateliers parents-enfants', 'atelier parent enfant']]
+};
+const OVERPASS = ['https://overpass-api.de/api/interpreter', 'https://overpass.kumi.systems/api/interpreter', 'https://overpass.private.coffee/api/interpreter', 'https://maps.mail.ru/osm/tools/overpass/api/interpreter'];
+const hav = (a, b, c, d) => { const r = Math.PI / 180, x = (c - a) * r, y = (d - b) * r, k = Math.sin(x / 2) ** 2 + Math.cos(a * r) * Math.cos(c * r) * Math.sin(y / 2) ** 2; return 12742 * Math.asin(Math.sqrt(k)); };
+const fmtKm = (d) => d < 1 ? Math.round(d * 1000 / 10) * 10 + ' m' : (d < 10 ? d.toFixed(1).replace('.', ',') : Math.round(d)) + ' km';
+async function fetchJson(url, opt, ms) { const c = new AbortController(), t = setTimeout(() => c.abort(), ms || 15000); try { const r = await fetch(url, { ...(opt || {}), signal: c.signal }); if (!r.ok) throw new Error('http ' + r.status); return await r.json(); } finally { clearTimeout(t); } }
+const SG = { pos: null, res: [], cur: null };
+function geoLine() {
+  const g = $('#s-geo'); if (!g) return;
+  g.innerHTML = SG.pos ? `Position : <b>${esc(SG.pos.label)}</b>` : 'Aucune ville choisie pour l\'instant.';
 }
-renderClubs();
+async function geocode(v) {
+  try {
+    const j = await fetchJson('https://api-adresse.data.gouv.fr/search/?limit=1&q=' + encodeURIComponent(v) + (/^\d{5}$/.test(v) ? '' : '&type=municipality'), {}, 8000);
+    const f = j.features && j.features[0];
+    if (f && f.properties.score > 0.4) return { lat: f.geometry.coordinates[1], lon: f.geometry.coordinates[0], label: f.properties.city || f.properties.label };
+  } catch (e) { }
+  const r = await fetchJson('https://nominatim.openstreetmap.org/search?format=json&limit=1&accept-language=fr&q=' + encodeURIComponent(v), {}, 12000);
+  if (r && r.length) return { lat: +r[0].lat, lon: +r[0].lon, label: r[0].display_name.split(',')[0] };
+  return null;
+}
+async function getPos() {
+  const v = ($('#s-ville').value || '').trim();
+  if (v) {
+    if (SG.pos && SG.pos.q === v) return SG.pos;
+    S.ville = v; save(); $('#s-geo').textContent = 'Je cherche ta ville…';
+    const p = await geocode(v);
+    if (!p) { $('#s-geo').textContent = 'Ville introuvable. Essaie avec le code postal.'; return null; }
+    p.q = v; SG.pos = p; S.geo = p; save(); geoLine(); return p;
+  }
+  if (SG.pos) return SG.pos;
+  toast('Écris ta ville ou touche « Me localiser »'); $('#s-ville').focus(); return null;
+}
+async function overpass(filters, lat, lon, R, keepUnnamed) {
+  const parts = filters.map(f => `nwr${f}${keepUnnamed && /playground/.test(f) ? '' : '["name"]'}(around:${R * 1000},${lat},${lon});`).join('');
+  const body = 'data=' + encodeURIComponent(`[out:json][timeout:20];(${parts});out center tags 150;`);
+  let last;
+  for (const url of OVERPASS) {
+    try { return await fetchJson(url, { method: 'POST', headers: { 'Content-Type': 'application/x-www-form-urlencoded' }, body }, 12000); }
+    catch (e) { last = e; }
+  }
+  throw last || new Error('overpass');
+}
+async function searchLieux(kind, i) {
+  const c = LIEUX[kind][i]; SG.cur = c;
+  const box = $('#s-res');
+  if (!c[2]) { window.open(mapsUrl(c[4] + ' ' + (($('#s-ville').value || '').trim() || 'près de moi')), '_blank', 'noopener'); return; }
+  const p = await getPos(); if (!p) return;
+  box.innerHTML = `<div class="panel"><b>${c[1]} ${esc(c[0])}</b><p class="sub" style="margin-top:6px">Je cherche autour de ${esc(p.label)}…</p></div>`;
+  box.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  let R = c[3], els = [];
+  try {
+    for (let k = 0; k < 2; k++) {
+      const j = await overpass(c[2], p.lat, p.lon, R, c[5]);
+      els = j.elements || [];
+      if (els.length >= 3 || R >= 80) break;
+      R = Math.min(R * 3, 80);
+      box.querySelector('.sub').textContent = `Peu de résultats, j'élargis à ${R} km…`;
+    }
+  } catch (e) {
+    box.innerHTML = `<div class="panel"><b>${c[1]} ${esc(c[0])}</b><p class="sub" style="margin:6px 0 10px">La recherche n'a pas répondu (connexion ou service occupé). Réessaie dans un instant, ou ouvre directement ta carte.</p><div class="help"><button class="btn alt small" id="sr-retry">Réessayer</button><a class="btn alt small" href="${mapsUrl(c[4] + ' ' + p.label)}" target="_blank" rel="noopener noreferrer">Ouvrir Google Maps</a></div></div>`;
+    $('#sr-retry').onclick = () => searchLieux(kind, i); return;
+  }
+  const seen = new Set();
+  SG.res = els.map(el => {
+    const t = el.tags || {}, la = el.lat != null ? el.lat : el.center && el.center.lat, lo = el.lon != null ? el.lon : el.center && el.center.lon;
+    if (la == null) return null;
+    const name = t.name || (c[0] === 'Parcs et aires de jeux' ? 'Aire de jeux' + (t['addr:street'] ? ' · ' + t['addr:street'] : '') : c[0]);
+    const key = name.toLowerCase() + Math.round(la * 500) + Math.round(lo * 500); if (seen.has(key)) return null; seen.add(key);
+    const adr = [[t['addr:housenumber'], t['addr:street']].filter(Boolean).join(' '), t['addr:city']].filter(Boolean).join(', ');
+    return { name, lat: la, lon: lo, d: hav(p.lat, p.lon, la, lo), adr, web: t.website || t['contact:website'] || t.url || '', tel: t.phone || t['contact:phone'] || '', hours: t.opening_hours || '' };
+  }).filter(Boolean).sort((a, b) => a.d - b.d).slice(0, 40);
+  const head = `<div class="panel"><b>${c[1]} ${esc(c[0])}</b> <span class="sub">· ${SG.res.length} lieu${SG.res.length > 1 ? 'x' : ''} autour de ${esc(p.label)}</span><p class="sub" style="margin-top:6px">Touche un lieu pour l'itinéraire, le site ou l'appeler.</p></div>`;
+  const list = SG.res.map((r, n) => `<button class="act" data-lr="${n}" style="width:100%;text-align:left"><div class="em">${c[1]}</div><div style="flex:1;min-width:0"><h4>${esc(r.name)}</h4><p>${r.adr ? esc(r.adr) : esc(c[0])}</p></div><div style="flex:none;font-weight:700;margin-left:8px;white-space:nowrap">${fmtKm(r.d)}</div></button>`).join('');
+  const none = `<p class="empty">Aucun lieu trouvé dans la base OpenStreetMap à moins de ${R} km. Cette base est remplie par des bénévoles : essaie Google Maps.</p>`;
+  box.innerHTML = head + (list || none) + `<div class="help" style="margin:10px 0 18px"><a class="btn alt small" href="${mapsUrl(c[4] + ' ' + p.label)}" target="_blank" rel="noopener noreferrer">Voir plus sur Google Maps</a></div><p class="sub" style="font-size:11px">Données © les contributeurs d'OpenStreetMap. Distances à vol d'oiseau.</p>`;
+  $$('[data-lr]', box).forEach(b => b.onclick = () => lieuSheet(SG.res[+b.dataset.lr]));
+}
+function lieuSheet(r) {
+  const c = SG.cur, ll = r.lat + ',' + r.lon, web = r.web && !/^https?:/.test(r.web) ? 'https://' + r.web : r.web;
+  openSheet(`<div class="kicker">${c[1]} ${esc(c[0])}</div><h3 style="margin-top:4px">${esc(r.name)}</h3>
+    <div class="meta" style="margin-top:8px"><span>À ${fmtKm(r.d)} de ${esc(SG.pos.label)}</span></div>
+    ${r.adr ? `<p class="lead">${esc(r.adr)}</p>` : ''}${r.hours ? `<p class="sub">Horaires indiqués : ${esc(r.hours)}</p>` : ''}
+    <h5>Y aller</h5><div class="help">
+      <a class="btn" href="https://www.google.com/maps/dir/?api=1&destination=${ll}" target="_blank" rel="noopener noreferrer">Google Maps</a>
+      <a class="btn alt" href="https://maps.apple.com/?daddr=${ll}" target="_blank" rel="noopener noreferrer">Plans (iPhone)</a>
+      <a class="btn alt" href="https://waze.com/ul?ll=${ll}&navigate=yes" target="_blank" rel="noopener noreferrer">Waze</a></div>
+    <h5>En savoir plus</h5><div class="help">
+      ${web ? `<a class="btn alt" href="${esc(web)}" target="_blank" rel="noopener noreferrer">Site web</a>` : ''}
+      ${r.tel ? `<a class="btn alt" href="tel:${esc(r.tel.replace(/[^+\d]/g, ''))}">Appeler</a>` : ''}
+      <a class="btn alt" href="${mapsUrl(r.name + ' ' + (r.adr || SG.pos.label))}" target="_blank" rel="noopener noreferrer">Avis et photos</a></div>
+    <p class="note">Vérifie toujours les horaires et les tarifs avant de partir.</p>`);
+}
+function renderLieux() {
+  const v = $('#s-ville'); if (v && !v.value && S.ville) v.value = S.ville;
+  if (!SG.pos && S.geo && S.geo.q && S.geo.q === (v && v.value)) SG.pos = S.geo;
+  geoLine();
+  $('#s-near').innerHTML = LIEUX.near.map((c, i) => `<button class="chip" data-ln="${i}">${c[1]} ${esc(c[0])}</button>`).join('');
+  $('#s-clubs').innerHTML = LIEUX.clubs.map((c, i) => `<button class="chip" data-lc="${i}">${c[1]} ${esc(c[0])}</button>`).join('');
+  $('#s-web').innerHTML = LIEUX.web.map(([l, q]) => `<button class="chip" data-lw="${esc(q)}">${esc(l)}</button>`).join('');
+  $$('[data-ln]').forEach(b => b.onclick = () => searchLieux('near', +b.dataset.ln));
+  $$('[data-lc]').forEach(b => b.onclick = () => searchLieux('clubs', +b.dataset.lc));
+  $$('[data-lw]').forEach(b => b.onclick = () => { const ville = ($('#s-ville').value || '').trim(); window.open('https://www.google.com/search?q=' + encodeURIComponent(b.dataset.lw + (ville ? ' ' + ville : '')), '_blank', 'noopener'); });
+  $('#s-ville').addEventListener('change', () => { SG.pos = null; const t = $('#s-ville').value.trim(); if (t) getPos(); else geoLine(); });
+  $('#s-ville').addEventListener('keydown', e => { if (e.key === 'Enter') { e.preventDefault(); $('#s-ville').blur(); } });
+  $('#s-me').onclick = () => {
+    if (!navigator.geolocation) return toast('Position indisponible sur ce téléphone');
+    $('#s-geo').textContent = 'Je cherche ta position…';
+    navigator.geolocation.getCurrentPosition(pp => { $('#s-ville').value = ''; SG.pos = { lat: pp.coords.latitude, lon: pp.coords.longitude, label: 'ta position' }; geoLine(); if (SG.cur && SG.cur[2]) { const k = LIEUX.near.includes(SG.cur) ? 'near' : 'clubs'; searchLieux(k, LIEUX[k].indexOf(SG.cur)); } },
+      () => { $('#s-geo').textContent = 'Position refusée ou indisponible. Écris plutôt ta ville.'; }, { timeout: 12000, maximumAge: 300000 });
+  };
+}
+renderLieux();
 
 
 /* =================== JOURNAL =================== */
