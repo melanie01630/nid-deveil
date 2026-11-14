@@ -268,16 +268,26 @@ function santeSheet(m) {
     ${(window.SANTE_PLUS && SANTE_PLUS[m.n]) ? `<h5>Bon à savoir</h5><p class="lead">${esc(SANTE_PLUS[m.n][2])}</p>` : ''}<div class="warnbox">${esc(SANTE_ALERTE)}</div>`);
 }
 function astuceSheet(m) {
-  openSheet(`<div class="kicker">Astuce de grand-mère</div><h3 style="margin-top:4px">${esc(m.n)}</h3><p class="lead">${esc(m.t)}</p>${(window.ASTUCE_PLUS && ASTUCE_PLUS[m.n]) ? `<h5>Comment faire</h5><p class="lead">${esc(ASTUCE_PLUS[m.n][0])}</p><h5>Pourquoi ça marche</h5><p class="lead">${esc(ASTUCE_PLUS[m.n][1])}</p>` : ''}${m.w ? `<div class="warnbox">À savoir : ${esc(m.w)}</div>` : ''}<p class="note">Un coup de pouce du quotidien, pas un médicament. Si ça ne passe pas, demande un avis médical.</p>`);
+  const P = (window.ASTUCE_PLUS || {})[m.n], D = (window.ASTUCE_DETAIL || {})[m.n];
+  const pq = (D && D.pq) || (P && P[1]);
+  openSheet(`<div class="kicker">Astuce de grand-mère</div><h3 style="margin-top:4px">${esc(m.n)}</h3><p class="lead">${esc(m.t)}</p>
+    ${D ? `<h5>Pour qui</h5><p class="lead">${esc(D.pour)}</p><h5>Ce qu'il te faut</h5><ul class="lead" style="padding-left:20px;margin:4px 0">${D.besoin.map(x => `<li style="margin:3px 0">${esc(x)}</li>`).join('')}</ul><h5>Étape par étape (touche pour cocher)</h5><ol class="steps">${D.etapes.map(x => `<li>${esc(x)}</li>`).join('')}</ol>` : (P ? `<h5>Comment faire</h5><p class="lead">${esc(P[0])}</p>` : '')}
+    ${pq ? `<h5>Pourquoi ça marche</h5><p class="lead">${esc(pq)}</p>` : ''}
+    ${D && D.bonus ? `<div class="warnbox" style="background:#FFF4D6;border-color:#E0C46C"><b>L'astuce en plus</b><br>${esc(D.bonus)}</div>` : ''}
+    ${m.w ? `<div class="warnbox">À savoir : ${esc(m.w)}</div>` : ''}<p class="note">Un coup de pouce du quotidien, pas un médicament. Si ça ne passe pas, demande un avis médical.</p>`);
+  $$('.steps li').forEach(li => li.onclick = () => li.classList.toggle('ok'));
 }
 function openRecette(n) {
-  const r = RECETTES[n]; const q = r.t + ' recette';
+  const r = RECETTES[n]; const q = r.t + ' recette'; const D = (window.RECETTE_DETAIL || {})[r.t];
   openSheet(`<div class="kicker">${esc(RECETTES_CATS[r.c])} · ${r.g === 'd' ? 'Sucré' : 'Salé'}</div><h3 style="margin-top:4px">${esc(r.t)}</h3>
     <div class="meta" style="margin-top:8px"><span>${r.m} min</span><span>${['Facile', 'Moyen', 'Plus long'][r.n - 1]}</span>${r.e ? '<span>Avec les enfants</span>' : ''}</div>
-    <h5>Ingrédients</h5><p class="lead">${esc(r.i)}</p><h5>En deux mots</h5><p class="lead">${esc(r.d)}</p>
+    ${D ? `<div class="meta" style="margin-top:6px"><span>👥 ${esc(D.p)}</span><span>🔪 Préparation ${esc(D.prep)}</span>${D.cuis ? `<span>🔥 Cuisson ${esc(D.cuis)}</span>` : '<span>Sans cuisson</span>'}</div>` : ''}
+    <h5>En deux mots</h5><p class="lead">${esc(r.d)}</p>
+    ${D ? `<h5>Ingrédients pour ${esc(D.p)}</h5><ul class="lead" style="padding-left:20px;margin:4px 0">${D.q.map(x => `<li style="margin:3px 0">${esc(x)}</li>`).join('')}</ul>` : `<h5>Ingrédients</h5><p class="lead">${esc(r.i)}</p>`}
     ${(window.RECETTE_PLUS && RECETTE_PLUS[r.t]) ? `<h5>Pas à pas (touche pour cocher)</h5><ol class="steps">${RECETTE_PLUS[r.t][0].map(x => `<li>${esc(x)}</li>`).join('')}</ol><div class="warnbox" style="background:#FFF4D6;border-color:#E0C46C"><b>L'astuce de Mams</b><br>${esc(RECETTE_PLUS[r.t][1])}</div><h5>Les enfants peuvent</h5><p class="lead">${esc(RECETTE_PLUS[r.t][2])}</p>` : ''}
+    ${D ? `<h5>Pour varier</h5><p class="lead">${esc(D.v)}</p><h5>Conservation</h5><p class="lead">${esc(D.k)}</p>` : ''}
     <h5>Voir comment faire</h5><div class="row2">${ext('YouTube', yt(q + ' facile'), false)}${ext('TikTok', tt(q))}${ext('Images', gi(r.t))}</div>
-    <p class="note">Les boutons ouvrent une recherche de vidéos. Vérifie les quantités sur la vidéo choisie.</p>
+    <p class="note">Les boutons ouvrent une recherche de vidéos pour voir les gestes.</p>
     <button class="btn sage" id="rc-done" style="margin-top:14px">Je l'ai faite</button>`);
   $$('.steps li').forEach(li => li.onclick = () => li.classList.toggle('ok'));
   $('#rc-done').onclick = () => { closeSheet(); if (!addPts(5, 'recette réalisée', 'rec' + n)) toast('Déjà comptée, bravo !'); };
