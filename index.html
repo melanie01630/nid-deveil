@@ -798,7 +798,10 @@ function askAdultPin() {
     <p class="lead">${first ? 'Cet espace propose des films et séries pour les adultes. Choisis un code à 4 chiffres : il sera demandé à chaque fois.' : 'Entre ton code à 4 chiffres.'}</p>
     ${first ? '<label style="display:flex;gap:10px;align-items:center;margin:14px 0"><input type="checkbox" id="p-age" style="width:22px;height:22px"> J\'ai 18 ans ou plus</label>' : ''}
     <input id="p-code" type="password" inputmode="numeric" pattern="[0-9]*" maxlength="4" autocomplete="off" placeholder="••••" style="width:100%;padding:14px;border-radius:12px;border:1px solid var(--line);font:inherit;font-size:22px;text-align:center;letter-spacing:.4em;margin:8px 0 16px">
-    <button class="btn" id="p-ok">Valider</button>`);
+    <button class="btn" id="p-ok">Valider</button>
+    ${first ? '' : '<button class="btn alt" id="p-reset" style="margin-top:10px">Code oublié ? Choisir un nouveau code</button>'}`);
+  $('#p-code').addEventListener('keydown', e => { if (e.key === 'Enter') $('#p-ok').click(); });
+  const rs = $('#p-reset'); if (rs) rs.onclick = () => { if (confirm('Supprimer ton code actuel et en choisir un nouveau ?')) { S.pin = null; save(); askAdultPin(); } };
   $('#p-ok').onclick = async () => {
     const code = $('#p-code').value.trim();
     if (!/^[0-9]{4}$/.test(code)) return toast('Le code a 4 chiffres');
@@ -825,8 +828,9 @@ function renderCine() {
     html = nouvList(C.nf || 'all') ;
   } else if (C.mode === 'adult') {
     $('#verif').innerHTML = 'Une soirée sans enfants : sélection de films et séries très connus. La plateforme n\'est pas garantie, cherche le titre dans ton abonnement. Vérifie l\'interdiction d\'âge.';
-    const gs = [...new Set(ADULTES.map(x => x.g))];
-    html = gs.map(g => `<h3 class="h3" style="margin:16px 0 8px">${esc(g)}</h3>` + ADULTES.filter(x => x.g === g).map(x => `<div class="film"><h4>${esc(x.titre)} <span style=\"font-weight:400;color:var(--muted);font-size:.8em\">${esc(x.an || '')}</span></h4><p>${esc(x.note)}</p><div class="help" style="margin-top:12px"><a class="btn alt small" href="${ytSearch(x.titre + ' bande-annonce VF')}" target="_blank" rel="noopener noreferrer">Bande-annonce</a><button class="btn alt small" data-pf="c:${esc(x.titre)}">Programmer</button></div></div>`).join('')).join('');
+    if (!window.ADULTES || !ADULTES.length) { html = '<div class="warn">Les films pour adultes sont introuvables sur ton site (fichier data/adultes.js). Envoie à nouveau tout le contenu du zip sur GitHub, dossier « data » compris.</div>'; }
+    else { const gs = [...new Set(ADULTES.map(x => x.g))];
+    html = gs.map(g => `<h3 class="h3" style="margin:16px 0 8px">${esc(g)}</h3>` + ADULTES.filter(x => x.g === g).map(x => `<div class="film"><h4>${esc(x.titre)} <span style=\"font-weight:400;color:var(--muted);font-size:.8em\">${esc(x.an || '')}</span></h4><p>${esc(x.note)}</p><div class="help" style="margin-top:12px"><a class="btn alt small" href="${ytSearch(x.titre + ' bande-annonce VF')}" target="_blank" rel="noopener noreferrer">Bande-annonce</a><button class="btn alt small" data-pf="c:${esc(x.titre)}">Programmer</button></div></div>`).join('')).join(''); }
   } else if (C.mode === 'mine') {
     if (!S.platforms.length) html = '<p class="empty">Coche au moins une plateforme ci-dessus pour voir les films qui te conviennent.</p>';
     else {

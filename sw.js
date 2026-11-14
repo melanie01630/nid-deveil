@@ -1,6 +1,6 @@
 // Service worker : hors-ligne + mises à jour automatiques
 // (essaie d'abord le réseau pour avoir la dernière version, sinon utilise la copie enregistrée)
-const CACHE = 'nid-deveil-v49';
+const CACHE = 'nid-deveil-v52';
 const FILES = ['./', './index.html', './manifest.webmanifest', './privacy.html',
   './data/activites-1.js', './data/activites-2.js', './data/activites-3.js', './data/activites-4.js', './data/activites-5.js', './data/films.js', './data/videos.js', './data/guide.js', './data/adultes.js', './data/sorties.js', './data/nouveautes.js', './data/actu.js', './data/schemas.js', './data/photos.js', './data/plus-jeux.js', './data/plus-recettes.js', './data/plus-sante.js', './data/plus-fetes.js', './plus.js',
   './icons/icon-192.png', './icons/icon-512.png', './icons/apple-touch-icon.png', './icons/fond.png'];

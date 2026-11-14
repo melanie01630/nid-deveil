@@ -164,6 +164,40 @@ animation:pfloat 5s ease-in-out infinite;transition:transform .2s,opacity .2s}
 .stars button{font-size:28px;padding:0 3px;color:#C9B0B8}
 .stars button.on{color:#E9B83A}
 .warnbox{padding:12px 14px;border-radius:14px;background:#FBE3E3;border:1px solid #E5A8A8;font-size:13.5px;margin:10px 0}
+
+.chip{background:radial-gradient(circle at 20% 22%,rgba(255,255,255,.95) 0 9%,rgba(255,255,255,0) 30%),linear-gradient(180deg,rgba(255,255,255,.6),rgba(255,255,255,.2));border:1.5px solid rgba(255,255,255,.92);box-shadow:inset 0 0 10px rgba(255,255,255,.75),inset -3px -4px 10px rgba(120,180,255,.3),inset 3px 4px 10px rgba(255,150,205,.28),0 4px 10px -6px rgba(60,30,60,.5)}
+.chip.on{background:radial-gradient(circle at 20% 22%,rgba(255,255,255,.75) 0 8%,rgba(255,255,255,0) 28%),linear-gradient(180deg,#9A3A63,#5B1D3A);border-color:rgba(255,255,255,.9);color:#fff;box-shadow:inset 0 0 8px rgba(255,255,255,.45),0 5px 12px -6px rgba(80,20,50,.75)}
+.ce{display:inline-block;margin-right:3px}
+.tile{position:relative;overflow:hidden;border-radius:30px;border:1.5px solid rgba(255,255,255,.92);background:radial-gradient(circle at 16% 20%,rgba(255,255,255,.95) 0 6%,rgba(255,255,255,0) 20%),var(--pat,none) 0 0/96px 96px,linear-gradient(160deg,rgba(255,255,255,.62),color-mix(in srgb,var(--t,#F0DDE4) 80%,transparent));box-shadow:inset 0 0 18px rgba(255,255,255,.75),inset -8px -10px 20px rgba(120,180,255,.28),inset 8px 10px 20px rgba(255,150,205,.26),0 10px 18px -12px rgba(60,30,60,.5)}
+.tile::before{content:"";position:absolute;inset:0;background:radial-gradient(ellipse at 35% 50%,rgba(255,255,255,.7) 0 28%,rgba(255,255,255,0) 68%);pointer-events:none}
+.tile>*{position:relative}
+.tile b,.tile span{text-shadow:0 0 6px rgba(255,255,255,.95)}
+.tile svg{filter:drop-shadow(0 0 4px rgba(255,255,255,.9))}
+.tab svg{box-sizing:content-box;width:20px;height:20px;padding:6px;border-radius:50%;border:1px solid rgba(255,255,255,.92);background:radial-gradient(circle at 28% 24%,rgba(255,255,255,.95) 0 8%,rgba(255,255,255,0) 26%),radial-gradient(circle at 50% 50%,rgba(255,255,255,.18) 55%,rgba(255,255,255,.6) 100%);box-shadow:inset 0 0 8px rgba(255,255,255,.7),inset -3px -4px 8px rgba(120,180,255,.32),inset 3px 4px 8px rgba(255,150,205,.3),0 4px 8px -5px rgba(60,30,60,.5);transition:transform .2s}
+.tab.on svg{transform:translateY(-4px) scale(1.12);background:radial-gradient(circle at 28% 24%,rgba(255,255,255,.95) 0 8%,rgba(255,255,255,0) 26%),radial-gradient(circle at 50% 50%,rgba(232,195,209,.6) 50%,rgba(201,91,118,.55) 100%)}
+.tab{gap:1px}
+.act .em{border-radius:50%;border:1.5px solid rgba(255,255,255,.9);background:radial-gradient(circle at 28% 24%,rgba(255,255,255,.95) 0 8%,rgba(255,255,255,0) 26%),radial-gradient(circle at 50% 50%,rgba(255,255,255,.2) 50%,rgba(255,255,255,.55) 100%),#C9B0C0;box-shadow:inset 0 0 8px rgba(255,255,255,.7),inset -3px -4px 8px rgba(120,180,255,.3),inset 3px 4px 8px rgba(255,150,205,.3)}
+.act .em.ph{border-radius:50%}
+
+.chips{padding:6px 4px 10px;gap:8px}
+.chip{flex:none;width:80px;height:80px;aspect-ratio:1;border-radius:50%;display:inline-flex;flex-direction:column;align-items:center;justify-content:center;white-space:normal;text-align:center;font-size:10.5px;line-height:1.1;padding:7px;overflow-wrap:anywhere;overflow:hidden}
+.chip .ce{display:block;font-size:22px;line-height:1;margin:0 0 3px}
+.wch{gap:8px}
+.tiles{grid-template-columns:repeat(3,minmax(0,1fr));gap:8px 8px;padding-bottom:6px}
+.tile,.tile.tile-audio{grid-column:auto;aspect-ratio:1;border-radius:50%;flex-direction:column;align-items:center;justify-content:center;text-align:center;gap:4px;padding:12px;min-height:0;min-width:0}
+.tile:nth-child(3n+2){margin-top:20px}
+.tile svg,.tile.tile-audio svg{width:26px;height:26px}
+.tile b,.tile.tile-audio b{font-size:12px;line-height:1.1;font-weight:600}
+.tile span{display:none}
+.tile::before{background:radial-gradient(circle,rgba(255,255,255,.7) 0 30%,rgba(255,255,255,0) 66%)}
+.cal button,.cal i{border-radius:50%;height:auto;aspect-ratio:1}
+.searchbar{border-radius:999px}
+
+.joinb{position:absolute;right:10px;top:78px;width:82px;height:82px;border-radius:50%;z-index:6;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:1px;padding:8px;text-align:center;color:var(--ink);font:inherit;font-size:9.5px;font-weight:700;line-height:1.05;border:1.5px solid rgba(255,255,255,.92);background:radial-gradient(circle at 28% 24%,rgba(255,255,255,.95) 0 8%,rgba(255,255,255,0) 24%),radial-gradient(circle at 50% 50%,rgba(214,236,226,.55) 50%,rgba(150,215,190,.75) 100%);box-shadow:inset 0 0 12px rgba(255,255,255,.75),inset -5px -6px 12px rgba(120,180,255,.35),inset 5px 6px 12px rgba(255,150,205,.3),0 8px 14px -8px rgba(40,70,60,.6);animation:pfloat 4.5s ease-in-out infinite;text-shadow:0 0 5px rgba(255,255,255,.95)}
+.joinb .e{font-size:19px;line-height:1}
+.view>.h2+.sub,.pwrap>.h2+.sub{padding-right:92px}
+.joinb:active{transform:scale(.94)}
+.vtag{font-size:11px;color:var(--muted);text-align:center;margin:18px 0 6px}
 `;
 document.head.appendChild(st);
 
@@ -200,7 +234,7 @@ function renderPlus() {
       <p class="sub">Tout ce qui fait vivre Mams. On ajoute des choses régulièrement.</p>
       <button class="searchbar" id="pl-search" type="button"><span>🔎</span> Chercher dans toute l'appli…</button>
       <div style="margin:10px 0"><span class="ptschip">⭐ ${S.pts} point${S.pts > 1 ? 's' : ''} · ${LEVELS[level()][1]}</span></div>
-      <div class="bubbles">${PLUS_PAGES.map(k => `<button class="bub" data-pg="${k}" style="--t:${PAGES[k][3]};--pat:${motif(k)}"><span class="e">${PAGES[k][0]}</span><b>${PAGES[k][1]}</b><small>${PAGES[k][2]}</small></button>`).join('')}</div></div>`;
+      <div class="bubbles">${PLUS_PAGES.map(k => `<button class="bub" data-pg="${k}" style="--t:${PAGES[k][3]};--pat:${motif(k)}"><span class="e">${PAGES[k][0]}</span><b>${PAGES[k][1]}</b><small>${PAGES[k][2]}</small></button>`).join('')}</div><p class="vtag">Version de l'appli : 52</p></div>`;
     $('#pl-search').onclick = () => openSearch();
     $$('[data-pg]', el).forEach(b => b.onclick = () => { b.classList.add('pop'); setTimeout(() => { P.page = b.dataset.pg; renderPlus(); window.scrollTo(0, 0); }, 190); });
     return;
@@ -538,4 +572,31 @@ renderHomeFun();
 /* ---------- Points dans la page Famille ---------- */
 const nest = $('#view-nest');
 if (nest) { const pn = document.createElement('div'); pn.className = 'panel'; pn.style.marginTop = '12px'; pn.innerHTML = '<b>Mes points</b><div id="nest-pts" style="margin:8px 0"></div><button class="btn alt" id="nest-pts-go">Voir mes points et mes avis</button>'; nest.insertBefore(pn, nest.children[2] || null); const upd = () => { $('#nest-pts').innerHTML = `<span class="ptschip">⭐ ${S.pts} point${S.pts > 1 ? 's' : ''} · ${LEVELS[level()][1]}</span>`; }; upd(); $('#nest-pts-go').onclick = () => goPlus('points'); const _rn = window.renderNest; if (_rn) window.renderNest = function () { _rn.apply(this, arguments); upd(); }; }
+
+/* ---------- Bulles partout : petits dessins sur les boutons ---------- */
+const EMO = [['tous les ages', '🌈'], ['toutes les cat', '🌈'], ['toute la famille', '👨‍👩‍👧'], ['peu importe', '✨'], ['15 min', '⏱️'], ['30 min', '⏱️'], ['45 min', '⏳'], ['1 h', '⏱️'], ['plus long', '⏳'], ['toutes durees', '⏱️'], ['maison et quotidien', '🏠'], ['maison', '🏠'], ['dehors', '🌳'],
+  ['0 2 ans', '🍼'], ['3 5 ans', '🧸'], ['6 8 ans', '🎒'], ['9 14 ans', '🛹'], ['3 6 ans', '🧸'], ['7 10 ans', '🎒'], ['11 ans', '🛹'], ['entre mams', '👭'], ['3 ans', '🧸'], ['5 ans', '🎈'], ['7 ans', '🎒'], ['10 ans', '🛹'], ['13 ans', '🎧'],
+  ['histoires audio', '🎧'], ['dessin et arts', '🎨'], ['dessin', '✏️'], ['peinture', '🎨'], ['construction', '🧱'], ['bricolage', '✂️'], ['cuisine', '🍳'], ['nature', '🌿'], ['science', '🔬'], ['jeux', '🎲'], ['bouger', '🤸'], ['tout petits', '🍼'], ['au calme', '🧘'], ['calme', '🧘'], ['musique', '🎵'], ['lire', '📚'], ['en famille', '👨‍👩‍👧'], ['grands', '🧑‍🎓'], ['fetes', '🎉'], ['3 minutes', '⏱️'], ['creation', '🧵'], ['creatif', '🎨'], ['pleut', '☔'], ['soir', '🌙'],
+  ['netflix', '📺'], ['disney', '🏰'], ['prime', '📦'], ['canal', '📡'], ['apple tv', '🍎'], ['hbo', '🎞️'], ['max', '🎞️'], ['paramount', '⛰️'], ['france tv', '🇫🇷'],
+  ['nouveautes', '🆕'], ['plateformes', '📺'], ['au cinema', '🍿'], ['classiques', '🎞️'], ['cinemas', '🍿'], ['cinema', '🍿'], ['tout', '🌈'],
+  ['parcs d attractions', '🎢'], ['parcs et aires', '🛝'], ['kid parks', '🎈'], ['zoos', '🦁'], ['musees', '🖼️'], ['mediatheques', '📚'], ['piscines', '🏊'], ['judo', '🥋'], ['foot', '⚽'], ['basket', '🏀'], ['natation', '🏊'], ['danse', '💃'], ['gym', '🤸'], ['tennis', '🎾'], ['equitation', '🐴'], ['arts martiaux', '🥋'], ['theatre', '🎭'], ['eveil bebe', '🍼'], ['centres de loisirs', '🏕️'], ['sorties enfants', '🎈'], ['week end', '📅'], ['agenda', '📅'], ['spectacles', '🎪'], ['marches de noel', '🎄'], ['ateliers', '🧑‍🎨'],
+  ['youtube', '▶️'], ['tiktok', '🎶'],
+  ['blagues', '😄'], ['devinettes', '🤔'], ['enigmes', '🧩'], ['quiz', '❓'],
+  ['repas rapide', '⚡'], ['idees gateaux', '🍰'], ['mijoter', '🍲'], ['gouters', '🍪'], ['petit dejeuner', '🥐'], ['sans four', '🧊'], ['soupes', '🥣'], ['avec les enfants', '👧'], ['toutes', '🌈'], ['sucre et sale', '🍽️'], ['sale', '🧂'], ['sucre', '🍬'],
+  ['maladies', '🩺'], ['blessures', '🩹'], ['bobos', '🩹'], ['zone a', '🗺️'], ['zone b', '🗺️'], ['zone c', '🗺️']];
+const PICTO = /\p{Extended_Pictographic}/u;
+function decorate() {
+  $$('.chip:not([data-d])').forEach(c => {
+    c.dataset.d = '1'; const t = c.textContent.trim(); if (!t || PICTO.test(t)) return;
+    const n = norm(t); const hit = EMO.find(([k]) => n.includes(k)); if (hit) c.insertAdjacentHTML('afterbegin', '<span class="ce">' + hit[1] + '</span>');
+  });
+}
+let decoT = null;
+new MutationObserver(() => { if (decoT) return; decoT = requestAnimationFrame(() => { decoT = null; decorate(); }); }).observe(document.body, { childList: true, subtree: true });
+decorate();
+const TILE_STYLE = { audio: ['#E9D9F2', '🎧📖🌙⭐'], actu: ['#FCE7C2', '📰🎬😂📣'], jeux: ['#F7D9E3', '🎲😂🎈⭐'], recettes: ['#FCE7C2', '🥕🍰🍳🥖'], commu: ['#D6ECE2', '👭💬🌸🤝'], cine: ['#F9D6D6', '🎬🍿📺⭐'], cuisine: ['#FCE7C2', '🥕🍰🍳🥖'], '3min': ['#D3E4F4', '⏱️⚡✨🎯'], pluie: ['#D8EAF0', '☔💧🌈🏠'] };
+$$('.tile').forEach(t => { const d = TILE_STYLE[t.dataset.go]; if (d) { t.style.setProperty('--t', d[0]); const e = [...d[1]]; const pos = [[8, 30, -12], [58, 24, 10], [26, 72, 8], [70, 80, -8]]; const svg = `<svg xmlns="http://www.w3.org/2000/svg" width="96" height="96">${pos.map((p, i) => `<text x="${p[0]}" y="${p[1]}" font-size="20" transform="rotate(${p[2]} ${p[0]} ${p[1]})">${e[i % e.length]}</text>`).join('')}</svg>`; t.style.setProperty('--pat', "url('data:image/svg+xml," + encodeURIComponent(svg).replace(/'/g, '%27') + "')"); } });
+
+const topbar = $('header.top');
+if (topbar) { const jb = document.createElement('button'); jb.type = 'button'; jb.className = 'joinb'; jb.setAttribute('aria-label', 'Rejoindre la communauté des mams'); jb.innerHTML = '<span class="e">👭</span>Rejoindre la communauté des mams'; jb.onclick = () => showTab('commu'); topbar.appendChild(jb); }
 })();
