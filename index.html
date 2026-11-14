@@ -696,15 +696,27 @@ async function getPos() {
   if (SG.pos) return SG.pos;
   toast('Écris ta ville ou touche « Me localiser »'); $('#s-ville').focus(); return null;
 }
+/* Mots-clés de secours (recherche Nominatim) si les serveurs Overpass ne répondent pas */
+const NOMI = { 'Piscines': ['piscine', 'centre aquatique'], 'Parcs et aires de jeux': ['aire de jeux', 'parc'], 'Jeux d\'intérieur (kid parks)': ['parc de jeux intérieur', 'kids'], 'Parcs d\'attractions': ['parc d\'attractions'], 'Zoos et fermes': ['zoo', 'ferme pédagogique'], 'Musées': ['musée'], 'Médiathèques': ['médiathèque', 'bibliothèque'], 'Cinémas': ['cinéma'], 'Patinoires': ['patinoire'], 'Bowling et loisirs': ['bowling'], 'Judo': ['judo'], 'Foot': ['football club', 'stade'], 'Basket': ['basket'], 'Natation': ['piscine', 'natation'], 'Danse': ['danse'], 'Gym': ['gymnastique'], 'Tennis': ['tennis club', 'tennis'], 'Équitation': ['centre équestre', 'poney club'], 'Arts martiaux': ['karaté', 'dojo'], 'Musique': ['école de musique', 'conservatoire'], 'Théâtre': ['théâtre'], 'Dessin et arts': ['atelier art', 'arts plastiques'], 'Centres de loisirs': ['centre de loisirs', 'maison de quartier'] };
 async function overpass(filters, lat, lon, R, keepUnnamed) {
   const parts = filters.map(f => `nwr${f}${keepUnnamed && /playground/.test(f) ? '' : '["name"]'}(around:${R * 1000},${lat},${lon});`).join('');
-  const body = 'data=' + encodeURIComponent(`[out:json][timeout:20];(${parts});out center tags 150;`);
-  let last;
-  for (const url of OVERPASS) {
-    try { return await fetchJson(url, { method: 'POST', headers: { 'Content-Type': 'application/x-www-form-urlencoded' }, body }, 12000); }
-    catch (e) { last = e; }
+  const body = 'data=' + encodeURIComponent(`[out:json][timeout:15];(${parts});out center 150;`);
+  const one = (url) => fetchJson(url, { method: 'POST', headers: { 'Content-Type': 'application/x-www-form-urlencoded' }, body }, 14000).then(j => { if (!j || !Array.isArray(j.elements)) throw new Error('vide'); return j; });
+  return await Promise.any(OVERPASS.map(one));
+}
+const wait = (ms) => new Promise(r => setTimeout(r, ms));
+async function nominatimLieux(label, lat, lon, R) {
+  const kw = NOMI[label] || [label], dLat = R / 111, dLon = R / (111 * Math.cos(lat * Math.PI / 180));
+  const vb = [lon - dLon, lat + dLat, lon + dLon, lat - dLat].map(x => x.toFixed(4)).join(',');
+  let out = [];
+  for (let k = 0; k < kw.length; k++) {
+    if (k) await wait(1100);
+    try {
+      const r = await fetchJson('https://nominatim.openstreetmap.org/search?format=jsonv2&limit=40&bounded=1&addressdetails=1&extratags=1&accept-language=fr&viewbox=' + vb + '&q=' + encodeURIComponent(kw[k]), {}, 12000);
+      out = out.concat((r || []).map(x => { const a = x.address || {}, e = x.extratags || {}; return { lat: +x.lat, lon: +x.lon, tags: { name: x.name || (x.display_name || '').split(',')[0], 'addr:housenumber': a.house_number, 'addr:street': a.road, 'addr:city': a.city || a.town || a.village || a.municipality, website: e.website || e['contact:website'], phone: e.phone || e['contact:phone'], opening_hours: e.opening_hours } }; }));
+    } catch (e) { }
   }
-  throw last || new Error('overpass');
+  return { elements: out };
 }
 async function searchLieux(kind, i) {
   const c = LIEUX[kind][i]; SG.cur = c;
@@ -713,15 +725,19 @@ async function searchLieux(kind, i) {
   const p = await getPos(); if (!p) return;
   box.innerHTML = `<div class="panel"><b>${c[1]} ${esc(c[0])}</b><p class="sub" style="margin-top:6px">Je cherche autour de ${esc(p.label)}…</p></div>`;
   box.scrollIntoView({ behavior: 'smooth', block: 'start' });
-  let R = c[3], els = [];
+  let R = c[3], els = [], src = 'osm';
+  const msg = (t) => { const x = box.querySelector('.sub'); if (x) x.textContent = t; };
   try {
     for (let k = 0; k < 2; k++) {
-      const j = await overpass(c[2], p.lat, p.lon, R, c[5]);
-      els = j.elements || [];
+      let j;
+      if (src === 'osm') { try { j = await overpass(c[2], p.lat, p.lon, R, c[5]); } catch (e) { src = 'nomi'; msg('Le premier service est occupé, j\'essaie un autre…'); } }
+      if (src === 'nomi') j = await nominatimLieux(c[0], p.lat, p.lon, R);
+      els = (j && j.elements) || [];
       if (els.length >= 3 || R >= 80) break;
       R = Math.min(R * 3, 80);
-      box.querySelector('.sub').textContent = `Peu de résultats, j'élargis à ${R} km…`;
+      msg(`Peu de résultats, j'élargis à ${R} km…`);
     }
+    if (!els.length && src === 'osm') { msg('Je cherche encore ailleurs…'); els = (await nominatimLieux(c[0], p.lat, p.lon, R)).elements; }
   } catch (e) {
     box.innerHTML = `<div class="panel"><b>${c[1]} ${esc(c[0])}</b><p class="sub" style="margin:6px 0 10px">La recherche n'a pas répondu (connexion ou service occupé). Réessaie dans un instant, ou ouvre directement ta carte.</p><div class="help"><button class="btn alt small" id="sr-retry">Réessayer</button><a class="btn alt small" href="${mapsUrl(c[4] + ' ' + p.label)}" target="_blank" rel="noopener noreferrer">Ouvrir Google Maps</a></div></div>`;
     $('#sr-retry').onclick = () => searchLieux(kind, i); return;

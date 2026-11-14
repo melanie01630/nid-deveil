@@ -241,7 +241,7 @@ function renderPlus() {
       <p class="sub">Tout ce qui fait vivre Mams. On ajoute des choses régulièrement.</p>
       <button class="searchbar" id="pl-search" type="button"><span>🔎</span> Chercher dans toute l'appli…</button>
       <div style="margin:10px 0"><span class="ptschip">⭐ ${S.pts} point${S.pts > 1 ? 's' : ''} · ${LEVELS[level()][1]}</span></div>
-      <div class="bubbles">${PLUS_PAGES.map(k => `<button class="bub" data-pg="${k}" style="--t:${PAGES[k][3]};--pat:${motif(k)}"><span class="e">${PAGES[k][0]}</span><b>${PAGES[k][1]}</b><small>${PAGES[k][2]}</small></button>`).join('')}</div><p class="vtag">Version de l'appli : 57</p></div>`;
+      <div class="bubbles">${PLUS_PAGES.map(k => `<button class="bub" data-pg="${k}" style="--t:${PAGES[k][3]};--pat:${motif(k)}"><span class="e">${PAGES[k][0]}</span><b>${PAGES[k][1]}</b><small>${PAGES[k][2]}</small></button>`).join('')}</div><p class="vtag">Version de l'appli : 58</p></div>`;
     $('#pl-search').onclick = () => openSearch();
     $$('[data-pg]', el).forEach(b => b.onclick = () => { b.classList.add('pop'); setTimeout(() => { P.page = b.dataset.pg; renderPlus(); window.scrollTo(0, 0); }, 190); });
     return;
