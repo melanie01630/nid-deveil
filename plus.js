@@ -615,6 +615,30 @@ function renderHomeFun() {
 }
 renderHomeFun();
 
+/* ---------- Accueil : Nouveau cette semaine ---------- */
+function renderWeek() {
+  const el = $('#week'); const W = window.SEMAINE; if (!el || !W || !W.items) return;
+  if (!INDEX) INDEX = buildIndex();
+  const adultOk = typeof ADULT_OK !== 'undefined' && ADULT_OK;
+  const EMO_K = { Info: '✨', Adulte: '🍷' };
+  const list = W.items.filter(it => it.k !== 'Adulte' || adultOk).map(it => {
+    let open = null, emo = EMO_K[it.k] || '🆕';
+    if (it.k === 'Info') open = () => openSheet(`<div class="kicker">Nouveau dans Mams</div><h3 style="margin-top:4px">${esc(it.t)}</h3><p class="lead">${esc(it.x || '')}</p>`);
+    else if (it.k === 'Adulte') { const f = (window.ADULTES || []).find(a => a.titre === it.t); if (f) open = () => revealSheet('Entre adultes', f.titre, f.note, yt(f.titre + ' bande annonce')); }
+    else { const hit = INDEX.find(x => x.type === it.k && x.title === it.t) || INDEX.find(x => x.title === it.t); if (hit) { open = hit.open; emo = hit.emo; } }
+    return open ? { ...it, open, emo } : null;
+  }).filter(Boolean);
+  if (!list.length) { el.innerHTML = ''; return; }
+  const LIM = 4, all = el.dataset.all === '1';
+  el.innerHTML = `<div class="sec-title"><h3>✨ Nouveau cette semaine</h3><span class="sub" style="font-size:12px">mis à jour le ${esc(W.date)}</span></div>` +
+    (all ? list : list.slice(0, LIM)).map((it, n) => `<button class="act" data-wk="${n}" style="width:100%;text-align:left"><div class="em">${it.emo}</div><div style="flex:1;min-width:0"><h4>${esc(it.t)}</h4><p>${esc((it.x || it.k).length > 80 ? (it.x || it.k).slice(0, 78) + '…' : (it.x || it.k))}</p><span class="sub">${esc(it.k === 'Adulte' ? 'Entre adultes' : it.k)}</span></div></button>`).join('') +
+    (list.length > LIM ? `<button class="btn alt small" id="wk-more" style="margin-top:6px">${all ? 'Voir moins' : 'Voir les ' + list.length + ' nouveautés'}</button>` : '');
+  $$('[data-wk]', el).forEach(b => b.onclick = () => list[+b.dataset.wk].open());
+  const m = $('#wk-more'); if (m) m.onclick = () => { el.dataset.all = all ? '' : '1'; renderWeek(); };
+}
+renderWeek();
+window.renderWeek = renderWeek;
+
 /* ---------- Points dans la page Famille ---------- */
 const nest = $('#view-nest');
 if (nest) { const pn = document.createElement('div'); pn.className = 'panel'; pn.style.marginTop = '12px'; pn.innerHTML = '<b>Mes points</b><div id="nest-pts" style="margin:8px 0"></div><button class="btn alt" id="nest-pts-go">Voir mes points et mes avis</button>'; nest.insertBefore(pn, nest.children[2] || null); const upd = () => { $('#nest-pts').innerHTML = `<span class="ptschip">⭐ ${S.pts} point${S.pts > 1 ? 's' : ''} · ${LEVELS[level()][1]}</span>`; }; upd(); $('#nest-pts-go').onclick = () => goPlus('points'); const _rn = window.renderNest; if (_rn) window.renderNest = function () { _rn.apply(this, arguments); upd(); }; }

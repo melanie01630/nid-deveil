@@ -246,6 +246,8 @@ nav.bar-nav{position:fixed;left:0;right:0;bottom:0;max-width:560px;margin:auto;b
     </div>
   </details>
 
+  <div class="section" id="week" style="margin-top:14px"></div>
+
   <div class="label">Pour qui</div>
   <div class="chips" id="who"></div>
   <div class="label">Temps disponible</div>
@@ -445,6 +447,7 @@ nav.bar-nav{position:fixed;left:0;right:0;bottom:0;max-width:560px;margin:auto;b
 <script src="data/detail-act-4.js"></script>
 <script src="data/detail-act-5.js"></script>
 <script src="data/detail-act-ingr.js"></script>
+<script src="data/semaine.js"></script>
 <script>
 /* =================== OUTILS =================== */
 const $ = (s, r = document) => r.querySelector(s);
@@ -880,7 +883,7 @@ function askAdultPin() {
     <button class="btn" id="ad-ok" style="margin-top:14px">J'ai 18 ans ou plus, entrer</button>
     <button class="btn alt" id="ad-no" style="margin-top:10px">Retour</button>`);
   $('#ad-no').onclick = () => closeSheet();
-  $('#ad-ok').onclick = () => { ADULT_OK = true; C.mode = 'adult'; closeSheet(); renderCine(); toast('Bienvenue dans l\'espace adultes 🍿'); setTimeout(() => { const v = $('#verif'); if (v) v.scrollIntoView({ behavior: 'smooth', block: 'start' }); }, 150); };
+  $('#ad-ok').onclick = () => { ADULT_OK = true; if (window.renderWeek) renderWeek(); C.mode = 'adult'; closeSheet(); renderCine(); toast('Bienvenue dans l\'espace adultes 🍿'); setTimeout(() => { const v = $('#verif'); if (v) v.scrollIntoView({ behavior: 'smooth', block: 'start' }); }, 150); };
 }
 function renderCine() {
   $('#platforms').innerHTML = PLATEFORMES.map(p => `<button class="chip ${S.platforms.includes(p.id) ? 'on' : ''}" data-p="${p.id}">${p.nom}</button>`).join('');
