@@ -78,6 +78,9 @@ const COLS_BY = {
   'Le sapin': { 1: ['vert foncé', '#1E6B3A'], 2: ['vert', '#3BAA5C'], 3: ['rouge', '#E5484D'], 4: ['marron', '#8B5A2B'] },
   'Le smiley': { 1: ['orange', '#F28C28'], 2: ['jaune', '#F5C542'], 3: ['noir', '#222'] },
 };
+const XP = window.COLO_PLUS || {};
+Object.assign(DRAW, XP.dessins || {});
+Object.entries(XP.magiques || {}).forEach(([n, v]) => { if (v && v.g && v.k) { PIX[n] = v.g; COLS_BY[n] = v.k; } });
 function task(code, lv) {
   if (lv === 0) return String(code);
   if (lv === 1) { if (code === 1) return pick(["1+0", "0+1"]); const a = R(1, code - 1); return `${a}+${code - a}`; }
