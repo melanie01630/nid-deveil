@@ -450,6 +450,23 @@ function walk(root) {
   let n; while ((n = w.nextNode())) list.push(n);
   list.forEach(x => x.nodeType === 3 ? doText(x) : doAttrs(x));
 }
+/* Google ne traduit pas ce qui est caché (fiches, onglets pas encore ouverts).
+   Quand un bloc devient visible, on lui « remet » ses textes pour que Google les voie et les traduise. */
+const VIS_ATTRS = { class: 1, hidden: 1, open: 1 };
+const vis = new WeakMap(); const pend = new Set(); let raf = 0;
+function nudge(el) {
+  const w = document.createTreeWalker(el, NodeFilter.SHOW_TEXT); const list = []; let n;
+  while ((n = w.nextNode())) { const p = n.parentElement; if (!p || SKIP[p.tagName] || !n.nodeValue.trim() || p.closest('.notranslate,font,svg')) continue; list.push(n); }
+  list.forEach(x => x.replaceWith(document.createTextNode(x.nodeValue)));
+}
+function queueVis(el) {
+  if (el.nodeType !== 1 || el === document.documentElement || el === document.body) return;
+  pend.add(el);
+  if (!raf) raf = requestAnimationFrame(() => {
+    raf = 0; const els = [...pend]; pend.clear();
+    els.forEach(e => { if (!e.isConnected) return; const v = e.getClientRects().length > 0; const was = vis.get(e); vis.set(e, v); if (v && !was && e.querySelector('*')) nudge(e); });
+  });
+}
 let busy = false;
 const mo = new MutationObserver(recs => {
   if (busy) return; busy = true;
@@ -457,11 +474,12 @@ const mo = new MutationObserver(recs => {
     recs.forEach(r => {
       if (r.type === 'childList') r.addedNodes.forEach(walk);
       else if (r.type === 'characterData') doText(r.target);
+      else if (r.type === 'attributes' && VIS_ATTRS[r.attributeName]) queueVis(r.target);
       else if (r.type === 'attributes') { const v = r.target.getAttribute(r.attributeName); if (v) { const x = tr(v); if (x) r.target.setAttribute(r.attributeName, x); } }
     });
   } finally { mo.takeRecords(); busy = false; }
 });
-mo.observe(document.documentElement, { childList: true, subtree: true, characterData: true, attributes: true, attributeFilter: ATTRS });
+mo.observe(document.documentElement, { childList: true, subtree: true, characterData: true, attributes: true, attributeFilter: ATTRS.concat(['class', 'hidden', 'open']) });
 document.addEventListener('DOMContentLoaded', () => { busy = true; walk(document.body); mo.takeRecords(); busy = false; });
 window.MAMS_TR = tr;
 })();
