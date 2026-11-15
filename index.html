@@ -12,7 +12,7 @@
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-title" content="Mams">
-<script src="i18n.js?v=81"></script>
+<script src="i18n.js?v=84"></script>
 <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@500;600;700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
 <style>
 :root{--bg:#C9B0C0;--card:#F0DDE4;--ink:#2B2230;--muted:#4A3F52;--accent:#8A2F55;--accent-soft:#E8C3D1;--sage:#2F5A3B;--sage-soft:#D3E2CF;--line:#8E7390;--r:16px;--serif:'Playfair Display',Georgia,'Times New Roman',serif}
@@ -249,7 +249,7 @@ nav.bar-nav{position:fixed;left:0;right:0;bottom:0;max-width:560px;margin:auto;b
       <div><b>Exercices</b>Toutes les matières, de la petite section à la 3e, à faire dans l'appli ou à imprimer en PDF.</div>
       <div><b>Sorties</b>Piscines, parcs, musées et clubs près de chez toi.</div>
       <div><b>Santé et astuces</b>Petits bobos, maladies, astuces de grand-mère.</div>
-      <div><b>Histoires audio</b>Des histoires à écouter, sans écran.</div>
+      <div><b>Histoires</b>À écouter sans écran ou à lire, pour tous les âges, à imprimer en PDF.</div>
       <div><b>Jeux et blagues</b>Quiz, énigmes, devinettes et blagues du jour.</div>
       <div><b>Fêtes et anniversaires</b>Thèmes, gâteaux, soirées pyjama.</div>
       <div><b>Communauté des mams</b>Ton profil et des sorties entre mamans.</div>
@@ -278,7 +278,7 @@ nav.bar-nav{position:fixed;left:0;right:0;bottom:0;max-width:560px;margin:auto;b
   <div class="section">
     <div class="sec-title"><h3>Raccourcis</h3></div>
     <div class="tiles">
-      <button class="tile tile-audio" data-go="audio"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M4 14v-2a8 8 0 0 1 16 0v2"/><rect x="3" y="14" width="4" height="6" rx="1.5"/><rect x="17" y="14" width="4" height="6" rx="1.5"/></svg><div><b>Histoires audio</b><span>À écouter, sans écran</span></div></button>
+      <button class="tile tile-audio" data-go="histoires"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M4 14v-2a8 8 0 0 1 16 0v2"/><rect x="3" y="14" width="4" height="6" rx="1.5"/><rect x="17" y="14" width="4" height="6" rx="1.5"/></svg><div><b>Histoires</b><span>À écouter ou à lire</span></div></button>
       <button class="tile tile-audio" data-go="exos"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M4 5.5C4 4.7 4.7 4 5.5 4H11v15H5.5A1.5 1.5 0 0 1 4 17.5z"/><path d="M20 5.5c0-.8-.7-1.5-1.5-1.5H13v15h5.5c.8 0 1.5-.7 1.5-1.5z"/><path d="M7 8h2M7 11h2M15 8h2M15 11h2"/></svg><div><b>Exercices</b><span>De la petite section à la 3e</span></div></button>
       <button class="tile tile-audio" data-go="colo"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M14.5 4.5l5 5L10 19H5v-5z"/><path d="M12.5 6.5l5 5"/><path d="M5 19l-1 2"/></svg><div><b>Coloriages</b><span>Dessins et mandalas à imprimer</span></div></button>
       <button class="tile tile-audio" data-go="actu"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M4 5h13v14H6a2 2 0 0 1-2-2z"/><path d="M17 9h3v8a2 2 0 0 1-2 2M8 9h5M8 13h5"/></svg><div><b>Actu des mams</b><span>Nouveautés, vidéos et bons plans</span></div></button>
@@ -564,8 +564,9 @@ function renderToday() {
   $('#planned').innerHTML = items.length ? `<div class="section"><div class="sec-title"><h3>Prévu aujourd'hui</h3></div>${items.map(it => it.k === 'a' && byTitle[it.v] ? actCard(byTitle[it.v]) : `<div class="panel" style="margin-bottom:10px">Soirée ciné : ${esc(it.v)}</div>`).join('')}</div>` : '';
   bindOpen($('#planned'));
 }
-$$('[data-go]').forEach(b => b.onclick = () => {
-  const g = b.dataset.go;
+$$('[data-go]').forEach(b => b.onclick = () => goTile(b.dataset.go));
+function goTile(g) {
+  if (g === 'histoires') return window.openHistChoice ? openHistChoice() : goTile('audio');
   if (g === 'cine') return showTab('cine');
   if (g === 'actu') return showTab('actu');
   if (g === 'commu') return showTab('commu');
@@ -574,7 +575,8 @@ $$('[data-go]').forEach(b => b.onclick = () => {
   if (window.PLUS_PAGES && PLUS_PAGES.includes(g)) return goPlus(g);
   F.cat = (g === 'cuisine' || g === 'audio') ? g : 'all'; F.tag = (g === '3min' || g === 'pluie') ? g : null; F.age = 'all'; F._touched = true; F.q = ''; $('#q').value = ''; F.n = 30;
   renderExplore(); showTab('explore');
-});
+}
+window.goTile = goTile;
 
 /* =================== IDÉES =================== */
 const F = { q: '', age: 'all', cat: 'all', tag: null, n: 30 };
@@ -1127,12 +1129,14 @@ initAbout(); renderToday(); renderExplore(); renderCine(); renderPlan(); renderN
   show(0); timer = setInterval(next, 2800);
 })();
 </script>
-<script src="plus.js?v=83"></script>
+<script src="plus.js?v=84"></script>
 <script src="data/ecole-1.js"></script>
 <script src="data/ecole-2.js"></script>
 <script src="data/ecole-3.js"></script>
 <script src="exos.js?v=81"></script>
 <script src="data/coloriages-plus.js"></script>
 <script src="coloriages.js?v=82"></script>
+<script src="data/histoires.js"></script>
+<script src="histoires.js?v=84"></script>
 </body>
 </html>
