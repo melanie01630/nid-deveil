@@ -463,6 +463,9 @@ const D = {
 'La maison': ['The house', 'La casa', 'A casa', 'Домик', '房子', 'البيت'],
 'Le sapin': ['The fir tree', 'El abeto', 'O pinheiro', 'Ёлка', '圣诞树', 'شجرة التنوب'],
 'Le smiley': ['The smiley', 'El emoticono', 'O smiley', 'Смайлик', '笑脸', 'الوجه المبتسم'],
+'De la petite section à la 3e': ['From preschool to grade 9', 'De infantil a 3.º ESO', 'Do pré-escolar ao 9.º ano', 'От детского сада до 9 класса', '从幼儿园到初三', 'من الروضة إلى الصف التاسع'],
+'Coloriages': ['Colouring', 'Colorear', 'Colorir', 'Раскраски', '涂色', 'تلوين'],
+'Dessins et mandalas à imprimer': ['Drawings and mandalas to print', 'Dibujos y mandalas para imprimir', 'Desenhos e mandalas para imprimir', 'Рисунки и мандалы для печати', '可打印的图画和曼陀罗', 'رسومات وماندالا للطباعة'],
 // ---- Messages rapides ----
 '6 enfants maximum': ['6 children maximum', 'Máximo 6 hijos', 'Máximo 6 filhos', 'Не больше 6 детей', '最多 6 个孩子', '6 أطفال كحد أقصى'],
 'Ajouté à ton agenda': ['Added to your calendar', 'Añadido a tu agenda', 'Adicionado à tua agenda', 'Добавлено в ежедневник', '已加入日程', 'أضيف إلى مفكرتك'],
