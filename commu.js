@@ -66,9 +66,12 @@ async function render() {
     <div class="net-tabs">${tabs.map(([k, e, l]) => `<button class="${N.tab === k ? 'on' : ''}" data-nt="${k}"><span>${e}</span>${esc(l)}</button>`).join('')}</div>
     <div id="net-body"></div>`;
   $$('[data-nt]', el).forEach(b => b.onclick = () => { N.tab = b.dataset.nt; render(); });
+  if (N.tab !== 'msg') loadConvs().then(() => { const t = $('[data-nt="msg"]'); if (t && C.unread) t.insertAdjacentHTML('beforeend', `<em class="net-badge">${C.unread}</em>`); }).catch(() => { });
   const body = $('#net-body');
   if (N.tab === 'salon') return renderSalon(body);
   if (N.tab === 'moi') return renderMoi(body);
+  if (N.tab === 'msg') return renderMsgs(body);
+  if (N.tab === 'grp') return renderGroups(body);
   body.innerHTML = `<div class="panel net-card"><b>${N.tab === 'msg' ? '💬 Messages privés' : N.tab === 'grp' ? '👥 Groupes' : '📍 Les mams près de chez moi'}</b><p class="sub">${N.tab === 'msg' ? 'Bientôt : discuter en privé avec une autre maman, comme sur WhatsApp.' : N.tab === 'grp' ? 'Bientôt : créer ou rejoindre des groupes (par ville, par âge des enfants, par passion…).' : "Bientôt : trouver des mamans près de chez toi, seulement celles qui l'acceptent, avec une distance approximative."}</p><p class="sub">C'est la prochaine étape, on y travaille ! 🛠️</p></div>`;
 }
 
@@ -185,7 +188,7 @@ function drawPosts() {
   const L = $('#ns-list'); if (!L) return;
   if (!N.posts.length) { L.innerHTML = '<div class="panel net-card"><p class="sub" style="margin:0">Le salon est encore vide. Sois la première à partager quelque chose ! 🌸</p></div>'; return; }
   L.innerHTML = N.posts.map(p => `<article class="net-post" data-pid="${p.id}">
-      <header>${avatar(p.profiles, 38)}<div><b>${esc((p.profiles && p.profiles.pseudo) || 'Maman')}</b><span>${p.profiles && p.profiles.ville ? esc(p.profiles.ville) + ' · ' : ''}${ago(p.created_at)}</span></div><button class="net-more" data-pm="${p.id}" aria-label="Options">⋯</button></header>
+      <header data-pu="${p.author}">${avatar(p.profiles, 38)}<div><b>${esc((p.profiles && p.profiles.pseudo) || 'Maman')}</b><span>${p.profiles && p.profiles.ville ? esc(p.profiles.ville) + ' · ' : ''}${ago(p.created_at)}</span></div><button class="net-more" data-pm="${p.id}" aria-label="Options">⋯</button></header>
       ${p.categorie ? `<i class="net-cat">${CAT_E[p.categorie] || ''} ${esc(p.categorie)}</i>` : ''}
       <p>${esc(p.texte).replace(/\n/g, '<br>')}</p>
       ${p.photo ? `<img class="net-img" src="${esc(p.photo)}" alt="" loading="lazy">` : ''}
@@ -193,7 +196,8 @@ function drawPosts() {
     </article>`).join('') + (N.more ? '<button class="btn alt" id="ns-more">Voir plus</button>' : '');
   $$('[data-pl]', L).forEach(b => b.onclick = () => like(+b.dataset.pl));
   $$('[data-pc]', L).forEach(b => b.onclick = () => openComments(+b.dataset.pc));
-  $$('[data-pm]', L).forEach(b => b.onclick = () => postMenu(+b.dataset.pm));
+  $$('[data-pm]', L).forEach(b => b.onclick = (e) => { e.stopPropagation(); postMenu(+b.dataset.pm); });
+  $$('[data-pu]', L).forEach(h => h.onclick = () => showProfile(h.dataset.pu));
   const mo = $('#ns-more'); if (mo) mo.onclick = async () => { mo.textContent = 'Chargement…'; await fetchPosts(false); drawPosts(); };
 }
 async function like(id) {
@@ -234,7 +238,7 @@ function postMenu(id) {
   </div>`);
   $$('[data-mx]').forEach(b => b.onclick = async () => {
     const a = b.dataset.mx;
-    if (a === 'dm') { closeSheet(); toast('Les messages privés arrivent très bientôt 💬'); }
+    if (a === 'dm') startDm(p.author);
     if (a === 'report') report('post', id, p.author, p.texte);
     if (a === 'block') { await block(p.author); }
     if (a === 'del') { const { error } = await sb.from('posts').delete().eq('id', id); if (error) return toast(err(error)); closeSheet(); N.posts = N.posts.filter(x => x.id !== id); drawPosts(); toast('Supprimé'); }
@@ -259,6 +263,198 @@ function report(kind, target, author, extrait) {
     if (error) return toast(err(error));
     closeSheet(); toast('Merci, ton signalement a été envoyé 🙏');
   });
+}
+
+
+/* =================== Étape 2 : messages privés et groupes =================== */
+const C = { list: [], unread: 0, open: null, chan: null, poll: null, msgs: [] };
+const otherOf = {}; // conv -> profil de l'autre maman (discussions à deux)
+
+async function loadConvs() {
+  const { data, error } = await sb.from('members').select('conv,last_read,conversations!members_conv_fkey(id,is_group,nom,description,public,created_by,last_at)').eq('user_id', me.id);
+  if (error) { toast(err(error)); return []; }
+  const rows = (data || []).filter(r => r.conversations);
+  const ids = rows.map(r => r.conv);
+  if (!ids.length) { C.list = []; C.unread = 0; return C.list; }
+  const dm = rows.filter(r => !r.conversations.is_group).map(r => r.conv);
+  const [oth, last] = await Promise.all([
+    dm.length ? sb.from('members').select('conv,user_id,profiles!members_user_id_fkey(id,pseudo,avatar,ville)').in('conv', dm).neq('user_id', me.id) : { data: [] },
+    sb.from('messages').select('conv,texte,photo,author,created_at').in('conv', ids).order('created_at', { ascending: false }).limit(400),
+  ]);
+  (oth.data || []).forEach(o => { otherOf[o.conv] = o.profiles; });
+  const lastOf = {}, unread = {};
+  (last.data || []).forEach(m => { if (!lastOf[m.conv]) lastOf[m.conv] = m; });
+  rows.forEach(r => { unread[r.conv] = (last.data || []).filter(m => m.conv === r.conv && m.author !== me.id && m.created_at > r.last_read).length; });
+  C.list = rows.map(r => ({ id: r.conv, c: r.conversations, last: lastOf[r.conv], unread: unread[r.conv], other: otherOf[r.conv] }))
+    .filter(x => x.c.is_group || (x.other && !blocked.has(x.other.id)))
+    .sort((a, b) => (b.c.last_at > a.c.last_at ? 1 : -1));
+  C.unread = C.list.reduce((s, x) => s + x.unread, 0);
+  return C.list;
+}
+const convName = (x) => x.c.is_group ? (x.c.nom || 'Groupe') : ((x.other && x.other.pseudo) || 'Maman');
+const convAv = (x, s) => x.c.is_group ? `<span class="nav-av net-gav" style="width:${s}px;height:${s}px;font-size:${Math.round(s * .45)}px">👥</span>` : avatar(x.other, s);
+
+async function renderMsgs(body) {
+  body.innerHTML = '<div class="net-wait">Chargement de tes discussions…</div>';
+  await loadConvs();
+  body.innerHTML = `<p class="sub" style="margin:4px 4px 10px">Pour écrire à une maman, touche « ⋯ » sur une de ses publications dans le salon, ou trouve-la dans « Près de moi ».</p>
+    ${C.list.length ? C.list.map(x => `<button class="net-conv" data-cv="${x.id}">${convAv(x, 46)}<div><b>${esc(convName(x))}</b><span>${x.last ? (x.last.author === me.id ? 'Toi : ' : '') + esc(x.last.texte ? x.last.texte.slice(0, 60) : '📷 Photo') : (x.c.is_group ? 'Groupe créé, dis bonjour !' : 'Nouvelle discussion')}</span></div><i>${x.last ? ago(x.last.created_at) : ''}${x.unread ? `<em>${x.unread}</em>` : ''}</i></button>`).join('')
+    : '<div class="panel net-card"><p class="sub" style="margin:0">Pas encore de discussion. Va dire bonjour à une maman dans le salon, ou rejoins un groupe 🌸</p></div>'}`;
+  $$('[data-cv]', body).forEach(b => b.onclick = () => openConv(b.dataset.cv));
+}
+
+async function startDm(uid) {
+  const { data, error } = await sb.rpc('start_dm', { other: uid });
+  if (error) return toast(/bloque/i.test(error.message) ? "Impossible d'écrire à cette maman." : err(error));
+  closeSheet(); await loadConvs(); openConv(data);
+}
+
+async function openConv(id) {
+  let x = C.list.find(c => c.id === id);
+  if (!x) { await loadConvs(); x = C.list.find(c => c.id === id); }
+  if (!x) return toast('Discussion introuvable');
+  C.open = x; C.msgs = [];
+  openSheet(`<div class="net-chat">
+    <div class="net-chead">${convAv(x, 40)}<div><b>${esc(convName(x))}</b><span>${x.c.is_group ? (x.c.public ? 'Groupe public' : 'Groupe privé') : (x.other && x.other.ville ? esc(x.other.ville) : 'Discussion privée')}</span></div><button class="net-more" id="ch-menu" aria-label="Options">⋯</button></div>
+    <div class="net-msgs" id="ch-list"><div class="net-wait">Chargement…</div></div>
+    <div class="net-send"><label class="net-ph" aria-label="Photo">📷<input type="file" id="ch-ph" accept="image/*" hidden></label><textarea id="ch-txt" rows="1" maxlength="2000" placeholder="Écris ton message…"></textarea><button id="ch-go" aria-label="Envoyer">➤</button></div>
+  </div>`);
+  const sheet = $('#sheet'); if (sheet) sheet.classList.add('net-full');
+  $('#ch-menu').onclick = () => convMenu(x);
+  const ta = $('#ch-txt'); ta.oninput = () => { ta.style.height = 'auto'; ta.style.height = Math.min(120, ta.scrollHeight) + 'px'; };
+  const send = async (photo) => {
+    const t = ta.value.trim(); if (!t && !photo) return;
+    if (rude(t)) return toast('Ton message contient un mot interdit 🙂');
+    ta.value = ''; ta.style.height = 'auto';
+    const { error } = await sb.from('messages').insert({ conv: id, texte: t || null, photo: photo || null });
+    if (error) { toast(err(error)); ta.value = t; return; }
+    await pull();
+  };
+  $('#ch-go').onclick = () => send();
+  $('#ch-ph').onchange = async (e) => { const f = e.target.files[0]; if (!f) return; try { toast('Envoi de la photo…'); const url = await upload(f, 1280); await send(url); } catch (x2) { toast(err(x2)); } };
+  await pull(true);
+  // nouveaux messages en direct (et vérification régulière au cas où)
+  stopConv();
+  try { C.chan = sb.channel('conv-' + id).on('postgres_changes', { event: 'INSERT', schema: 'public', table: 'messages', filter: 'conv=eq.' + id }, () => pull()).subscribe(); } catch (e) { }
+  C.poll = setInterval(() => { if (!$('#ch-list')) return stopConv(); pull(); }, 8000);
+}
+function stopConv() { if (C.chan) { try { sb.removeChannel(C.chan); } catch (e) { } C.chan = null; } if (C.poll) { clearInterval(C.poll); C.poll = null; } }
+async function pull(first) {
+  const x = C.open; if (!x || !$('#ch-list')) return;
+  const { data, error } = await sb.from('messages').select('id,texte,photo,created_at,author,profiles!messages_author_fkey(pseudo,avatar)').eq('conv', x.id).order('created_at', { ascending: false }).limit(80);
+  if (error) { $('#ch-list').innerHTML = '<p class="sub">' + esc(err(error)) + '</p>'; return; }
+  const list = (data || []).reverse().filter(m => !blocked.has(m.author));
+  if (!first && list.length === C.msgs.length && (list[list.length - 1] || {}).id === (C.msgs[C.msgs.length - 1] || {}).id) return;
+  C.msgs = list;
+  const L = $('#ch-list');
+  L.innerHTML = list.length ? list.map((m, i) => { const mine = m.author === me.id, prev = list[i - 1]; const showName = x.c.is_group && !mine && (!prev || prev.author !== m.author);
+    return `<div class="net-m ${mine ? 'me' : ''}" data-mid="${m.id}">${showName ? `<small>${esc((m.profiles && m.profiles.pseudo) || 'Maman')}</small>` : ''}${m.photo ? `<img src="${esc(m.photo)}" alt="" loading="lazy">` : ''}${m.texte ? `<p>${esc(m.texte).replace(/\n/g, '<br>')}</p>` : ''}<time>${ago(m.created_at)}</time></div>`; }).join('')
+    : `<p class="sub net-empty">${x.c.is_group ? 'Le groupe est tout neuf. Lance la discussion ! 👋' : 'Dis bonjour 👋 Pense à rester prudente : ne donne pas ton adresse.'}</p>`;
+  $$('[data-mid]', L).forEach(b => b.onclick = () => msgMenu(list.find(m => String(m.id) === b.dataset.mid)));
+  L.scrollTop = L.scrollHeight;
+  await sb.from('members').update({ last_read: new Date().toISOString() }).eq('conv', x.id).eq('user_id', me.id);
+}
+function msgMenu(m) {
+  if (!m) return; const mine = m.author === me.id;
+  const back = () => openConv(C.open.id);
+  openSheet(`<div class="kicker">Message</div><p class="sub">${esc((m.texte || '📷 Photo').slice(0, 160))}</p><div class="net-menu">
+    ${mine || prof.is_admin ? '<button data-mm="del" class="danger">🗑️ Supprimer le message</button>' : ''}
+    ${!mine ? '<button data-mm="rep">🚩 Signaler le message</button>' : ''}
+    <button data-mm="back">← Retour à la discussion</button></div>`);
+  $$('[data-mm]').forEach(b => b.onclick = async () => {
+    if (b.dataset.mm === 'del') { await sb.from('messages').delete().eq('id', m.id); back(); }
+    if (b.dataset.mm === 'rep') report('message', m.id, m.author, m.texte);
+    if (b.dataset.mm === 'back') back();
+  });
+}
+async function convMenu(x) {
+  const g = x.c.is_group, mineG = g && x.c.created_by === me.id;
+  openSheet(`<div class="kicker">${g ? '👥 ' + esc(x.c.nom || 'Groupe') : '💬 ' + esc(convName(x))}</div>
+    ${g && x.c.description ? `<p class="sub">${esc(x.c.description)}</p>` : ''}
+    <div class="net-menu">
+      ${g ? '<button data-cm="members">👥 Voir les membres</button>' : '<button data-cm="profile">👤 Voir son profil</button>'}
+      ${mineG ? '<button data-cm="add">➕ Ajouter une maman</button>' : ''}
+      ${!g ? '<button data-cm="block">🚫 Bloquer cette maman</button><button data-cm="rep">🚩 Signaler cette maman</button>' : ''}
+      ${g && !mineG ? '<button data-cm="rep">🚩 Signaler le groupe</button><button data-cm="leave" class="danger">🚪 Quitter le groupe</button>' : ''}
+      ${mineG || (g && prof.is_admin) ? '<button data-cm="del" class="danger">🗑️ Supprimer le groupe</button>' : ''}
+      <button data-cm="back">← Retour à la discussion</button>
+    </div>`);
+  $$('[data-cm]').forEach(b => b.onclick = async () => {
+    const a = b.dataset.cm;
+    if (a === 'back') return openConv(x.id);
+    if (a === 'profile') return showProfile(x.other && x.other.id);
+    if (a === 'block') { stopConv(); await block(x.other.id); return; }
+    if (a === 'rep') return report(g ? 'group' : 'profile', g ? x.id : x.other.id, g ? x.c.created_by : x.other.id, g ? (x.c.nom + ' : ' + (x.c.description || '')) : x.other.pseudo);
+    if (a === 'leave') { await sb.from('members').delete().eq('conv', x.id).eq('user_id', me.id); stopConv(); closeSheet(); toast('Tu as quitté le groupe'); render(); return; }
+    if (a === 'del') { const { error } = await sb.from('conversations').delete().eq('id', x.id); if (error) return toast(err(error)); stopConv(); closeSheet(); toast('Groupe supprimé'); render(); return; }
+    if (a === 'members') return groupMembers(x);
+    if (a === 'add') return addMember(x);
+  });
+}
+async function groupMembers(x) {
+  const { data } = await sb.from('members').select('user_id,profiles!members_user_id_fkey(id,pseudo,avatar,ville)').eq('conv', x.id);
+  const mineG = x.c.created_by === me.id;
+  openSheet(`<div class="kicker">👥 Membres de « ${esc(x.c.nom || 'Groupe')} »</div><div class="net-people">${(data || []).map(m => `<div class="net-person">${avatar(m.profiles, 38)}<div><b>${esc((m.profiles && m.profiles.pseudo) || 'Maman')}${m.user_id === x.c.created_by ? ' 👑' : ''}</b><span>${esc((m.profiles && m.profiles.ville) || '')}</span></div>
+    ${m.user_id !== me.id ? `<button data-pp="${m.user_id}">Profil</button>` : ''}${mineG && m.user_id !== me.id ? `<button data-pr="${m.user_id}" class="danger">Retirer</button>` : ''}</div>`).join('')}</div>
+    <button class="btn alt" id="gm-back" style="margin-top:12px">← Retour</button>`);
+  $$('[data-pp]').forEach(b => b.onclick = () => showProfile(b.dataset.pp));
+  $$('[data-pr]').forEach(b => b.onclick = async () => { await sb.from('members').delete().eq('conv', x.id).eq('user_id', b.dataset.pr); groupMembers(x); });
+  $('#gm-back').onclick = () => openConv(x.id);
+}
+function addMember(x) {
+  openSheet(`<div class="kicker">➕ Ajouter une maman à « ${esc(x.c.nom || 'Groupe')} »</div><input class="input" id="am-q" placeholder="Cherche un pseudo…" maxlength="24"><div class="net-people" id="am-list"></div><button class="btn alt" id="am-back" style="margin-top:12px">← Retour</button>`);
+  let t = null;
+  $('#am-q').oninput = () => { clearTimeout(t); t = setTimeout(async () => {
+    const q = $('#am-q').value.trim(); if (q.length < 2) { $('#am-list').innerHTML = ''; return; }
+    const { data } = await sb.from('profiles').select('id,pseudo,avatar,ville').ilike('pseudo', '%' + q.replace(/[%_]/g, '') + '%').neq('id', me.id).limit(20);
+    $('#am-list').innerHTML = (data || []).filter(p => !blocked.has(p.id)).map(p => `<div class="net-person">${avatar(p, 38)}<div><b>${esc(p.pseudo)}</b><span>${esc(p.ville || '')}</span></div><button data-ad="${p.id}">Ajouter</button></div>`).join('') || '<p class="sub">Aucune maman trouvée.</p>';
+    $$('[data-ad]').forEach(b => b.onclick = async () => { const { error } = await sb.from('members').insert({ conv: x.id, user_id: b.dataset.ad }); if (error && !/duplicate/i.test(error.message)) return toast(err(error)); b.textContent = 'Ajoutée ✓'; b.disabled = true; });
+  }, 350); };
+  $('#am-back').onclick = () => openConv(x.id);
+}
+async function showProfile(uid) {
+  if (!uid) return;
+  const { data: p } = await sb.from('profiles').select('id,pseudo,ville,enfants,bio,avatar').eq('id', uid).maybeSingle();
+  if (!p) return toast('Profil introuvable');
+  openSheet(`<div class="net-prof">${avatar(p, 84)}<h3>${esc(p.pseudo)}</h3>${p.ville ? `<p class="sub">📍 ${esc(p.ville)}</p>` : ''}${p.enfants ? `<p class="sub">👶 ${esc(p.enfants)}</p>` : ''}${p.bio ? `<p>${esc(p.bio)}</p>` : ''}</div>
+    ${uid !== me.id ? `<div class="net-menu"><button data-sp="dm">✉️ Écrire en privé</button><button data-sp="block">🚫 Bloquer</button><button data-sp="rep">🚩 Signaler</button></div>` : ''}`);
+  $$('[data-sp]').forEach(b => b.onclick = () => { const a = b.dataset.sp; if (a === 'dm') startDm(uid); if (a === 'block') block(uid); if (a === 'rep') report('profile', uid, uid, p.pseudo + ' : ' + (p.bio || '')); });
+}
+
+async function renderGroups(body) {
+  body.innerHTML = '<div class="net-wait">Chargement des groupes…</div>';
+  await loadConvs();
+  const mine = C.list.filter(x => x.c.is_group), myIds = new Set(mine.map(x => x.id));
+  const { data: pub } = await sb.from('conversations').select('id,nom,description,created_at').eq('is_group', true).eq('public', true).order('last_at', { ascending: false }).limit(60);
+  const others = (pub || []).filter(g => !myIds.has(g.id));
+  const counts = {};
+  if (others.length) { const { data: mm } = await sb.from('members').select('conv').in('conv', others.map(g => g.id)); (mm || []).forEach(m => counts[m.conv] = (counts[m.conv] || 0) + 1); }
+  body.innerHTML = `<button class="btn" id="gr-new">➕ Créer un groupe</button>
+    <div class="label">Mes groupes</div>
+    ${mine.length ? mine.map(x => `<button class="net-conv" data-cv="${x.id}">${convAv(x, 46)}<div><b>${esc(x.c.nom || 'Groupe')}</b><span>${esc(x.c.description || (x.c.public ? 'Groupe public' : 'Groupe privé'))}</span></div><i>${x.unread ? `<em>${x.unread}</em>` : ''}</i></button>`).join('') : '<p class="sub" style="margin:4px">Tu n\'es dans aucun groupe pour l\'instant.</p>'}
+    <div class="label">Groupes à découvrir</div>
+    <input class="input" id="gr-q" placeholder="Chercher : ville, âge, passion…">
+    <div id="gr-pub">${others.map(g => `<div class="net-conv net-gpub" data-gn="${esc((g.nom + ' ' + (g.description || '')).toLowerCase())}"><span class="nav-av net-gav" style="width:46px;height:46px;font-size:21px">👥</span><div><b>${esc(g.nom || 'Groupe')}</b><span>${esc(g.description || '')}</span><span>${counts[g.id] || 0} membre${(counts[g.id] || 0) > 1 ? 's' : ''}</span></div><button class="btn small" data-gj="${g.id}">Rejoindre</button></div>`).join('') || '<p class="sub" style="margin:4px">Pas encore de groupe public. Crée le premier !</p>'}</div>`;
+  $$('[data-cv]', body).forEach(b => b.onclick = () => openConv(b.dataset.cv));
+  $$('[data-gj]', body).forEach(b => b.onclick = async () => { const { error } = await sb.from('members').insert({ conv: b.dataset.gj, user_id: me.id }); if (error && !/duplicate/i.test(error.message)) return toast(err(error)); toast('Bienvenue dans le groupe 🎉'); await loadConvs(); openConv(b.dataset.gj); });
+  $('#gr-q').oninput = (e) => { const q = e.target.value.toLowerCase().trim(); $$('[data-gn]', body).forEach(g => g.style.display = !q || g.dataset.gn.includes(q) ? '' : 'none'); };
+  $('#gr-new').onclick = () => {
+    openSheet(`<div class="kicker">➕ Nouveau groupe</div>
+      <label class="sub">Nom du groupe</label><input class="input" id="ng-nom" maxlength="50" placeholder="ex : Mamans de Lyon 7e, Bébés de 2026…">
+      <label class="sub">Description (facultatif)</label><textarea class="input" id="ng-desc" maxlength="300" rows="3" placeholder="De quoi parle ce groupe ?"></textarea>
+      <div class="cgmode"><button class="exm on" data-ngp="1"><span>🌍</span>Public</button><button class="exm" data-ngp="0"><span>🔒</span>Privé</button></div>
+      <p class="sub" id="ng-help">Public : toutes les mamans peuvent le trouver et le rejoindre.</p>
+      <button class="btn" id="ng-go">Créer le groupe</button>`);
+    let pub = true;
+    $$('[data-ngp]').forEach(b => b.onclick = () => { pub = b.dataset.ngp === '1'; $$('[data-ngp]').forEach(x => x.classList.toggle('on', x === b)); $('#ng-help').textContent = pub ? 'Public : toutes les mamans peuvent le trouver et le rejoindre.' : 'Privé : invisible pour les autres. Tu ajoutes toi-même les mamans de ton choix.'; });
+    $('#ng-go').onclick = async () => {
+      const n = $('#ng-nom').value.trim(), d = $('#ng-desc').value.trim();
+      if (n.length < 3) return toast('Donne un nom à ton groupe (3 caractères minimum)');
+      if (rude(n + ' ' + d)) return toast('Un mot n\'est pas autorisé 🙂');
+      const { data, error } = await sb.rpc('create_group', { n, d, pub }); if (error) return toast(err(error));
+      toast('Groupe créé 🎉'); await loadConvs(); openConv(data);
+    };
+  };
 }
 
 /* ---------- Mon profil ---------- */
@@ -331,6 +527,9 @@ async function upload(file, max) {
 function mount() {
   const v = $('#view-commu'); if (!v) return;
   v.innerHTML = '<h2 class="h2">Communauté des mams</h2><div id="net"></div>';
+  const _os = window.openSheet, _cs = window.closeSheet;
+  window.openSheet = openSheet = function (h) { const sh = document.querySelector('#sheet'); if (sh) sh.classList.remove('net-full'); _os(h); };
+  window.closeSheet = closeSheet = function () { stopConv(); _cs(); };
   const _show = window.showTab;
   window.showTab = showTab = function (t) { _show(t); if (t === 'commu') render(); };
   // retour depuis un lien reçu par e-mail (confirmation, mot de passe oublié)
@@ -370,6 +569,30 @@ st.textContent = `
 .net-menu{display:flex;flex-direction:column;gap:8px;margin-top:12px}.net-menu button{padding:14px 18px;border-radius:999px;border:1.5px solid #fff;background:rgba(255,255,255,.8);font-size:15px;text-align:left;color:var(--ink)}.net-menu button.danger{color:#B3261E}
 .net-avbox{display:flex;align-items:center;gap:14px;margin-bottom:12px}.net-avbox .btn{width:auto}
 .danger-btn{background:linear-gradient(180deg,#D6455B,#9B1B30)!important;color:#fff!important;margin-top:8px}
+.net-conv{display:flex;align-items:center;gap:12px;width:100%;text-align:left;padding:12px 16px;margin:0 0 10px;border-radius:40px;border:1.5px solid #fff;background:rgba(255,255,255,.75);color:var(--ink);box-sizing:border-box}
+.net-conv div{flex:1;min-width:0}.net-conv b{display:block;font-size:15px}.net-conv span{display:block;font-size:13px;opacity:.7;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.net-conv i{font-style:normal;font-size:11.5px;opacity:.8;display:flex;flex-direction:column;align-items:flex-end;gap:4px}
+.net-conv em,.net-badge{font-style:normal;min-width:20px;height:20px;padding:0 6px;border-radius:999px;background:#C2185B;color:#fff;font-size:12px;font-weight:700;display:inline-flex;align-items:center;justify-content:center;box-sizing:border-box}
+.net-tabs button{position:relative}.net-badge{position:absolute;top:2px;right:6px}
+.net-gav{background:linear-gradient(160deg,#B9A3E3,#8EC5E8)!important}
+.net-gpub .btn{width:auto;flex:none;padding:8px 14px}
+#sheet.net-full{height:92vh;max-height:92vh;display:flex;flex-direction:column}
+.net-chat{display:flex;flex-direction:column;height:100%;min-height:70vh}
+.net-chead{display:flex;align-items:center;gap:10px;padding-bottom:10px;border-bottom:1px solid rgba(122,44,78,.15)}.net-chead div{flex:1;min-width:0}.net-chead b{display:block}.net-chead span{font-size:12px;opacity:.65}
+.net-msgs{flex:1;overflow-y:auto;padding:12px 2px;display:flex;flex-direction:column;gap:6px;min-height:40vh;max-height:62vh}
+.net-m{max-width:80%;align-self:flex-start;padding:9px 14px;border-radius:22px 22px 22px 8px;background:rgba(255,255,255,.9);border:1px solid #fff}
+.net-m.me{align-self:flex-end;border-radius:22px 22px 8px 22px;background:linear-gradient(180deg,#B5577F,#7A2C4E);color:#fff}
+.net-m p{margin:0;font-size:15px;line-height:1.4;overflow-wrap:anywhere}.net-m small{display:block;font-size:11.5px;font-weight:700;color:#7A2C4E}
+.net-m img{display:block;max-width:100%;border-radius:16px;margin:2px 0 4px}.net-m time{display:block;font-size:10.5px;opacity:.6;margin-top:3px;text-align:right}
+.net-empty{text-align:center;margin:auto 10px}
+.net-send{display:flex;align-items:flex-end;gap:8px;padding-top:10px;border-top:1px solid rgba(122,44,78,.15)}
+.net-send textarea{flex:1;resize:none;border-radius:22px;border:1.5px solid #fff;background:rgba(255,255,255,.9);padding:11px 14px;font:inherit;font-size:15px;max-height:120px}
+.net-send button,.net-ph{flex:none;width:44px;height:44px;border-radius:50%;border:0;display:flex;align-items:center;justify-content:center;font-size:19px;background:linear-gradient(180deg,#A84A72,#5B1D3A);color:#fff;cursor:pointer}.net-ph{background:rgba(255,255,255,.85);border:1.5px solid #fff}
+.net-people{display:flex;flex-direction:column;gap:8px;margin-top:10px}.net-person{display:flex;align-items:center;gap:10px;padding:8px 12px;border-radius:999px;background:rgba(255,255,255,.75)}
+.net-person div{flex:1;min-width:0}.net-person b{display:block;font-size:14.5px}.net-person span{font-size:12px;opacity:.65}
+.net-person button{padding:7px 12px;border-radius:999px;border:1.5px solid #fff;background:rgba(255,255,255,.9);font-size:13px;color:var(--ink)}.net-person button.danger{color:#B3261E}
+.net-prof{text-align:center;display:flex;flex-direction:column;align-items:center;gap:2px}.net-prof h3{margin:10px 0 2px}.net-prof p{margin:2px 0}
+.net-post header{cursor:pointer}
 .net-rep{padding:12px 14px;border-radius:22px;background:rgba(255,255,255,.75);margin:0 0 10px}.net-rep span{font-size:12px;opacity:.65}.net-rep p{margin:6px 0;font-size:14px}
 `;
 document.head.appendChild(st);
