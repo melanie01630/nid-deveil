@@ -1042,7 +1042,7 @@ function showTab(t) {
 $$('.tab').forEach(b => b.onclick = () => showTab(b.dataset.tab));
 
 /* =================== INSTALLATION & HORS-LIGNE =================== */
-if ('serviceWorker' in navigator) window.addEventListener('load', () => navigator.serviceWorker.register('sw.js').catch(() => {}));
+if ('serviceWorker' in navigator) window.addEventListener('load', () => { const had = !!navigator.serviceWorker.controller; navigator.serviceWorker.addEventListener('controllerchange', () => { if (had && !window.__rl) { window.__rl = 1; location.reload(); } }); navigator.serviceWorker.register('sw.js', { updateViaCache: 'none' }).then(r => r.update()).catch(() => {}); });
 let evt = null;
 const standalone = matchMedia('(display-mode: standalone)').matches || navigator.standalone;
 window.addEventListener('beforeinstallprompt', e => { e.preventDefault(); evt = e; if (!standalone) $('#install').classList.add('show'); });
@@ -1104,6 +1104,6 @@ initAbout(); renderToday(); renderExplore(); renderCine(); renderPlan(); renderN
   show(0); timer = setInterval(next, 2800);
 })();
 </script>
-<script src="plus.js"></script>
+<script src="plus.js?v=73"></script>
 </body>
 </html>

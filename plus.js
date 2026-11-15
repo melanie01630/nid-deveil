@@ -181,6 +181,23 @@ animation:pfloat 5s ease-in-out infinite;transition:transform .2s,opacity .2s}
 .tab svg{box-sizing:content-box;width:20px;height:20px;padding:6px;border-radius:50%;border:1px solid rgba(255,255,255,.92);background:radial-gradient(circle at 28% 24%,rgba(255,255,255,.95) 0 8%,rgba(255,255,255,0) 26%),radial-gradient(circle at 50% 50%,rgba(255,255,255,.18) 55%,rgba(255,255,255,.6) 100%);box-shadow:inset 0 0 8px rgba(255,255,255,.7),inset -3px -4px 8px rgba(120,180,255,.32),inset 3px 4px 8px rgba(255,150,205,.3),0 4px 8px -5px rgba(60,30,60,.5);transition:transform .2s}
 .tab.on svg{transform:translateY(-4px) scale(1.12);background:radial-gradient(circle at 28% 24%,rgba(255,255,255,.95) 0 8%,rgba(255,255,255,0) 26%),radial-gradient(circle at 50% 50%,rgba(232,195,209,.6) 50%,rgba(201,91,118,.55) 100%)}
 .tab{gap:1px}
+/* ===== Onglets du bas : chaque onglet dans sa bulle ovale ===== */
+nav.bar-nav{gap:4px;padding-left:6px;padding-right:6px;padding-top:9px}
+.tab{flex:1 1 auto;gap:2px;padding:7px 4px 6px;border-radius:999px;font-size:9.5px;letter-spacing:-.15px;white-space:nowrap;color:var(--ink);
+  background:radial-gradient(ellipse at 22% 10%,rgba(255,255,255,.95) 0 9%,rgba(255,255,255,0) 32%),linear-gradient(180deg,rgba(255,255,255,.62),rgba(255,236,246,.3));
+  border:1.5px solid rgba(255,255,255,.92);
+  box-shadow:inset 0 0 9px rgba(255,255,255,.75),inset -3px -4px 8px rgba(120,180,255,.3),inset 3px 4px 8px rgba(255,150,205,.28),0 4px 9px -6px rgba(60,30,60,.55);
+  transition:transform .2s,background .2s}
+.tab svg,.tab.on svg{box-sizing:content-box;width:21px;height:21px;padding:0;border:0;border-radius:0;background:none;box-shadow:none;transform:none}
+.tab.on{color:#fff;transform:translateY(-3px);
+  background:radial-gradient(ellipse at 22% 10%,rgba(255,255,255,.75) 0 8%,rgba(255,255,255,0) 30%),linear-gradient(180deg,#A84A72,#5B1D3A);
+  box-shadow:inset 0 0 8px rgba(255,255,255,.4),inset -3px -4px 8px rgba(120,180,255,.25),0 6px 12px -6px rgba(80,20,50,.75)}
+/* ===== Bulle de Mams sur l'écran d'accueil : ovale + petites bulles ===== */
+#welcome .w-bubble{border-radius:50%;padding:30px 48px;min-width:min(78vw,330px);text-align:center;align-items:center;margin:0 auto}
+#welcome .w-bubble::after{left:50%;bottom:-20px;width:18px;height:18px;border-radius:50%;transform:translateX(-50%);border:1.5px solid rgba(255,255,255,.92);
+  background:radial-gradient(circle at 30% 28%,rgba(255,255,255,.95) 0 14%,rgba(255,255,255,0) 40%),rgba(255,236,246,.45);box-shadow:inset 0 0 5px rgba(255,255,255,.8)}
+#welcome .w-bubble::before{content:"";position:absolute;left:calc(50% + 10px);bottom:-36px;width:10px;height:10px;border-radius:50%;border:1.5px solid rgba(255,255,255,.92);
+  background:radial-gradient(circle at 30% 28%,rgba(255,255,255,.95) 0 16%,rgba(255,255,255,0) 45%),rgba(255,236,246,.45)}
 .act .em{border-radius:50%;border:1.5px solid rgba(255,255,255,.9);background:radial-gradient(circle at 28% 24%,rgba(255,255,255,.95) 0 8%,rgba(255,255,255,0) 26%),radial-gradient(circle at 50% 50%,rgba(255,255,255,.2) 50%,rgba(255,255,255,.55) 100%),#C9B0C0;box-shadow:inset 0 0 8px rgba(255,255,255,.7),inset -3px -4px 8px rgba(120,180,255,.3),inset 3px 4px 8px rgba(255,150,205,.3)}
 .act .em.ph{border-radius:50%}
 
