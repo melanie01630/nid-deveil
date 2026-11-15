@@ -23,7 +23,7 @@ function bind(el) {
 
 function read(i) {
   const h = H[i]; if (!h) return;
-  openSheet(`<div class="noprint"><div class="kicker">${h.e} Histoire · ${esc(h.a)} ans · ${h.m} min</div>
+  openSheet(`<div class="noprint"><div class="kicker">${h.e} À lire · ${esc(h.a)} ans · ${h.m} min</div>
       <div class="hitools"><button class="chip" data-hs="-1" aria-label="Texte plus petit">A−</button><button class="chip" data-hs="1" aria-label="Texte plus grand">A+</button><button class="chip" id="hi-print">🖨️ PDF</button></div></div>
     <div class="histsheet hs${ST.size}">
       <div class="hihead"><b>Mams · Histoires</b><span>${esc(h.a)} ans</span></div>
