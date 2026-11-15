@@ -31,7 +31,8 @@ $$;
 create or replace function public.protect_profile() returns trigger
 language plpgsql security definer set search_path = public as $$
 begin
-  if not public.is_admin() then
+  -- (le SQL Editor de Supabase n'a pas d'utilisatrice connectée : il garde tous les droits)
+  if auth.uid() is not null and not public.is_admin() then
     new.is_admin := old.is_admin;
     new.banned := old.banned;
   end if;
