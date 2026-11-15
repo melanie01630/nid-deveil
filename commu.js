@@ -138,7 +138,7 @@ const rulesPanel = () => `<div class="panel net-card net-rules"><b>🌸 Les règ
 /* ---------- Le salon ---------- */
 async function fetchPosts(reset) {
   if (reset) { N.posts = []; N.page = 0; N.more = true; }
-  let q = sb.from('posts').select('id,texte,photo,categorie,created_at,author,profiles(pseudo,ville,avatar)').order('created_at', { ascending: false }).range(N.page * 20, N.page * 20 + 19);
+  let q = sb.from('posts').select('id,texte,photo,categorie,created_at,author,profiles!posts_author_fkey(pseudo,ville,avatar)').order('created_at', { ascending: false }).range(N.page * 20, N.page * 20 + 19);
   if (N.cat !== 'Tout') q = q.eq('categorie', N.cat);
   const { data, error } = await q; if (error) { toast(err(error)); return; }
   N.more = (data || []).length === 20; N.page++;
@@ -206,7 +206,7 @@ async function openComments(id) {
   openSheet(`<div class="kicker">💬 Commentaires</div><p class="sub" style="margin:6px 0 10px">${esc(p.texte.slice(0, 140))}${p.texte.length > 140 ? '…' : ''}</p><div id="nc-list"><div class="net-wait">Chargement…</div></div>
     <div class="net-row" style="margin-top:12px"><input class="input" id="nc-txt" maxlength="1000" placeholder="Écris un commentaire gentil…"><button class="btn small" id="nc-go">Envoyer</button></div>`);
   const draw = async () => {
-    const { data } = await sb.from('comments').select('id,texte,created_at,author,profiles(pseudo,avatar)').eq('post_id', id).order('created_at');
+    const { data } = await sb.from('comments').select('id,texte,created_at,author,profiles!comments_author_fkey(pseudo,avatar)').eq('post_id', id).order('created_at');
     const list = (data || []).filter(c => !blocked.has(c.author)); N.comments[id] = list.length;
     $('#nc-list').innerHTML = list.map(c => `<div class="net-com">${avatar(c.profiles, 30)}<div><b>${esc((c.profiles && c.profiles.pseudo) || 'Maman')}</b> <span>${ago(c.created_at)}</span><p>${esc(c.texte)}</p>
       <div class="net-cact">${c.author === me.id || prof.is_admin ? `<button data-cd="${c.id}">Supprimer</button>` : ''}${c.author !== me.id ? `<button data-cr="${c.id}" data-ca="${c.author}">Signaler</button>` : ''}</div></div></div>`).join('') || '<p class="sub">Pas encore de commentaire. Lance la discussion !</p>';
