@@ -786,6 +786,44 @@ function lieuSheet(r) {
       <a class="btn alt" href="${mapsUrl(r.name + ' ' + (r.adr || SG.pos.label))}" target="_blank" rel="noopener noreferrer">Avis et photos</a></div>
     <p class="note">Vérifie toujours les horaires et les tarifs avant de partir.</p>`);
 }
+/* ===== Séances près de chez moi pour un film au cinéma ===== */
+const gSearch = (q) => 'https://www.google.com/search?q=' + encodeURIComponent(q);
+async function cineNear(film) {
+  const draw = (inner) => openSheet(`<div class="kicker">🎬 Au cinéma</div><h3 style="margin-top:4px">${esc(film)}</h3>
+    <p class="sub" style="margin:4px 0 10px">Les cinémas autour de toi, du plus proche au plus loin. Touche « Séances » pour voir les dates et horaires du jour.</p>
+    <div style="display:flex;gap:8px"><input id="cn-ville" type="text" placeholder="Ta ville ou ton code postal" value="${esc(S.ville || '')}" style="flex:1 1 auto;width:100%;min-width:0;padding:12px;border-radius:12px;border:1px solid var(--line);font:inherit"><button class="btn alt small" id="cn-me" style="width:auto;flex:none;padding:12px 14px">📍 Me localiser</button></div>
+    <button class="btn small" id="cn-go" style="margin-top:8px">Chercher les cinémas</button>
+    <div id="cn-res" style="margin-top:12px">${inner || ''}</div>`);
+  const run = async (pos) => {
+    const box = $('#cn-res'); box.innerHTML = `<p class="sub">Je cherche les cinémas autour de ${esc(pos.label)}…</p>`;
+    let els = [], R = 15;
+    try {
+      for (let k = 0; k < 3; k++) {
+        let j; try { j = await overpass(['["amenity"="cinema"]'], pos.lat, pos.lon, R); } catch (e) { j = await nominatimLieux('Cinémas', pos.lat, pos.lon, R); }
+        els = (j && j.elements) || []; if (els.length >= 3 || R >= 60) break; R = Math.min(R * 2, 60);
+        box.innerHTML = `<p class="sub">Peu de cinémas trouvés, j'élargis à ${R} km…</p>`;
+      }
+    } catch (e) { box.innerHTML = `<p class="empty">La recherche n'a pas répondu. Réessaie dans un instant.</p><div class="help"><a class="btn alt small" href="${gSearch('séances ' + film + ' ' + pos.label)}" target="_blank" rel="noopener noreferrer">Voir les séances sur Google</a></div>`; return; }
+    const seen = new Set();
+    const res = els.map(el => { const t = el.tags || {}, la = el.lat != null ? el.lat : el.center && el.center.lat, lo = el.lon != null ? el.lon : el.center && el.center.lon; if (la == null || !t.name) return null; const key = t.name.toLowerCase(); if (seen.has(key)) return null; seen.add(key); const city = t['addr:city'] || ''; return { name: t.name, lat: la, lon: lo, d: hav(pos.lat, pos.lon, la, lo), adr: [[t['addr:housenumber'], t['addr:street']].filter(Boolean).join(' '), city].filter(Boolean).join(', '), city, web: t.website || t['contact:website'] || '' }; }).filter(Boolean).sort((a, b) => a.d - b.d).slice(0, 15);
+    box.innerHTML = `<div class="help" style="margin-bottom:10px"><a class="btn alt small" href="${gSearch('séances ' + film + ' ' + pos.label)}" target="_blank" rel="noopener noreferrer">Toutes les séances autour de ${esc(pos.label)}</a></div>` +
+      (res.map(r => { const ll = r.lat + ',' + r.lon; return `<div class="film"><h4>${esc(r.name)} <span style="font-weight:400;color:var(--muted);font-size:.8em">à ${fmtKm(r.d)}</span></h4>${r.adr ? `<p>${esc(r.adr)}</p>` : ''}<div class="help" style="margin-top:10px">
+        <a class="btn small" href="${gSearch('séances ' + film + ' ' + r.name + ' ' + (r.city || pos.label))}" target="_blank" rel="noopener noreferrer">🕒 Séances</a>
+        <a class="btn alt small" href="https://www.google.com/maps/dir/?api=1&destination=${ll}" target="_blank" rel="noopener noreferrer">🧭 Itinéraire</a>
+        <a class="btn alt small" href="https://maps.apple.com/?daddr=${ll}" target="_blank" rel="noopener noreferrer">Plans (iPhone)</a>
+        ${r.web ? `<a class="btn alt small" href="${esc(/^https?:/.test(r.web) ? r.web : 'https://' + r.web)}" target="_blank" rel="noopener noreferrer">Site du cinéma</a>` : ''}</div></div>`; }).join('') || `<p class="empty">Aucun cinéma trouvé à moins de ${R} km dans la carte OpenStreetMap.</p>`) +
+      `<p class="sub" style="font-size:11px;margin-top:8px">Distances à vol d'oiseau. Cinémas © les contributeurs d'OpenStreetMap. Les séances s'ouvrent dans Google : vérifie que le film passe bien dans ce cinéma ce jour-là.</p>`;
+  };
+  const bind = () => {
+    $('#cn-go').onclick = async () => { const v = $('#cn-ville').value.trim(); if (!v) return toast('Écris ta ville ou touche « Me localiser »'); $('#cn-res').innerHTML = '<p class="sub">Je cherche ta ville…</p>'; const p = await geocode(v); if (!p) { $('#cn-res').innerHTML = '<p class="empty">Ville introuvable. Essaie avec le code postal.</p>'; return; } p.q = v; S.ville = v; S.geo = p; SG.pos = p; save(); run(p); };
+    $('#cn-ville').onkeydown = (e) => { if (e.key === 'Enter') { e.preventDefault(); $('#cn-go').click(); } };
+    $('#cn-me').onclick = () => { if (!navigator.geolocation) return toast('Position indisponible sur ce téléphone'); $('#cn-res').innerHTML = '<p class="sub">Je te localise…</p>'; navigator.geolocation.getCurrentPosition(pp => { const p = { lat: pp.coords.latitude, lon: pp.coords.longitude, label: 'toi' }; SG.pos = p; run(p); }, () => { $('#cn-res').innerHTML = '<p class="empty">Je n\'ai pas pu te localiser. Écris ta ville à la place.</p>'; }, { enableHighAccuracy: false, timeout: 10000, maximumAge: 600000 }); };
+  };
+  draw(); bind();
+  const known = SG.pos || (S.geo && S.geo.lat ? S.geo : null);
+  if (known) run(known);
+}
+window.cineNear = cineNear;
 function renderLieux() {
   const v = $('#s-ville'); if (v && !v.value && S.ville) v.value = S.ville;
   if (!SG.pos && S.geo && S.geo.q && S.geo.q === (v && v.value)) SG.pos = S.geo;
@@ -864,7 +902,7 @@ const MOIS = ['janvier','février','mars','avril','mai','juin','juillet','août'
 const fDate = (iso) => { const [y, m, d] = iso.split('-').map(Number); return d + ' ' + MOIS[m - 1]; };
 const PUB = { famille: 'Famille', ado: 'Ados, vérifie l\'âge', adulte: 'Adultes' };
 function nouvCard(n) {
-  return `<div class="film"><h4>${esc(n.t)}</h4><p>${esc(n.x)}</p><div class="tags"><span class="tag">${fDate(n.d)}</span><span class="tag">${esc(n.ou)}</span><span class="tag">${esc(n.k)}</span><span class="tag age">${PUB[n.pub]}</span></div><div class="help" style="margin-top:12px"><a class="btn alt small" href="${ytSearch(n.t + ' bande-annonce VF')}" target="_blank" rel="noopener noreferrer">Bande-annonce</a><a class="btn alt small" href="${imgSearch('affiche ' + n.t)}" target="_blank" rel="noopener noreferrer">Voir l'affiche</a></div></div>`;
+  return `<div class="film"><h4>${esc(n.t)}</h4><p>${esc(n.x)}</p><div class="tags"><span class="tag">${fDate(n.d)}</span><span class="tag">${esc(n.ou)}</span><span class="tag">${esc(n.k)}</span><span class="tag age">${PUB[n.pub]}</span></div><div class="help" style="margin-top:12px">${n.ou === 'Cinéma' ? `<button class="btn small" data-cn="${esc(n.t)}">🎬 Séances près de moi</button>` : ''}<a class="btn alt small" href="${ytSearch(n.t + ' bande-annonce VF')}" target="_blank" rel="noopener noreferrer">Bande-annonce</a><a class="btn alt small" href="${imgSearch('affiche ' + n.t)}" target="_blank" rel="noopener noreferrer">Voir l'affiche</a></div></div>`;
 }
 function nouvList(f) {
   const lim = new Date(Date.now() - 10 * 864e5).toISOString().slice(0, 10);
@@ -907,7 +945,7 @@ function renderCine() {
     else { const gs = ['all', 'nouv'].concat([...new Set(ADULTES.map(x => x.g))]);
     if (!gs.includes(C.ag)) C.ag = 'all';
     const gchips = `<div class="chips" style="flex-wrap:wrap;margin-bottom:6px">${gs.map(g => `<button class="chip ${C.ag === g ? 'on' : ''}" data-ag="${esc(g)}">${g === 'all' ? 'Tous les genres' : g === 'nouv' ? 'Nouveautés et au cinéma' : esc(g)}</button>`).join('')}</div>`;
-    const card = (x) => `<div class="film"><h4>${esc(x.titre)}${yearTxt(x)}</h4><p>${esc(x.note)}</p><div class="tags">${x.ou ? `<span class="tag age">🆕 ${esc(x.ou)}${x.d ? ' · ' + (x.d > new Date().toISOString().slice(0, 10) ? 'le ' : 'depuis le ') + fDate(x.d) : ''}</span>` : ''}<span class="tag type">${isSerie(x) ? 'Série' : 'Film'}</span><span class="tag">${esc(x.g)}</span></div><div class="help" style="margin-top:12px"><a class="btn alt small" href="${ytSearch(x.titre + ' bande-annonce VF')}" target="_blank" rel="noopener noreferrer">Bande-annonce</a><button class="btn alt small" data-pf="c:${esc(x.titre)}">Programmer</button></div></div>`;
+    const card = (x) => `<div class="film"><h4>${esc(x.titre)}${yearTxt(x)}</h4><p>${esc(x.note)}</p><div class="tags">${x.ou ? `<span class="tag age">🆕 ${esc(x.ou)}${x.d ? ' · ' + (x.d > new Date().toISOString().slice(0, 10) ? 'le ' : 'depuis le ') + fDate(x.d) : ''}</span>` : ''}<span class="tag type">${isSerie(x) ? 'Série' : 'Film'}</span><span class="tag">${esc(x.g)}</span></div><div class="help" style="margin-top:12px">${x.ou === 'Au cinéma' ? `<button class="btn small" data-cn="${esc(x.titre)}">🎬 Séances près de moi</button>` : ''}<a class="btn alt small" href="${ytSearch(x.titre + ' bande-annonce VF')}" target="_blank" rel="noopener noreferrer">Bande-annonce</a><button class="btn alt small" data-pf="c:${esc(x.titre)}">Programmer</button></div></div>`;
     html = gchips + bySections(ADULTES.filter(x => C.ag === 'all' || (C.ag === 'nouv' ? x.ou : x.g === C.ag)), card, 'Rien pour ce choix.'); }
   } else if (C.mode === 'mine') {
     if (!S.platforms.length) html = '<p class="empty">Coche au moins une plateforme ci-dessus pour voir les films qui te conviennent.</p>';
@@ -923,6 +961,7 @@ function renderCine() {
   }
   $('#films').innerHTML = (C.mode === 'cinema' ? '' : kindChips()) + html;
   $$('[data-kd]').forEach(b => b.onclick = () => { C.kind = b.dataset.kd; renderCine(); });
+  $$('[data-cn]').forEach(b => b.onclick = () => cineNear(b.dataset.cn));
   $$('[data-ag]').forEach(b => b.onclick = () => { C.ag = b.dataset.ag; renderCine(); });
   $$('[data-pf]').forEach(b => b.onclick = () => pickDay({ k: 'f', v: b.dataset.pf.replace(/^c:/, '') }));
 }
@@ -930,7 +969,7 @@ function filmCard(f) {
   const plats = f.on.map(id => PLATEFORMES.find(p => p.id === id)).filter(Boolean);
   return `<div class="film"><h4>${esc(f.titre)}${yearTxt(f)}</h4><p>${esc(f.genre)} · ${esc(f.note)}</p>
     <div class="tags"><span class="tag age">Dès ${f.age} ans</span><span class="tag type">${f.type === 'serie' ? 'Série' : f.type === 'cinema' ? 'Au cinéma' : 'Film'}</span>${plats.map(p => `<span class="tag" style="--c:${p.couleur}">${p.nom}</span>`).join('')}</div>
-    <div class="help" style="margin-top:12px"><a class="btn alt small" href="${ytSearch(f.titre + ' bande-annonce VF')}" target="_blank" rel="noopener noreferrer">Bande-annonce</a><button class="btn alt small" data-pf="${esc(f.titre)}">Programmer</button></div></div>`;
+    <div class="help" style="margin-top:12px">${f.type === 'cinema' ? `<button class="btn small" data-cn="${esc(f.titre)}">🎬 Séances près de moi</button>` : ''}<a class="btn alt small" href="${ytSearch(f.titre + ' bande-annonce VF')}" target="_blank" rel="noopener noreferrer">Bande-annonce</a><button class="btn alt small" data-pf="${esc(f.titre)}">Programmer</button></div></div>`;
 }
 
 /* =================== PLANNING =================== */
