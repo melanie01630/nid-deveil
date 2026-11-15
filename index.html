@@ -177,6 +177,7 @@ nav.bar-nav{position:fixed;left:0;right:0;bottom:0;max-width:560px;margin:auto;b
 .w-brand{font-family:var(--serif);font-weight:600;font-size:19px;text-align:center;letter-spacing:-.01em}
 .w-bubble{background:#F0DDE4;border:1px solid var(--line);border-radius:22px;padding:18px 20px;min-height:132px;display:flex;flex-direction:column;justify-content:center;text-align:left;box-shadow:0 10px 26px -16px rgba(43,34,48,.5);cursor:pointer;color:var(--ink);font:inherit;position:relative;transition:opacity .35s}
 .w-bubble.fade{opacity:0}
+.w-bubble{display:grid!important}.w-sl{grid-area:1/1;opacity:0;pointer-events:none;align-self:center}.w-sl.on{opacity:1}.w-sl .w-t,.w-sl .w-d{display:-webkit-box;-webkit-box-orient:vertical;-webkit-line-clamp:2;overflow:hidden}.w-sl .w-t{font-size:19px}
 .w-bubble::after{content:"";position:absolute;left:50%;bottom:-13px;width:24px;height:24px;background:#F0DDE4;border-right:1px solid var(--line);border-bottom:1px solid var(--line);transform:translateX(-50%) rotate(45deg)}
 .w-k{font-size:11.5px;font-weight:600;letter-spacing:.06em;text-transform:uppercase;color:var(--accent)}
 .w-t{font-family:var(--serif);font-weight:600;font-size:21px;line-height:1.2;margin-top:5px}
@@ -1069,12 +1070,14 @@ initAbout(); renderToday(); renderExplore(); renderCine(); renderPlan(); renderN
   ].filter(m => !m.hasOwnProperty('a') || m.a);
   const B = $('#w-bubble'), D = $('#w-dots');
   D.innerHTML = msgs.map(() => '<i></i>').join('');
+  // Tous les messages sont écrits une seule fois dans la bulle (puis on montre l'un ou l'autre) : la traduction les traduit tous
+  B.innerHTML = msgs.map(m => `<div class="w-sl"><div class="w-k">${esc(m.k)}</div><div class="w-t">${esc(m.a ? m.a.title : m.t)}</div><div class="w-d">${esc(m.a ? m.a.desc : m.d)}</div>${(m.a || m.go) ? '<div class="w-hint">Toucher pour voir</div>' : ''}</div>`).join('');
   let n = 0, timer = null;
   const show = (i) => {
     n = (i + msgs.length) % msgs.length; const m = msgs[n];
     B.classList.add('fade');
     setTimeout(() => {
-      B.innerHTML = `<div class="w-k">${esc(m.k)}</div><div class="w-t">${esc(m.a ? m.a.title : m.t)}</div><div class="w-d">${esc(m.a ? m.a.desc : m.d)}</div>${(m.a || m.go) ? '<div class="w-hint">Toucher pour voir</div>' : ''}`;
+      $$('#w-bubble .w-sl').forEach((x, j) => x.classList.toggle('on', j === n));
       $$('#w-dots i').forEach((x, j) => x.classList.toggle('on', j === n));
       B.classList.remove('fade');
     }, 260);
@@ -1104,6 +1107,6 @@ initAbout(); renderToday(); renderExplore(); renderCine(); renderPlan(); renderN
   show(0); timer = setInterval(next, 2800);
 })();
 </script>
-<script src="plus.js?v=74"></script>
+<script src="plus.js?v=75"></script>
 </body>
 </html>
