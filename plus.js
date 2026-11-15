@@ -204,6 +204,36 @@ animation:pfloat 5s ease-in-out infinite;transition:transform .2s,opacity .2s}
 .joinb:active{transform:scale(.94)}
 .vcard .row2{margin-top:10px}.vkw{margin-top:8px;font-size:13px;color:var(--muted)}.vkw span{font-weight:700;color:var(--ink)}.vcopy{border:1px solid var(--line);background:#fff;border-radius:99px;padding:3px 10px;font:inherit;font-size:12px;margin-left:6px}
 .vtag{font-size:11px;color:var(--muted);text-align:center;margin:18px 0 6px}
+
+.langb{display:inline-flex;align-items:center;justify-content:center;width:34px;height:34px;margin-left:6px;border-radius:50%;font-size:18px;vertical-align:middle;border:1.5px solid rgba(255,255,255,.92);background:radial-gradient(circle at 28% 24%,rgba(255,255,255,.95) 0 8%,rgba(255,255,255,0) 26%),radial-gradient(circle at 50% 50%,rgba(255,255,255,.2) 50%,rgba(170,200,255,.55) 100%);box-shadow:inset 0 0 8px rgba(255,255,255,.7),0 4px 8px -5px rgba(60,30,60,.5)}
+.back{z-index:250}
+.langs{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px;margin-top:12px}
+.langs button{aspect-ratio:1;border-radius:50%;display:flex;flex-direction:column;align-items:center;justify-content:center;font-size:12px;font-weight:600;line-height:1.1;padding:6px;text-align:center;color:var(--ink);border:1.5px solid rgba(255,255,255,.92);background:radial-gradient(circle at 28% 24%,rgba(255,255,255,.95) 0 8%,rgba(255,255,255,0) 26%),radial-gradient(circle at 50% 50%,rgba(255,255,255,.25) 50%,rgba(255,180,215,.5) 100%);box-shadow:inset 0 0 12px rgba(255,255,255,.7),inset -4px -5px 10px rgba(120,180,255,.3),0 6px 12px -8px rgba(60,30,60,.5)}
+.langs button span{font-size:20px;margin-bottom:3px}
+.langs button.on{background:radial-gradient(circle at 28% 24%,rgba(255,255,255,.7) 0 8%,rgba(255,255,255,0) 26%),linear-gradient(180deg,#A84A72,#5B1D3A);color:#fff}
+/* ===== Bulles partout : même les formes rectangulaires ===== */
+.w-bubble,.act,.film,.panel,.qa,.warn,.about,.hero-card,.searchbar,.install,.day,.vcard,.pgback,.btn.alt,.w-nav button,.w-skip,.sheet .film,.cal button{
+  background:radial-gradient(ellipse at 12% 0%,rgba(255,255,255,.95) 0 5%,rgba(255,255,255,0) 22%),radial-gradient(ellipse at 92% 108%,rgba(160,200,255,.28) 0 10%,rgba(160,200,255,0) 40%),linear-gradient(160deg,rgba(255,255,255,.66),rgba(255,236,246,.34));
+  border:1.5px solid rgba(255,255,255,.92);
+  box-shadow:inset 0 0 14px rgba(255,255,255,.75),inset -6px -8px 16px rgba(120,180,255,.24),inset 6px 8px 16px rgba(255,150,205,.24),0 8px 18px -12px rgba(60,30,60,.5);
+  -webkit-backdrop-filter:blur(3px);backdrop-filter:blur(3px)}
+.act,.film,.panel,.qa,.about,.hero-card,.install,.day,.vcard,.warn{border-radius:28px}
+.w-bubble{border-radius:34px;background-color:transparent}
+.w-bubble::after{background:linear-gradient(135deg,rgba(255,255,255,0) 50%,rgba(255,236,246,.6) 50%);border-right:1.5px solid rgba(255,255,255,.92);border-bottom:1.5px solid rgba(255,255,255,.92);box-shadow:4px 4px 8px -4px rgba(120,180,255,.3)}
+.btn,.w-go,.install button,.btn.alt,.pgback,.vcopy,.w-skip{border-radius:999px}
+.btn:not(.alt),.w-go,.install button{
+  background:radial-gradient(ellipse at 18% 8%,rgba(255,255,255,.7) 0 8%,rgba(255,255,255,0) 30%),linear-gradient(180deg,#A84A72,#5B1D3A);
+  border:1.5px solid rgba(255,255,255,.85);color:#fff;
+  box-shadow:inset 0 0 10px rgba(255,255,255,.4),inset -4px -5px 10px rgba(120,180,255,.25),0 8px 16px -8px rgba(80,20,50,.7)}
+.btn.sage{background:radial-gradient(ellipse at 18% 8%,rgba(255,255,255,.7) 0 8%,rgba(255,255,255,0) 30%),linear-gradient(180deg,#6FA88C,#2F6B52)}
+.w-nav button{border-radius:50%}
+.warnbox{border-radius:26px;border:1.5px solid rgba(255,255,255,.9);box-shadow:inset 0 0 12px rgba(255,255,255,.6),0 6px 14px -10px rgba(60,30,60,.45)}
+.qa .ans{border-radius:20px}
+.tag{border-radius:999px;box-shadow:inset 0 0 6px rgba(255,255,255,.45),inset 2px 3px 5px rgba(255,255,255,.35)}
+.sheet{border-radius:34px 34px 0 0;background:radial-gradient(ellipse at 10% 0%,rgba(255,255,255,.85) 0 4%,rgba(255,255,255,0) 18%),linear-gradient(170deg,#F3E2EA,#E6D3E6 55%,#DCE6F2);border-top:1.5px solid rgba(255,255,255,.95);box-shadow:inset 0 0 18px rgba(255,255,255,.7)}
+.sheet input,.sheet textarea,#s-ville,.view input[type=text],.view input[type=search]{border-radius:999px!important;border:1.5px solid rgba(255,255,255,.95)!important;background:rgba(255,255,255,.7)!important;box-shadow:inset 0 2px 6px rgba(120,90,120,.15)}
+.sheet textarea{border-radius:24px!important}
+
 `;
 document.head.appendChild(st);
 
@@ -638,6 +668,22 @@ function renderWeek() {
 }
 renderWeek();
 window.renderWeek = renderWeek;
+
+/* ---------- Langues : traduction automatique de toute l'appli ---------- */
+const LANGS = [['fr','🇫🇷','Français'],['en','🇬🇧','English'],['zh-CN','🇨🇳','中文'],['hi','🇮🇳','हिन्दी'],['es','🇪🇸','Español'],['ar','🌙','العربية'],['bn','🇧🇩','বাংলা'],['pt','🇵🇹','Português'],['ru','🇷🇺','Русский'],['ur','🇵🇰','اردو']];
+const ORIG = 'https://melanie01630.github.io/nid-deveil/';
+function curLang() { const m = location.search.match(/_x_tr_tl=([^&]+)/); return m ? decodeURIComponent(m[1]) : 'fr'; }
+function langSheet() {
+  const cur = curLang();
+  openSheet(`<div class="kicker">🌍 Langue</div><h3 style="margin-top:4px">Choose your language</h3><p class="sub" style="margin-top:6px">Mams est écrite en français. Les autres langues sont traduites automatiquement : la traduction peut contenir quelques erreurs.</p>
+    <div class="langs">${LANGS.map(([c, f, n]) => `<button data-lg="${c}" class="${c === cur ? 'on' : ''}"><span>${f}</span>${n}</button>`).join('')}</div>`);
+  $$('[data-lg]').forEach(b => b.onclick = () => {
+    const c = b.dataset.lg; try { localStorage.setItem('mams-lang', c); } catch (e) { }
+    if (c === 'fr') { location.href = ORIG; return; }
+    location.href = 'https://melanie01630-github-io.translate.goog/nid-deveil/?_x_tr_sl=fr&_x_tr_tl=' + encodeURIComponent(c) + '&_x_tr_hl=' + encodeURIComponent(c) + '&_x_tr_pto=wapp';
+  });
+}
+['#lang-btn', '#lang-btn2'].forEach(id => { const b = $(id); if (b) b.onclick = (e) => { e.stopPropagation(); langSheet(); }; });
 
 /* ---------- Points dans la page Famille ---------- */
 const nest = $('#view-nest');
