@@ -79,7 +79,7 @@ function buildIndex() {
   const I = [];
   ACTS.forEach(a => I.push(mk('Activité', '🎨', a.title, a.desc, a.title + ' ' + a.desc + ' ' + a.cat + ' ' + a.material.join(' '), () => openAct(a.i))));
   RECETTES.forEach((r, n) => I.push(mk('Recette', '🍳', r.t, r.i, r.t + ' ' + r.i + ' ' + r.d + ' ' + RECETTES_CATS[r.c] + ' ' + (r.g === 'd' ? 'sucre dessert' : 'sale'), () => openRecette(n))));
-  BLAGUES.forEach(b => I.push(mk('Blague', '😄', b.q, b.r, b.q + ' ' + b.r + ' blague humour', () => revealSheet('Blague', b.q, b.r))));
+  BLAGUES.filter(b => b.a !== 'f' || curLang() === 'fr').forEach(b => I.push(mk('Blague', '😄', b.q, b.r, b.q + ' ' + b.r + ' blague humour', () => revealSheet('Blague', b.q, b.r))));
   DEVINETTES.forEach(b => I.push(mk('Devinette', '🤔', b.q, '', b.q + ' devinette', () => revealSheet('Devinette', b.q, b.r))));
   ENIGMES.forEach(b => I.push(mk('Énigme', '🧩', b.q, '', b.q + ' enigme', () => revealSheet('Énigme', b.q, b.r))));
   MALADIES.forEach(m => I.push(mk('Santé', '🩺', m.n, m.s, m.n + ' ' + m.k + ' ' + m.s, () => santeSheet(m))));
@@ -378,7 +378,8 @@ RENDER.jeux = () => {
   const ages = Object.entries(AGES_JEUX).filter(([k]) => P.jt === 'blagues' || k !== 'f' || P.jt === 'quiz');
   let body = '';
   const lst = P.jt === 'blagues' ? BLAGUES : P.jt === 'devinettes' ? DEVINETTES : P.jt === 'enigmes' ? ENIGMES : QUIZ;
-  if (P.ja === 'f' && P.jt !== 'blagues' && P.jt !== 'quiz') P.ja = 'p';
+  const noF = P.jt === 'blagues' && curLang() !== 'fr'; /* blagues adultes : jeux de mots, seulement en français */
+  if (P.ja === 'f' && ((P.jt !== 'blagues' && P.jt !== 'quiz') || noF)) P.ja = 'p';
   const items = lst.map((x, i) => [x, i]).filter(([x]) => x.a === P.ja);
   if (P.jt === 'quiz') {
     if (!P.quiz || P.quiz.age !== P.ja) P.quiz = { age: P.ja, n: 0, ok: 0, done: false, order: items.map(([, i]) => i), picked: null };
@@ -391,7 +392,7 @@ RENDER.jeux = () => {
   } else {
     body = items.map(([x, i]) => `<div class="qa"><b>${esc(x.q)}</b><button class="btn alt small" data-rv style="margin-top:8px">Voir la réponse</button><div class="ans">${esc(x.r)}${P.jt === 'blagues' ? `<div><button class="chip" data-ri="${P.jt}${i}" style="margin-top:8px">😂 J'ai ri (+1)</button></div>` : ''}</div></div>`).join('') || '<p class="empty">Rien dans cette catégorie pour l\'instant.</p>';
   }
-  return `<h2 class="h2">Jeux et blagues</h2><p class="sub">${BLAGUES.length + DEVINETTES.length + ENIGMES.length + QUIZ.length} blagues, devinettes, énigmes et questions. On en ajoute souvent.</p>${chips(tabs, P.jt, 'jt')}${chips(Object.entries(AGES_JEUX).filter(([k]) => k !== 'f' || P.jt === 'blagues' || P.jt === 'quiz'), P.ja, 'ja')}${body}`;
+  return `<h2 class="h2">Jeux et blagues</h2><p class="sub">${BLAGUES.length + DEVINETTES.length + ENIGMES.length + QUIZ.length} blagues, devinettes, énigmes et questions. On en ajoute souvent.</p>${chips(tabs, P.jt, 'jt')}${chips(Object.entries(AGES_JEUX).filter(([k]) => k !== 'f' || (P.jt === 'blagues' && !noF) || P.jt === 'quiz'), P.ja, 'ja')}${body}`;
 };
 BIND.jeux = (el) => {
   $$('[data-jt]', el).forEach(b => b.onclick = () => { P.jt = b.dataset.jt; P.quiz = null; rerender(); });
