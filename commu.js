@@ -32,6 +32,7 @@ async function client() {
   sb.auth.onAuthStateChange((ev, session) => {
     me = session ? session.user : null;
     if (ev === 'PASSWORD_RECOVERY') { recovering = true; window.showTab && showTab('commu'); }
+    if (ev === 'SIGNED_OUT') { try { NR.loc = undefined; C.list = []; C.unread = 0; } catch (e) { } }
     if (ev === 'SIGNED_IN' || ev === 'SIGNED_OUT') { prof = null; if (visible()) render(); }
   });
   const { data } = await sb.auth.getSession(); me = data.session ? data.session.user : null;
@@ -72,7 +73,8 @@ async function render() {
   if (N.tab === 'moi') return renderMoi(body);
   if (N.tab === 'msg') return renderMsgs(body);
   if (N.tab === 'grp') return renderGroups(body);
-  body.innerHTML = `<div class="panel net-card"><b>${N.tab === 'msg' ? '💬 Messages privés' : N.tab === 'grp' ? '👥 Groupes' : '📍 Les mams près de chez moi'}</b><p class="sub">${N.tab === 'msg' ? 'Bientôt : discuter en privé avec une autre maman, comme sur WhatsApp.' : N.tab === 'grp' ? 'Bientôt : créer ou rejoindre des groupes (par ville, par âge des enfants, par passion…).' : "Bientôt : trouver des mamans près de chez toi, seulement celles qui l'acceptent, avec une distance approximative."}</p><p class="sub">C'est la prochaine étape, on y travaille ! 🛠️</p></div>`;
+  if (N.tab === 'near') return renderNear(body);
+  body.innerHTML = `<div class="panel net-card"><b>${N.tab === 'msg' ? '💬 Messages privés' : N.tab === 'grp' ? '👥 Groupes' : '📍 Les mams près de chez moi'}</b><p class="sub">${N.tab === 'msg' ? 'Bientôt : discuter en privé avec une autre maman, comme sur WhatsApp.' : N.tab === 'grp' ? 'Bientôt : créer ou rejoindre des groupes (par ville, par âge des enfants, par passion…).' : ""}</p><p class="sub">C'est la prochaine étape, on y travaille ! 🛠️</p></div>`;
 }
 
 /* ---------- Inscription / connexion ---------- */
@@ -297,10 +299,11 @@ const convAv = (x, s) => x.c.is_group ? `<span class="nav-av net-gav" style="wid
 async function renderMsgs(body) {
   body.innerHTML = '<div class="net-wait">Chargement de tes discussions…</div>';
   await loadConvs();
-  body.innerHTML = `<p class="sub" style="margin:4px 4px 10px">Pour écrire à une maman, touche « ⋯ » sur une de ses publications dans le salon, ou trouve-la dans « Près de moi ».</p>
+  body.innerHTML = searchBox() + `<p class="sub" style="margin:10px 4px">Tu peux aussi écrire à une maman depuis le salon (« ⋯ » sur sa publication) ou depuis « Près de moi ».</p>
     ${C.list.length ? C.list.map(x => `<button class="net-conv" data-cv="${x.id}">${convAv(x, 46)}<div><b>${esc(convName(x))}</b><span>${x.last ? (x.last.author === me.id ? 'Toi : ' : '') + esc(x.last.texte ? x.last.texte.slice(0, 60) : '📷 Photo') : (x.c.is_group ? 'Groupe créé, dis bonjour !' : 'Nouvelle discussion')}</span></div><i>${x.last ? ago(x.last.created_at) : ''}${x.unread ? `<em>${x.unread}</em>` : ''}</i></button>`).join('')
     : '<div class="panel net-card"><p class="sub" style="margin:0">Pas encore de discussion. Va dire bonjour à une maman dans le salon, ou rejoins un groupe 🌸</p></div>'}`;
   $$('[data-cv]', body).forEach(b => b.onclick = () => openConv(b.dataset.cv));
+  bindSearch(body);
 }
 
 async function startDm(uid) {
@@ -457,6 +460,81 @@ async function renderGroups(body) {
   };
 }
 
+
+/* =================== Étape 3 : les mams près de chez moi + recherche par pseudo =================== */
+const NR = { km: 25, loc: undefined };
+const round2 = (x) => Math.round(x * 100) / 100; // environ 1 km : la position exacte n'est jamais enregistrée
+async function myLoc() { const { data } = await sb.from('locations').select('lat,lng,visible').eq('user_id', me.id).maybeSingle(); NR.loc = data || null; return NR.loc; }
+async function saveLoc(lat, lng, visible) {
+  const { error } = await sb.from('locations').upsert({ user_id: me.id, lat: round2(lat), lng: round2(lng), visible, updated_at: new Date().toISOString() });
+  if (error) throw error; await myLoc();
+}
+function gps() {
+  return new Promise((res, rej) => { if (!navigator.geolocation) return rej(new Error('geo')); navigator.geolocation.getCurrentPosition(p => res([p.coords.latitude, p.coords.longitude]), rej, { enableHighAccuracy: false, timeout: 15000, maximumAge: 600000 }); });
+}
+async function cityPos(q) {
+  const r = await fetch('https://nominatim.openstreetmap.org/search?format=json&limit=1&accept-language=fr&q=' + encodeURIComponent(q));
+  const j = await r.json(); if (!j || !j[0]) throw { mine: 'Ville introuvable. Essaie avec le code postal.' };
+  return [+j[0].lat, +j[0].lon];
+}
+function searchBox() {
+  return `<div class="panel net-card"><b>🔎 Retrouver une maman</b><input class="input" id="ps-q" maxlength="24" placeholder="Écris son pseudo…" style="margin-bottom:4px"><div class="net-people" id="ps-list"></div></div>`;
+}
+function bindSearch(body) {
+  let t = null; const q = $('#ps-q', body); if (!q) return;
+  q.oninput = () => { clearTimeout(t); t = setTimeout(async () => {
+    const v = q.value.trim(); const L = $('#ps-list', body); if (v.length < 2) { L.innerHTML = ''; return; }
+    const { data } = await sb.from('profiles').select('id,pseudo,avatar,ville').ilike('pseudo', '%' + v.replace(/[%_]/g, '') + '%').neq('id', me.id).eq('banned', false).limit(20);
+    const list = (data || []).filter(p => !blocked.has(p.id));
+    L.innerHTML = list.map(p => `<div class="net-person">${avatar(p, 38)}<div><b>${esc(p.pseudo)}</b><span>${esc(p.ville || '')}</span></div><button data-sq="${p.id}">Profil</button><button data-sw="${p.id}">✉️ Écrire</button></div>`).join('') || '<p class="sub">Aucune maman avec ce pseudo.</p>';
+    $$('[data-sq]', L).forEach(b => b.onclick = () => showProfile(b.dataset.sq));
+    $$('[data-sw]', L).forEach(b => b.onclick = () => startDm(b.dataset.sw));
+  }, 350); };
+}
+
+async function renderNear(body) {
+  body.innerHTML = '<div class="net-wait">Chargement…</div>';
+  if (NR.loc === undefined) await myLoc();
+  const L = NR.loc;
+  if (!L) {
+    body.innerHTML = `<div class="panel net-card"><b>📍 Les mams près de chez moi</b>
+        <p class="sub">Trouve des mamans autour de toi pour faire connaissance, sortir au parc ou t'entraider. Ta position est arrondie à environ 1 km et n'est <b>jamais</b> montrée : les autres voient seulement une distance approximative, comme « à environ 3 km ».</p>
+        <label class="net-check"><input type="checkbox" id="nr-vis" checked><span>Je veux aussi <b>apparaître</b> pour les mamans près de chez moi (tu pourras changer d'avis à tout moment).</span></label>
+        <button class="btn" id="nr-gps">📍 Utiliser ma position</button>
+        <p class="sub" style="text-align:center;margin:10px 0 4px">ou</p>
+        <div class="net-row"><input class="input" id="nr-city" maxlength="60" placeholder="Ta ville ou ton code postal" value="${esc(prof.ville || '')}"><button class="btn small" id="nr-cgo">OK</button></div>
+        <p class="net-msg" id="nr-msg"></p></div>${searchBox()}`;
+    const go = async (getPos) => {
+      const msg = $('#nr-msg'); msg.className = 'net-msg'; msg.textContent = 'Un instant…';
+      try { const [a, b] = await getPos(); await saveLoc(a, b, $('#nr-vis').checked); renderNear(body); }
+      catch (e) { msg.className = 'net-msg ko'; msg.textContent = e.mine || (e && e.code === 1 ? "Tu as refusé la localisation : écris plutôt ta ville." : "Impossible de trouver ta position : écris plutôt ta ville."); }
+    };
+    $('#nr-gps').onclick = () => go(gps);
+    $('#nr-cgo').onclick = () => { const v = $('#nr-city').value.trim(); if (v.length < 2) return; go(() => cityPos(v)); };
+    bindSearch(body); return;
+  }
+  const { data, error } = await sb.rpc('nearby', { max_km: NR.km });
+  const list = error ? [] : (data || []).filter(p => !blocked.has(p.id));
+  body.innerHTML = `<div class="panel net-card net-nearhead">
+      <div class="net-row"><b style="flex:1">${L.visible ? '🟢 Tu es visible' : '⚪ Tu es invisible'}</b><button class="btn alt small" id="nr-tog">${L.visible ? 'Me cacher' : 'Apparaître'}</button></div>
+      <p class="sub" style="margin:6px 0 0">${L.visible ? 'Les mamans proches peuvent te trouver (sans jamais voir ta position exacte).' : 'Tu vois les mamans proches, mais elles ne te voient pas.'}</p>
+      <div class="net-chips" style="margin-top:10px">${[5, 10, 25, 50].map(k => `<button class="${NR.km === k ? 'on' : ''}" data-km="${k}">${k} km</button>`).join('')}</div>
+      <div class="net-row" style="gap:14px"><button class="net-link" id="nr-upd" style="margin:0">📍 Mettre à jour ma position</button><button class="net-link danger" id="nr-del" style="margin:0">Retirer ma position</button></div>
+    </div>
+    ${error ? `<p class="sub">${esc(err(error))}</p>` : list.length ? `<div class="label">${list.length} maman${list.length > 1 ? 's' : ''} à moins de ${NR.km} km</div>` + list.map(p => `<div class="net-near">${avatar(p, 50)}<div><b>${esc(p.pseudo)}</b><span>📍 à environ ${p.km} km${p.ville ? ' · ' + esc(p.ville) : ''}</span>${p.enfants ? `<span>👶 ${esc(p.enfants)}</span>` : ''}${p.bio ? `<p>${esc(p.bio.slice(0, 120))}${p.bio.length > 120 ? '…' : ''}</p>` : ''}
+        <div class="net-cact" style="margin-top:6px"><button data-np="${p.id}">Voir le profil</button><button data-nw="${p.id}">✉️ Écrire</button></div></div></div>`).join('')
+      : `<div class="panel net-card"><p class="sub" style="margin:0">Pas encore de maman visible à moins de ${NR.km} km. Essaie un rayon plus grand, et parle de Mams autour de toi pour que la communauté grandisse 🌸</p></div>`}
+    <div class="panel net-card"><p class="sub" style="margin:0">🛡️ Pour une première rencontre, retrouvez-vous dans un lieu public (parc, café, médiathèque) et prévenez un proche.</p></div>
+    ${searchBox()}`;
+  $$('[data-km]', body).forEach(b => b.onclick = () => { NR.km = +b.dataset.km; renderNear(body); });
+  $('#nr-tog').onclick = async () => { await sb.from('locations').update({ visible: !L.visible }).eq('user_id', me.id); await myLoc(); toast(NR.loc.visible ? 'Tu es visible 🟢' : 'Tu es invisible ⚪'); renderNear(body); };
+  $('#nr-upd').onclick = async () => { try { const [a, b] = await gps(); await saveLoc(a, b, L.visible); toast('Position mise à jour ✅'); renderNear(body); } catch (e) { toast('Impossible de trouver ta position'); } };
+  $('#nr-del').onclick = async () => { await sb.from('locations').delete().eq('user_id', me.id); NR.loc = null; toast('Ta position est supprimée'); renderNear(body); };
+  $$('[data-np]', body).forEach(b => b.onclick = () => showProfile(b.dataset.np));
+  $$('[data-nw]', body).forEach(b => b.onclick = () => startDm(b.dataset.nw));
+  bindSearch(body);
+}
+
 /* ---------- Mon profil ---------- */
 function renderMoi(body) {
   body.innerHTML = `<div class="panel net-card">
@@ -570,7 +648,7 @@ st.textContent = `
 .net-avbox{display:flex;align-items:center;gap:14px;margin-bottom:12px}.net-avbox .btn{width:auto}
 .danger-btn{background:linear-gradient(180deg,#D6455B,#9B1B30)!important;color:#fff!important;margin-top:8px}
 .net-conv{display:flex;align-items:center;gap:12px;width:100%;text-align:left;padding:12px 16px;margin:0 0 10px;border-radius:40px;border:1.5px solid #fff;background:rgba(255,255,255,.75);color:var(--ink);box-sizing:border-box}
-.net-conv div{flex:1;min-width:0}.net-conv b{display:block;font-size:15px}.net-conv span{display:block;font-size:13px;opacity:.7;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.net-conv div{flex:1;min-width:0}.net-conv b{display:block;font-size:15px}.net-conv>div span{display:block;font-size:13px;opacity:.7;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .net-conv i{font-style:normal;font-size:11.5px;opacity:.8;display:flex;flex-direction:column;align-items:flex-end;gap:4px}
 .net-conv em,.net-badge{font-style:normal;min-width:20px;height:20px;padding:0 6px;border-radius:999px;background:#C2185B;color:#fff;font-size:12px;font-weight:700;display:inline-flex;align-items:center;justify-content:center;box-sizing:border-box}
 .net-tabs button{position:relative}.net-badge{position:absolute;top:2px;right:6px}
@@ -578,7 +656,7 @@ st.textContent = `
 .net-gpub .btn{width:auto;flex:none;padding:8px 14px}
 #sheet.net-full{height:92vh;max-height:92vh;display:flex;flex-direction:column}
 .net-chat{display:flex;flex-direction:column;height:100%;min-height:70vh}
-.net-chead{display:flex;align-items:center;gap:10px;padding-bottom:10px;border-bottom:1px solid rgba(122,44,78,.15)}.net-chead div{flex:1;min-width:0}.net-chead b{display:block}.net-chead span{font-size:12px;opacity:.65}
+.net-chead{display:flex;align-items:center;gap:10px;padding-bottom:10px;border-bottom:1px solid rgba(122,44,78,.15)}.net-chead div{flex:1;min-width:0}.net-chead b{display:block}.net-chead>div span{font-size:12px;opacity:.65}
 .net-msgs{flex:1;overflow-y:auto;padding:12px 2px;display:flex;flex-direction:column;gap:6px;min-height:40vh;max-height:62vh}
 .net-m{max-width:80%;align-self:flex-start;padding:9px 14px;border-radius:22px 22px 22px 8px;background:rgba(255,255,255,.9);border:1px solid #fff}
 .net-m.me{align-self:flex-end;border-radius:22px 22px 8px 22px;background:linear-gradient(180deg,#B5577F,#7A2C4E);color:#fff}
@@ -589,10 +667,13 @@ st.textContent = `
 .net-send textarea{flex:1;resize:none;border-radius:22px;border:1.5px solid #fff;background:rgba(255,255,255,.9);padding:11px 14px;font:inherit;font-size:15px;max-height:120px}
 .net-send button,.net-ph{flex:none;width:44px;height:44px;border-radius:50%;border:0;display:flex;align-items:center;justify-content:center;font-size:19px;background:linear-gradient(180deg,#A84A72,#5B1D3A);color:#fff;cursor:pointer}.net-ph{background:rgba(255,255,255,.85);border:1.5px solid #fff}
 .net-people{display:flex;flex-direction:column;gap:8px;margin-top:10px}.net-person{display:flex;align-items:center;gap:10px;padding:8px 12px;border-radius:999px;background:rgba(255,255,255,.75)}
-.net-person div{flex:1;min-width:0}.net-person b{display:block;font-size:14.5px}.net-person span{font-size:12px;opacity:.65}
+.net-person div{flex:1;min-width:0}.net-person b{display:block;font-size:14.5px}.net-person>div span{font-size:12px;opacity:.65}
 .net-person button{padding:7px 12px;border-radius:999px;border:1.5px solid #fff;background:rgba(255,255,255,.9);font-size:13px;color:var(--ink)}.net-person button.danger{color:#B3261E}
 .net-prof{text-align:center;display:flex;flex-direction:column;align-items:center;gap:2px}.net-prof h3{margin:10px 0 2px}.net-prof p{margin:2px 0}
 .net-post header{cursor:pointer}
+.net-near{display:flex;gap:12px;padding:14px 16px;margin:0 0 10px;border-radius:32px;background:rgba(255,255,255,.78);border:1.5px solid #fff}
+.net-near div{flex:1;min-width:0}.net-near b{display:block;font-size:15.5px}.net-near>div span{display:block;font-size:12.5px;opacity:.75}.net-near p{margin:6px 0 0;font-size:13.5px}
+.net-nearhead .btn{width:auto}
 .net-rep{padding:12px 14px;border-radius:22px;background:rgba(255,255,255,.75);margin:0 0 10px}.net-rep span{font-size:12px;opacity:.65}.net-rep p{margin:6px 0;font-size:14px}
 `;
 document.head.appendChild(st);
