@@ -689,16 +689,36 @@ window.renderWeek = renderWeek;
 /* ---------- Langues : traduction automatique de toute l'appli ---------- */
 const LANGS = [['fr','🇫🇷','Français'],['en','🇬🇧','English'],['zh-CN','🇨🇳','中文'],['hi','🇮🇳','हिन्दी'],['es','🇪🇸','Español'],['ar','🌙','العربية'],['bn','🇧🇩','বাংলা'],['pt','🇵🇹','Português'],['ru','🇷🇺','Русский'],['ur','🇵🇰','اردو']];
 const ORIG = 'https://melanie01630.github.io/nid-deveil/';
-function curLang() { const m = location.search.match(/_x_tr_tl=([^&]+)/); return m ? decodeURIComponent(m[1]) : 'fr'; }
+/* Traduction directement dans l'appli (plus de passage par le site de Google Traduction, qui bloquait les onglets) */
+const GT_HIDE = '.goog-te-banner-frame,iframe.skiptranslate,#goog-gt-tt,.goog-te-balloon-frame,.goog-tooltip,.VIpgJd-ZVi9od-ORHb-OEVmcd,.VIpgJd-ZVi9od-aZ2wEe-wOHMyf,.VIpgJd-yAWNEb-L7lbkb,#google_translate_element{display:none!important}body{top:0!important;position:static!important}.goog-text-highlight{background:none!important;box-shadow:none!important}';
+function setGT(c) {
+  const host = location.hostname, v = c === 'fr' ? '' : '/fr/' + c;
+  [';path=/', ';path=/;domain=' + host, ';path=/;domain=.' + host].forEach(x => {
+    document.cookie = 'googtrans=' + (v ? v + x : x + ';max-age=0');
+  });
+  try { localStorage.setItem('mams-lang', c); } catch (e) { }
+}
+function curLang() { try { return localStorage.getItem('mams-lang') || 'fr'; } catch (e) { return 'fr'; } }
+(function initLang() {
+  // Ancien lien passant par le site de Google Traduction : on revient sur le vrai site
+  if (/translate\.goog$/.test(location.hostname)) {
+    const m = location.search.match(/_x_tr_tl=([^&]+)/);
+    location.replace(ORIG + '?lang=' + (m ? m[1] : 'fr')); return;
+  }
+  const m = location.search.match(/[?&]lang=([^&]+)/);
+  if (m) { setGT(decodeURIComponent(m[1])); try { history.replaceState(null, '', location.pathname); } catch (e) { } }
+  const c = curLang(); if (c === 'fr') return;
+  setGT(c);
+  const st2 = document.createElement('style'); st2.textContent = GT_HIDE; document.head.appendChild(st2);
+  const d = document.createElement('div'); d.id = 'google_translate_element'; document.body.appendChild(d);
+  window.mamsGT = () => { try { new google.translate.TranslateElement({ pageLanguage: 'fr', autoDisplay: false }, 'google_translate_element'); } catch (e) { } };
+  const sc = document.createElement('script'); sc.src = 'https://translate.google.com/translate_a/element.js?cb=mamsGT'; sc.async = true; document.body.appendChild(sc);
+})();
 function langSheet() {
   const cur = curLang();
   openSheet(`<div class="kicker">🌍 Langue</div><h3 style="margin-top:4px">Choose your language</h3><p class="sub" style="margin-top:6px">Mams est écrite en français. Les autres langues sont traduites automatiquement : la traduction peut contenir quelques erreurs.</p>
     <div class="langs">${LANGS.map(([c, f, n]) => `<button data-lg="${c}" class="${c === cur ? 'on' : ''}"><span>${f}</span>${n}</button>`).join('')}</div>`);
-  $$('[data-lg]').forEach(b => b.onclick = () => {
-    const c = b.dataset.lg; try { localStorage.setItem('mams-lang', c); } catch (e) { }
-    if (c === 'fr') { location.href = ORIG; return; }
-    location.href = 'https://melanie01630-github-io.translate.goog/nid-deveil/?_x_tr_sl=fr&_x_tr_tl=' + encodeURIComponent(c) + '&_x_tr_hl=' + encodeURIComponent(c) + '&_x_tr_pto=wapp';
-  });
+  $$('[data-lg]').forEach(b => b.onclick = () => { setGT(b.dataset.lg); location.reload(); });
 }
 ['#lang-btn', '#lang-btn2'].forEach(id => { const b = $(id); if (b) b.onclick = (e) => { e.stopPropagation(); langSheet(); }; });
 
