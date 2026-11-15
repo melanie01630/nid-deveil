@@ -748,7 +748,7 @@ function decorate() {
 let decoT = null;
 new MutationObserver(() => { if (decoT) return; decoT = requestAnimationFrame(() => { decoT = null; decorate(); }); }).observe(document.body, { childList: true, subtree: true });
 decorate();
-const TILE_STYLE = { exos: ['#D3E4F4', '📚✏️🧮⭐'], colo: ['#F7D9E3', '🖍️🎨🌈🦋'], audio: ['#E9D9F2', '🎧📖🌙⭐'], actu: ['#FCE7C2', '📰🎬😂📣'], jeux: ['#F7D9E3', '🎲😂🎈⭐'], recettes: ['#FCE7C2', '🥕🍰🍳🥖'], commu: ['#D6ECE2', '👭💬🌸🤝'], cine: ['#F9D6D6', '🎬🍿📺⭐'], cuisine: ['#FCE7C2', '🥕🍰🍳🥖'], '3min': ['#D3E4F4', '⏱️⚡✨🎯'], pluie: ['#D8EAF0', '☔💧🌈🏠'] };
+const TILE_STYLE = { agenda: ['#E3E8C8', '📅📒⏰✨'], exos: ['#D3E4F4', '📚✏️🧮⭐'], colo: ['#F7D9E3', '🖍️🎨🌈🦋'], audio: ['#E9D9F2', '🎧📖🌙⭐'], actu: ['#FCE7C2', '📰🎬😂📣'], jeux: ['#F7D9E3', '🎲😂🎈⭐'], recettes: ['#FCE7C2', '🥕🍰🍳🥖'], commu: ['#D6ECE2', '👭💬🌸🤝'], cine: ['#F9D6D6', '🎬🍿📺⭐'], cuisine: ['#FCE7C2', '🥕🍰🍳🥖'], '3min': ['#D3E4F4', '⏱️⚡✨🎯'], pluie: ['#D8EAF0', '☔💧🌈🏠'] };
 $$('.tile').forEach(t => { const d = TILE_STYLE[t.dataset.go]; if (d) { t.style.setProperty('--t', d[0]); const e = [...d[1]]; const pos = [[8, 30, -12], [58, 24, 10], [26, 72, 8], [70, 80, -8]]; const svg = `<svg xmlns="http://www.w3.org/2000/svg" width="96" height="96">${pos.map((p, i) => `<text x="${p[0]}" y="${p[1]}" font-size="20" transform="rotate(${p[2]} ${p[0]} ${p[1]})">${e[i % e.length]}</text>`).join('')}</svg>`; t.style.setProperty('--pat', "url('data:image/svg+xml," + encodeURIComponent(svg).replace(/'/g, '%27') + "')"); } });
 
 const topbar = $('header.top');
