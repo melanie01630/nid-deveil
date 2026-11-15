@@ -409,7 +409,7 @@ function recettesFiltered() {
 }
 RENDER.recettes = () => {
   const l = recettesFiltered();
-  return `<h2 class="h2">Recettes</h2><p class="sub">${RECETTES.length} recettes, avec des vidéos à voir sur YouTube et TikTok.</p>
+  return `<h2 class="h2">Recettes</h2><p class="sub" data-rc>${RECETTES.length} recettes, avec des vidéos à voir sur YouTube et TikTok.</p>
   <input id="rq" type="search" placeholder="Cherche : gratin, banane, chocolat…" value="${esc(P.rq)}" ${INP}>
   ${chips([['all', 'Toutes']].concat(Object.entries(RECETTES_CATS)), P.rc, 'rc')}
   ${chips([['all', 'Sucré et salé'], ['s', 'Salé'], ['d', 'Sucré']], P.rg, 'rg')}
@@ -419,7 +419,7 @@ RENDER.recettes = () => {
 const recipeList = (l) => l.map(([r, n]) => `<button class="act" data-rn="${n}" style="width:100%;text-align:left"><div class="em">${r.g === 'd' ? '🍰' : '🍲'}</div><div style="flex:1;min-width:0"><h4>${esc(r.t)}</h4><p>${esc(RECETTES_CATS[r.c])} · ${r.m} min · ${['Facile', 'Moyen', 'Plus long'][r.n - 1]}</p></div></button>`).join('') || '<p class="empty">Aucune recette proche. Enlève un filtre ou change de mot.</p>';
 BIND.recettes = (el) => {
   const q = $('#rq', el);
-  q.oninput = () => { P.rq = q.value; $('#rlist', el).innerHTML = recipeList(recettesFiltered()); bindRn(el); $$('.sub', el).forEach(x => { if (/^\d+ recette/.test(x.textContent)) x.textContent = recettesFiltered().length + ' recettes'; }); };
+  q.oninput = () => { P.rq = q.value; $('#rlist', el).innerHTML = recipeList(recettesFiltered()); bindRn(el); $$('[data-rc]', el).forEach(x => { x.textContent = recettesFiltered().length + ' recettes'; }); };
   ['rc', 'rg', 'rm'].forEach(k => $$('[data-' + k + ']', el).forEach(b => b.onclick = () => { P[k] = b.dataset[k]; rerender(); }));
   bindRn(el);
 };
@@ -687,7 +687,7 @@ renderWeek();
 window.renderWeek = renderWeek;
 
 /* ---------- Langues : traduction automatique de toute l'appli ---------- */
-const LANGS = [['fr','🇫🇷','Français'],['en','🇬🇧','English'],['zh-CN','🇨🇳','中文'],['hi','🇮🇳','हिन्दी'],['es','🇪🇸','Español'],['ar','🌙','العربية'],['bn','🇧🇩','বাংলা'],['pt','🇵🇹','Português'],['ru','🇷🇺','Русский'],['ur','🇵🇰','اردو']];
+const LANGS = [['fr','🇫🇷','Français'],['en','🇬🇧','English'],['es','🇪🇸','Español'],['pt','🇵🇹','Português'],['ru','🇷🇺','Русский'],['zh-CN','🇨🇳','中文'],['ar','🌙','العربية']];
 const ORIG = 'https://melanie01630.github.io/nid-deveil/';
 /* Traduction directement dans l'appli (plus de passage par le site de Google Traduction, qui bloquait les onglets) */
 const GT_HIDE = '.goog-te-banner-frame,iframe.skiptranslate,#goog-gt-tt,.goog-te-balloon-frame,.goog-tooltip,.VIpgJd-ZVi9od-ORHb-OEVmcd,.VIpgJd-ZVi9od-aZ2wEe-wOHMyf,.VIpgJd-yAWNEb-L7lbkb,#google_translate_element{display:none!important}body{top:0!important;position:static!important}.goog-text-highlight{background:none!important;box-shadow:none!important}';
@@ -741,7 +741,7 @@ const EMO = [['tous les ages', '🌈'], ['toutes les cat', '🌈'], ['toute la f
 const PICTO = /\p{Extended_Pictographic}/u;
 function decorate() {
   $$('.chip:not([data-d])').forEach(c => {
-    c.dataset.d = '1'; const t = c.textContent.trim(); if (!t || PICTO.test(t)) return;
+    c.dataset.d = '1'; const t = (c.dataset.fr || c.textContent).trim(); if (!t || PICTO.test(t)) return;
     const n = norm(t); const hit = EMO.find(([k]) => n.includes(k)); if (hit) c.insertAdjacentHTML('afterbegin', '<span class="ce">' + hit[1] + '</span>');
   });
 }
