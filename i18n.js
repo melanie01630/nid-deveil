@@ -429,6 +429,7 @@ function doText(n) {
   const p = n.parentElement; if (!p || SKIP[p.tagName] || p.isContentEditable) return;
   const v = n.nodeValue; if (!v || !v.trim()) return;
   if (v.trim() === 'Mams') { mark(p, n); return; }
+  if ((p.tagName === 'H3' || p.tagName === 'H4' || p.tagName === 'B') && p.childNodes.length === 1 && !p.dataset.fr) p.dataset.fr = v.trim();
   const r = tr(v);
   if (r) { const lead = v.match(/^\s*/)[0], tail = v.match(/\s*$/)[0]; if (p.childNodes.length === 1) p.dataset.fr = v.trim(); n.nodeValue = lead + r + tail; mark(p, n); }
   else if (p.dataset.mt) { p.classList.remove('notranslate'); delete p.dataset.mt; }
@@ -482,4 +483,237 @@ const mo = new MutationObserver(recs => {
 mo.observe(document.documentElement, { childList: true, subtree: true, characterData: true, attributes: true, attributeFilter: ATTRS.concat(['class', 'hidden', 'open']) });
 document.addEventListener('DOMContentLoaded', () => { busy = true; walk(document.body); mo.takeRecords(); busy = false; });
 window.MAMS_TR = tr;
+
+/* ===== Vidéos et recherches dans la langue choisie =====
+   Les boutons YouTube, TikTok, Instagram et Google partent d'une recherche en français.
+   Au moment du clic, on la refait dans la langue choisie : le titre affiché (déjà traduit)
+   + les mots-clés traduits ici. */
+const VW = {
+'bande-annonce vf': ['official trailer', 'tráiler en español', 'trailer dublado português', 'трейлер на русском', '中文 预告片', 'إعلان مدبلج عربي'],
+'bande annonce': ['trailer', 'tráiler', 'trailer', 'трейлер', '预告片', 'إعلان'],
+'bande-annonce': ['trailer', 'tráiler', 'trailer', 'трейлер', '预告片', 'إعلان'],
+'calendrier de l avent': ['advent calendar', 'calendario de adviento', 'calendário do advento', 'адвент-календарь', '圣诞倒数日历', 'تقويم المجيء'],
+'que faire à la maison': ['what to do at home', 'qué hacer en casa', 'o que fazer em casa', 'чем заняться дома', '在家做什么', 'ماذا نفعل في البيت'],
+'jour de pluie': ['rainy day', 'día de lluvia', 'dia de chuva', 'дождливый день', '下雨天', 'يوم ممطر'],
+'routine du matin': ['morning routine', 'rutina de mañana', 'rotina da manhã', 'утренняя рутина', '早晨日常', 'روتين الصباح'],
+'faire manger': ['get kids to eat', 'hacer comer', 'fazer comer', 'как накормить', '让孩子吃', 'كيف تجعلين الأطفال يأكلون'],
+'premiers mois': ['first months', 'primeros meses', 'primeiros meses', 'первые месяцы', '头几个月', 'الأشهر الأولى'],
+'lutin farceur': ['elf on the shelf', 'elfo travieso', 'elfo travesso', 'проказник эльф', '圣诞小精灵', 'قزم عيد الميلاد'],
+'lunch box': ['lunch box', 'fiambrera', 'lancheira', 'ланчбокс', '便当', 'علبة الغداء'],
+'black friday': ['black friday', 'black friday', 'black friday', 'чёрная пятница', '黑色星期五', 'الجمعة السوداء'],
+'bons plans': ['deals', 'chollos', 'promoções', 'скидки', '优惠', 'عروض'],
+'pas cher': ['cheap', 'barato', 'barato', 'недорого', '便宜', 'رخيص'],
+'plat mijoté': ['stew', 'guiso', 'estufado', 'тушёное блюдо', '炖菜', 'طبخة'],
+'famille nombreuse': ['big family', 'familia numerosa', 'família numerosa', 'многодетная семья', '大家庭', 'عائلة كبيرة'],
+'qui travaille': ['working', 'que trabaja', 'que trabalha', 'работающая', '上班的', 'عاملة'],
+'de quartier': ['neighbourhood', 'de barrio', 'de bairro', 'из района', '社区', 'الحي'],
+'en famille': ['family', 'en familia', 'em família', 'всей семьёй', '全家', 'عائلي'],
+'sans matériel': ['no materials', 'sin material', 'sem material', 'без материалов', '不用材料', 'بدون أدوات'],
+'gagner du temps': ['save time', 'ahorrar tiempo', 'poupar tempo', 'сэкономить время', '节省时间', 'توفير الوقت'],
+'activité manuelle': ['craft', 'manualidad', 'trabalho manual', 'поделка', '手工', 'أشغال يدوية'],
+'avec du carton': ['with cardboard', 'con cartón', 'com cartão', 'из картона', '用纸板', 'بالكرتون'],
+'expérience scientifique': ['science experiment', 'experimento científico', 'experiência científica', 'научный опыт', '科学实验', 'تجربة علمية'],
+'20 minutes': ['20 minutes', '20 minutos', '20 minutos', '20 минут', '20分钟', '20 دقيقة'],
+'pas à pas': ['step by step', 'paso a paso', 'passo a passo', 'пошагово', '分步', 'خطوة بخطوة'],
+'soi-même': ['diy', 'tú misma', 'tu mesma', 'своими руками', '自己做', 'بنفسك'],
+'bac sensoriel': ['sensory bin', 'caja sensorial', 'caixa sensorial', 'сенсорная коробка', '感官箱', 'صندوق حسي'],
+'pâte à sel': ['salt dough', 'masa de sal', 'massa de sal', 'солёное тесто', '盐面团', 'عجينة الملح'],
+'pâte à modeler': ['play dough', 'plastilina', 'plasticina', 'пластилин', '彩泥', 'صلصال'],
+'jeu': ['game', 'juego', 'jogo', 'игра', '游戏', 'لعبة'],
+'fabriquer': ['make', 'hacer', 'fazer', 'сделать', '制作', 'صنع'],
+'faire': ['make', 'hacer', 'fazer', 'сделать', '做', 'صنع'],
+'histoire': ['story', 'cuento', 'história', 'сказка', '故事', 'قصة'],
+'lampe': ['lamp', 'linterna', 'lanterna', 'фонарик', '手电', 'مصباح'],
+'torche': ['torch', 'linterna', 'lanterna', 'фонарик', '手电筒', 'كشاف'],
+'écouter': ['listen', 'escuchar', 'ouvir', 'слушать', '听', 'استماع'],
+'eau': ['water', 'agua', 'água', 'вода', '水', 'ماء'],
+'carton': ['cardboard', 'cartón', 'cartão', 'картон', '纸板', 'كرتون'],
+'dessiner': ['draw', 'dibujar', 'desenhar', 'нарисовать', '画', 'رسم'],
+'animaux': ['animals', 'animales', 'animais', 'животные', '动物', 'حيوانات'],
+'animal': ['animal', 'animal', 'animal', 'животное', '动物', 'حيوان'],
+'jardin': ['garden', 'jardín', 'jardim', 'сад', '花园', 'حديقة'],
+'pâte': ['dough', 'masa', 'massa', 'тесто', '面团', 'عجينة'],
+'nature': ['nature', 'naturaleza', 'natureza', 'природа', '大自然', 'طبيعة'],
+'objets': ['objects', 'objetos', 'objetos', 'предметы', '物品', 'أشياء'],
+'audio': ['audio', 'audio', 'áudio', 'аудио', '有声', 'صوتية'],
+'bouteille': ['bottle', 'botella', 'garrafa', 'бутылка', '瓶子', 'زجاجة'],
+'pliage': ['folding', 'plegado', 'dobragem', 'складывание', '折纸', 'طي'],
+'mini': ['mini', 'mini', 'mini', 'мини', '迷你', 'صغير'],
+'mains': ['hands', 'manos', 'mãos', 'руки', '手', 'أيدي'],
+'mur': ['wall', 'pared', 'parede', 'стена', '墙', 'جدار'],
+'lettre': ['letter', 'letra', 'letra', 'буква', '字母', 'حرف'],
+'décorée': ['decorated', 'decorada', 'decorada', 'украшенная', '装饰', 'مزينة'],
+'boîtes': ['boxes', 'cajas', 'caixas', 'коробки', '盒子', 'علب'],
+'boîte': ['box', 'caja', 'caixa', 'коробка', '盒子', 'علبة'],
+'verre': ['glass', 'vaso', 'copo', 'стакан', '杯子', 'كوب'],
+'halloween': ['halloween', 'halloween', 'halloween', 'хэллоуин', '万圣节', 'هالوين'],
+'chocolat': ['chocolate', 'chocolate', 'chocolate', 'шоколад', '巧克力', 'شوكولاتة'],
+'fruits': ['fruit', 'frutas', 'fruta', 'фрукты', '水果', 'فواكه'],
+'bocal': ['jar', 'tarro', 'frasco', 'банка', '玻璃罐', 'برطمان'],
+'chasse': ['hunt', 'búsqueda', 'caça', 'охота', '寻宝', 'بحث'],
+'ballon': ['balloon', 'globo', 'balão', 'шарик', '气球', 'بالون'],
+'balle': ['ball', 'pelota', 'bola', 'мяч', '球', 'كرة'],
+'énigmes': ['puzzles', 'enigmas', 'enigmas', 'загадки', '谜题', 'ألغاز'],
+'deviner': ['guess', 'adivinar', 'adivinhar', 'угадать', '猜', 'تخمين'],
+'mots': ['words', 'palabras', 'palavras', 'слова', '词语', 'كلمات'],
+'coussins': ['cushions', 'cojines', 'almofadas', 'подушки', '靠垫', 'وسائد'],
+'téléphone': ['phone', 'teléfono', 'telefone', 'телефон', '电话', 'هاتف'],
+'film': ['movie', 'película', 'filme', 'фильм', '电影', 'فيلم'],
+'dehors': ['outdoor', 'al aire libre', 'ao ar livre', 'на улице', '户外', 'في الخارج'],
+'découpage': ['cutting', 'recortables', 'recorte', 'вырезание', '剪纸', 'قص'],
+'collage': ['collage', 'collage', 'colagem', 'аппликация', '拼贴', 'كولاج'],
+'feuille': ['sheet', 'hoja', 'folha', 'лист', '纸', 'ورقة'],
+'feuilles': ['leaves', 'hojas', 'folhas', 'листья', '树叶', 'أوراق'],
+'fleurs': ['flowers', 'flores', 'flores', 'цветы', '花', 'زهور'],
+'maquette': ['model', 'maqueta', 'maqueta', 'макет', '模型', 'مجسم'],
+'tampons': ['stamps', 'sellos', 'carimbos', 'штампы', '印章', 'أختام'],
+'colle': ['glue', 'pegamento', 'cola', 'клей', '胶水', 'غراء'],
+'arc-en-ciel': ['rainbow', 'arcoíris', 'arco-íris', 'радуга', '彩虹', 'قوس قزح'],
+'bulles': ['bubbles', 'burbujas', 'bolhas', 'мыльные пузыри', '泡泡', 'فقاعات'],
+'tableau': ['board', 'pizarra', 'quadro', 'доска', '画板', 'لوحة'],
+'craie': ['chalk', 'tiza', 'giz', 'мел', '粉笔', 'طباشير'],
+'salon': ['living room', 'salón', 'sala', 'гостиная', '客厅', 'غرفة الجلوس'],
+'livres': ['books', 'libros', 'livros', 'книги', '书', 'كتب'],
+'gobelets': ['cups', 'vasos', 'copos', 'стаканчики', '纸杯', 'أكواب'],
+'chronomètre': ['timer', 'cronómetro', 'cronómetro', 'секундомер', '计时', 'مؤقت'],
+'bouchons': ['bottle caps', 'tapones', 'tampas', 'крышки', '瓶盖', 'أغطية'],
+'volcan': ['volcano', 'volcán', 'vulcão', 'вулкан', '火山', 'بركان'],
+'éruption': ['eruption', 'erupción', 'erupção', 'извержение', '喷发', 'ثوران'],
+'plastique': ['plastic', 'plástico', 'plástico', 'пластик', '塑料', 'بلاستيك'],
+'pot': ['pot', 'bote', 'pote', 'горшок', '罐子', 'وعاء'],
+'couleurs': ['colours', 'colores', 'cores', 'цвета', '颜色', 'ألوان'],
+'pop-corn': ['popcorn', 'palomitas', 'pipocas', 'попкорн', '爆米花', 'فشار'],
+'observer': ['observe', 'observar', 'observar', 'наблюдать', '观察', 'مراقبة'],
+'bicarbonate': ['baking soda', 'bicarbonato', 'bicarbonato', 'сода', '小苏打', 'بيكربونات'],
+'journal': ['newspaper', 'periódico', 'jornal', 'газета', '报纸', 'جريدة'],
+'bateau': ['boat', 'barco', 'barco', 'кораблик', '船', 'قارب'],
+'cuisine': ['cooking', 'cocina', 'cozinha', 'кулинария', '烹饪', 'طبخ'],
+'deux': ['two', 'dos', 'dois', 'два', '两个', 'اثنان'],
+'plié': ['folded', 'plegado', 'dobrado', 'сложенный', '折叠', 'مطوي'],
+'accordéon': ['accordion', 'acordeón', 'acordeão', 'гармошка', '手风琴', 'أكورديون'],
+'activité': ['activity', 'actividad', 'atividade', 'занятие', '活动', 'نشاط'],
+'enfants': ['kids', 'niños', 'crianças', 'дети', '儿童', 'أطفال'],
+'enfant': ['kid', 'niño', 'criança', 'ребёнок', '孩子', 'طفل'],
+'anniversaire': ['birthday', 'cumpleaños', 'aniversário', 'день рождения', '生日', 'عيد ميلاد'],
+'idées': ['ideas', 'ideas', 'ideias', 'идеи', '点子', 'أفكار'],
+'idée': ['idea', 'idea', 'ideia', 'идея', '点子', 'فكرة'],
+'thème': ['theme', 'temática', 'tema', 'тема', '主题', 'موضوع'],
+'déco': ['decor', 'decoración', 'decoração', 'декор', '装饰', 'ديكور'],
+'décoration': ['decoration', 'decoración', 'decoração', 'украшение', '装饰', 'زينة'],
+'astuces': ['tips', 'trucos', 'dicas', 'лайфхаки', '妙招', 'نصائح'],
+'astuce': ['hack', 'truco', 'dica', 'лайфхак', '妙招', 'حيلة'],
+'maman': ['mom', 'mamá', 'mãe', 'мама', '妈妈', 'أم'],
+'papa': ['dad', 'papá', 'pai', 'папа', '爸爸', 'أب'],
+'bébé': ['baby', 'bebé', 'bebé', 'малыш', '宝宝', 'رضيع'],
+'jouets': ['toys', 'juguetes', 'brinquedos', 'игрушки', '玩具', 'ألعاب'],
+'maison': ['homemade', 'casero', 'caseiro', 'дома', '在家', 'منزلي'],
+'comptines': ['nursery rhymes', 'canciones infantiles', 'canções infantis', 'детские песенки', '儿歌', 'أناشيد أطفال'],
+'danse': ['dance', 'baile', 'dança', 'танец', '舞蹈', 'رقص'],
+'bouger': ['move', 'moverse', 'mexer', 'двигаться', '动起来', 'حركة'],
+'courses': ['grocery shopping', 'compra', 'compras', 'покупки', '买菜', 'التسوق'],
+'famille': ['family', 'familia', 'família', 'семья', '家庭', 'عائلة'],
+'semaine': ['week', 'semana', 'semana', 'неделя', '一周', 'أسبوع'],
+'menu': ['meal plan', 'menú', 'menu', 'меню', '菜单', 'قائمة طعام'],
+'budget': ['budget', 'presupuesto', 'orçamento', 'бюджет', '预算', 'ميزانية'],
+'noël': ['christmas', 'navidad', 'natal', 'новый год', '圣诞', 'عيد الميلاد'],
+'diy': ['diy', 'manualidades', 'diy', 'своими руками', '手工', 'اصنعيها بنفسك'],
+'défi': ['challenge', 'reto', 'desafio', 'челлендж', '挑战', 'تحدي'],
+'trend': ['trend', 'tendencia', 'tendência', 'тренд', '热门', 'ترند'],
+'phrases': ['things', 'frases', 'frases', 'фразы', '话', 'عبارات'],
+'drôles': ['funny', 'graciosas', 'engraçadas', 'смешные', '搞笑', 'مضحكة'],
+'drôle': ['funny', 'gracioso', 'engraçado', 'смешно', '搞笑', 'مضحك'],
+'bêtises': ['mischief', 'travesuras', 'travessuras', 'шалости', '调皮', 'شقاوة'],
+'réaction': ['reaction', 'reacción', 'reação', 'реакция', '反应', 'ردة فعل'],
+'enlever': ['remove', 'quitar', 'tirar', 'вывести', '去除', 'إزالة'],
+'tache': ['stain', 'mancha', 'nódoa', 'пятно', '污渍', 'بقعة'],
+'vêtement': ['clothes', 'ropa', 'roupa', 'одежда', '衣服', 'ملابس'],
+'expérience': ['experiment', 'experimento', 'experiência', 'опыт', '实验', 'تجربة'],
+'facile': ['easy', 'fácil', 'fácil', 'легко', '简单', 'سهل'],
+'légumes': ['vegetables', 'verduras', 'legumes', 'овощи', '蔬菜', 'خضار'],
+'recette': ['recipe', 'receta', 'receita', 'рецепт', '食谱', 'وصفة'],
+'goûter': ['snack', 'merienda', 'lanche', 'полдник', '点心', 'وجبة خفيفة'],
+'gâteau': ['cake', 'pastel', 'bolo', 'торт', '蛋糕', 'كعكة'],
+'gâteaux': ['cakes', 'pasteles', 'bolos', 'торты', '蛋糕', 'كعك'],
+'cadeaux': ['gifts', 'regalos', 'presentes', 'подарки', '礼物', 'هدايا'],
+'cadeau': ['gift', 'regalo', 'presente', 'подарок', '礼物', 'هدية'],
+'jeux': ['games', 'juegos', 'jogos', 'игры', '游戏', 'ألعاب'],
+'quotidien': ['daily life', 'día a día', 'dia a dia', 'будни', '日常', 'يوميات'],
+'compilation': ['compilation', 'recopilación', 'compilação', 'подборка', '合集', 'تجميعة'],
+'solo': ['single', 'soltera', 'solteira', 'одиночка', '单亲', 'عزباء'],
+'ménage': ['cleaning', 'limpieza', 'limpeza', 'уборка', '打扫', 'تنظيف'],
+'rapide': ['quick', 'rápido', 'rápido', 'быстро', '快速', 'سريع'],
+'garde': ['babysits', 'cuida', 'cuida', 'сидит с', '带', 'يعتني'],
+'ranger': ['tidy', 'ordenar', 'arrumar', 'убрать', '整理', 'ترتيب'],
+'rangement': ['organising', 'organización', 'arrumação', 'хранение', '收纳', 'ترتيب'],
+'chambre': ['bedroom', 'habitación', 'quarto', 'комната', '房间', 'غرفة'],
+'soir': ['dinner', 'cena', 'jantar', 'ужин', '晚餐', 'عشاء'],
+'école': ['school', 'colegio', 'escola', 'школа', '上学', 'مدرسة'],
+'sketch': ['sketch', 'sketch', 'sketch', 'скетч', '小品', 'سكتش'],
+'humour': ['humor', 'humor', 'humor', 'юмор', '幽默', 'فكاهة'],
+'tutoriel': ['tutorial', 'tutorial', 'tutorial', 'урок', '教程', 'شرح'],
+'bricolage': ['craft', 'manualidades', 'trabalhos manuais', 'поделки', '手工', 'أشغال يدوية'],
+'papier': ['paper', 'papel', 'papel', 'бумага', '纸', 'ورق'],
+'dessin': ['drawing', 'dibujo', 'desenho', 'рисунок', '画画', 'رسم'],
+'peinture': ['painting', 'pintura', 'pintura', 'рисование красками', '绘画', 'تلوين'],
+'origami': ['origami', 'origami', 'origami', 'оригами', '折纸', 'أوريغامي'],
+'création': ['craft', 'creación', 'criação', 'творчество', '创作', 'إبداع'],
+'argile': ['clay', 'arcilla', 'argila', 'глина', '黏土', 'صلصال'],
+'modelage': ['modelling', 'modelado', 'modelagem', 'лепка', '捏塑', 'تشكيل'],
+'sortie': ['outing', 'salida', 'passeio', 'прогулка', '出游', 'نزهة'],
+'voyage': ['travel', 'viaje', 'viagem', 'путешествие', '旅行', 'سفر'],
+'économies': ['saving money', 'ahorro', 'poupança', 'экономия', '省钱', 'توفير'],
+'pyjama': ['pyjama', 'pijama', 'pijama', 'пижама', '睡衣', 'بيجامة'],
+'soirée': ['party', 'fiesta', 'festa', 'вечеринка', '派对', 'سهرة'],
+'images': ['pictures', 'imágenes', 'imagens', 'картинки', '图片', 'صور'],
+'vidéo': ['video', 'vídeo', 'vídeo', 'видео', '视频', 'فيديو'],
+};
+const STOP = { s: 1, dans: 1, par: 1, ou: 1, fait: 1, de: 1, du: 1, des: 1, la: 1, le: 1, les: 1, l: 1, 'à': 1, avec: 1, et: 1, une: 1, un: 1, ses: 1, pour: 1, que: 1, qui: 1, dit: 1, en: 1, au: 1, sur: 1, d: 1 };
+const TAGW = { activiteenfants: 'activité enfants', activitemanuelle: 'activité manuelle', anniversaireenfant: 'anniversaire enfant', astucemaman: 'astuces maman', astucemenage: 'astuce ménage', betisesdenfants: 'bêtises enfants', blackfriday: 'black friday', calendrierdelavent: 'calendrier de l avent', comptines: 'comptines', courses: 'courses', defifamille: 'défi famille', economies: 'économies', enfantdrole: 'enfant drôle', experienceenfants: 'expérience enfants', famillenombreuse: 'famille nombreuse', gateaufacile: 'gâteau facile', gouter: 'goûter', humourmaman: 'humour maman', ideecadeau: 'idée cadeau', jeuxenfamille: 'jeux en famille', journeedemaman: 'quotidien maman', legumesenfants: 'légumes enfants', lunchbox: 'lunch box', lutinfarceur: 'lutin farceur', mamanbebe: 'maman bébé', mamandequartier: 'maman de quartier', mamandrole: 'maman drôle', mamansolo: 'maman solo', menagerapide: 'ménage rapide', momlife: 'maman quotidien', noeldiy: 'noël diy', papaetenfants: 'papa enfants', platmijote: 'plat mijoté', rangement: 'rangement', recettenoel: 'recette noël', recetterapide: 'recette rapide', routinematin: 'routine du matin', soireepyjama: 'soirée pyjama', sortiedecole: 'école', sortieenfants: 'sortie enfants', viedemaman: 'quotidien maman', voyageenfants: 'voyage enfants' };
+const VKEYS = Object.keys(VW).sort((a, b) => b.length - a.length);
+function trWords(q) {
+  let s = ' ' + q.toLowerCase().replace(/[’']/g, ' ').replace(/\s+/g, ' ').trim() + ' ';
+  const out = [];
+  while (s.trim()) {
+    s = s.replace(/^\s+/, ' ');
+    const k = VKEYS.find(k => s.startsWith(' ' + k + ' '));
+    if (k) { out.push(VW[k][COL]); s = s.slice(k.length + 1); continue; }
+    const m = s.match(/^ (\S+)/); if (!m) break;
+    if (!STOP[m[1]]) out.push(m[1]);
+    s = s.slice(m[0].length);
+  }
+  return out.join(' ');
+}
+const strip = (t) => (t || '').replace(/^(le|la|les|l['’])\s*/i, '').trim();
+function locQ(q, el) {
+  let title = '', vis = '';
+  const box = el && el.closest && el.closest('.act, .film, .card, .sheet, #sheet');
+  const hs = box ? [...box.querySelectorAll('h3, h4, b')] : [];
+  for (const h of hs) { const fr = h.dataset.fr; if (fr && fr.length > 2) { const f = q.includes(fr) ? fr : (q.includes(strip(fr)) ? strip(fr) : ''); if (f) { title = f; vis = h.textContent.trim(); break; } } }
+  if (title) { const i = q.indexOf(title); return (trWords(q.slice(0, i)) + ' ' + vis + ' ' + trWords(q.slice(i + title.length))).replace(/\s+/g, ' ').trim(); }
+  return trWords(q);
+}
+const HL = ['en', 'es', 'pt-PT', 'ru', 'zh-CN', 'ar'][COL];
+function rw(url, el) {
+  if (!url || typeof url !== 'string') return url;
+  if (url.startsWith('intent://')) {
+    const fb = url.match(/S\.browser_fallback_url=([^;]+)/), pk = url.match(/package=([^;]+)/);
+    if (!fb || !pk) return url; const web = rw(decodeURIComponent(fb[1]), el);
+    return 'intent://' + web.replace(/^https?:\/\//, '') + '#Intent;scheme=https;package=' + pk[1] + ';S.browser_fallback_url=' + encodeURIComponent(web) + ';end';
+  }
+  let u; try { u = new URL(url); } catch (e) { return url; }
+  const h = u.hostname;
+  if (/youtube\.com$/.test(h) && u.searchParams.get('search_query')) { u.searchParams.set('search_query', locQ(u.searchParams.get('search_query'), el)); u.searchParams.set('hl', HL); return u.href; }
+  if (/google\./.test(h) && u.pathname === '/search' && u.searchParams.get('q')) { u.searchParams.set('q', locQ(u.searchParams.get('q'), el)); u.searchParams.set('hl', HL); return u.href; }
+  if (/tiktok\.com$/.test(h)) {
+    if (u.pathname === '/search' && u.searchParams.get('q')) { u.searchParams.set('q', locQ(u.searchParams.get('q'), el)); return u.href; }
+    const t = u.pathname.match(/^\/tag\/([^/]+)/); if (t) { const w = TAGW[decodeURIComponent(t[1])]; if (w) return 'https://www.tiktok.com/search?q=' + encodeURIComponent(trWords(w)); }
+  }
+  if (/instagram\.com$/.test(h)) {
+    const t = u.pathname.match(/^\/explore\/tags\/([^/]+)/); if (t) { const w = TAGW[decodeURIComponent(t[1])]; if (w) return 'https://www.instagram.com/explore/tags/' + encodeURIComponent(trWords(w).replace(/[\s\-']+/g, '').toLowerCase()) + '/'; }
+  }
+  return url;
+}
+document.addEventListener('click', e => { const a = e.target.closest && e.target.closest('a[href]'); if (!a) return; const n = rw(a.href, a); if (n && n !== a.href) a.href = n; }, true);
+const wo = window.open; window.open = function (u, ...r) { return wo.call(window, rw(u, document.activeElement), ...r); };
+window.MAMS_RW = rw;
 })();
