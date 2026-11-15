@@ -339,6 +339,9 @@ function mount() {
 const st = document.createElement('style');
 st.textContent = `
 .net-wait{padding:30px 10px;text-align:center;opacity:.7}
+#net,#net *{-webkit-backdrop-filter:none!important;backdrop-filter:none!important}
+#net .panel{background:rgba(255,255,255,.78)!important;opacity:1!important}
+#net .nav-av{opacity:1!important}
 .net-card{border-radius:32px!important;margin-top:12px}
 .net-card .input,#net .input{width:100%;box-sizing:border-box;padding:13px 16px;border-radius:22px;border:1.5px solid rgba(255,255,255,.95);background:rgba(255,255,255,.75);font:inherit;margin:6px 0 12px}
 .net-hero{text-align:center}.net-big{font-size:46px}
