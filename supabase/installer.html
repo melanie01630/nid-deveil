@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Mams · Installer la communauté</title>
+<meta name="robots" content="noindex">
+<style>
+  body{font-family:system-ui,-apple-system,Segoe UI,Roboto,sans-serif;margin:0;padding:22px;background:linear-gradient(160deg,#F7D9E3,#DCE6F2);color:#2a2228;line-height:1.5}
+  h1{font-size:22px;margin:0 0 6px}
+  .card{background:rgba(255,255,255,.8);border-radius:26px;padding:18px;margin:14px 0;border:1.5px solid #fff}
+  button{width:100%;padding:16px;border:0;border-radius:999px;font-size:17px;font-weight:700;color:#fff;background:linear-gradient(180deg,#A84A72,#5B1D3A);margin-top:10px}
+  .ok{background:linear-gradient(180deg,#5FB37A,#2F7A4A)}
+  small{opacity:.75}
+  ol{padding-left:20px}
+</style>
+</head>
+<body>
+<h1>🌸 Installer la communauté des mams</h1>
+<small>Page réservée à Mélanie. Elle sert à copier le code à coller dans Supabase.</small>
+
+<div class="card">
+  <b>Étape 1 : la base de données</b>
+  <ol>
+    <li>Touche le bouton ci-dessous pour copier le code.</li>
+    <li>Dans Supabase, ouvre <b>SQL Editor</b>, puis <b>New query</b>.</li>
+    <li>Colle le code (appui long dans la zone, puis « Coller »).</li>
+    <li>Touche <b>Run</b>. Le message « Success » doit s'afficher.</li>
+  </ol>
+  <button id="b1">📋 Copier le code de la base</button>
+</div>
+
+<div class="card">
+  <b>Étape 2 (après ton inscription dans Mams) : devenir administratrice</b>
+  <ol>
+    <li>Copie ce petit code.</li>
+    <li>Dans Supabase, <b>SQL Editor</b> → <b>New query</b> → colle.</li>
+    <li>Remplace <b>TON_EMAIL</b> par l'adresse e-mail de ton compte Mams, puis <b>Run</b>.</li>
+  </ol>
+  <button id="b2">📋 Copier le code administratrice</button>
+</div>
+
+<script>
+async function copy(file, btn) {
+  try {
+    const t = await (await fetch(file + '?v=' + Date.now())).text();
+    await navigator.clipboard.writeText(t);
+    btn.textContent = '✅ Copié ! Va le coller dans Supabase'; btn.classList.add('ok');
+  } catch (e) {
+    btn.textContent = 'Impossible de copier : ouvre ' + file + ' et copie tout';
+    window.open(file, '_blank');
+  }
+}
+document.getElementById('b1').onclick = (e) => copy('schema.sql', e.target);
+document.getElementById('b2').onclick = (e) => copy('admin.sql', e.target);
+</script>
+</body>
+</html>

@@ -1039,6 +1039,7 @@ $('#reset').onclick = () => { if (confirm('Effacer toutes tes données (enfants,
 
 /* =================== COMMUNAUTÉ (aperçu) =================== */
 function initCommu() {
+  if (!$('#p-nom')) return;
   const P = S.profil || {};
   $('#p-nom').value = P.nom || ''; $('#p-ville').value = P.ville || ''; $('#p-enf').value = P.enf || ''; $('#p-cherche').value = P.cherche || ''; $('#p-ok').checked = !!P.ok;
 }
@@ -1142,5 +1143,6 @@ initAbout(); renderToday(); renderExplore(); renderCine(); renderPlan(); renderN
 <script src="data/culture-1.js"></script>
 <script src="data/culture-2.js"></script>
 <script src="culture.js?v=86"></script>
+<script src="commu.js?v=87"></script>
 </body>
 </html>
