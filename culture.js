@@ -9,7 +9,7 @@ const CATS = {
   sci: ['🔬', 'Sciences et espace'], cine: ['🎬', 'Cinéma, séries et dessins animés'], mus: ['🎵', 'Musique'], star: ['⭐', 'Célébrités'],
   sport: ['⚽', 'Sport'], art: ['🎨', 'Arts et livres'], cuis: ['🍳', 'Cuisine'], lang: ['💬', 'Mots et expressions'],
 };
-const ST = { mode: (S.ecole && S.ecole.mode) || 'ecole', age: (S.cg && S.cg.age) || '7-9', cat: 'all', n: 10, group: false, names: (S.cg && S.cg.names) || ['', ''] };
+const ST = { free: !!(S.cg && S.cg.free), mode: (S.ecole && S.ecole.mode) || 'ecole', age: (S.cg && S.cg.age) || '7-9', cat: 'all', n: 10, group: false, names: (S.cg && S.cg.names) || ['', ''] };
 S.cg = S.cg || { age: ST.age, names: ST.names, best: {} };
 
 const shuffle = (a) => { for (let i = a.length - 1; i > 0; i--) { const j = Math.floor(Math.random() * (i + 1)); [a[i], a[j]] = [a[j], a[i]]; } return a; };
@@ -52,6 +52,9 @@ function render() {
     </div>
     <div class="label">Combien de questions ?</div>
     <div class="wch cgn">${[10, 20, 30].map(n => `<button class="chip ${ST.n === n ? 'on' : ''}" data-cgn="${n}">${n}</button>`).join('')}</div>
+    <div class="label">Réponses</div>
+    <div class="cgmode"><button class="exm ${!ST.free ? 'on' : ''}" data-cgf="0"><span>🔘</span>Avec choix</button><button class="exm ${ST.free ? 'on' : ''}" data-cgf="1"><span>💭</span>Sans choix</button></div>
+    ${ST.free ? '<p class="sub" style="margin:-4px 0 6px">Pas de propositions : on répond à voix haute, puis on découvre la réponse et on dit honnêtement si on avait bon.</p>' : ''}
     <div class="label">On joue comment ?</div>
     <div class="cgmode"><button class="exm ${!ST.group ? 'on' : ''}" data-cgg="0"><span>🙋</span>Seul</button><button class="exm ${ST.group ? 'on' : ''}" data-cgg="1"><span>👨‍👩‍👧‍👦</span>À plusieurs</button></div>
     ${ST.group ? `<div class="cgnames">${ST.names.map((n, i) => `<div class="cgname"><input class="input" data-cgp="${i}" placeholder="Joueur ${i + 1}" value="${esc(n)}" maxlength="16">${ST.names.length > 2 ? `<button class="chip" data-cgx="${i}" aria-label="Retirer">✕</button>` : ''}</div>`).join('')}
@@ -62,6 +65,7 @@ function render() {
   $$('[data-cgc]', cb).forEach(b => b.onclick = () => { ST.cat = b.dataset.cgc; render(); });
   $$('[data-cgn]', cb).forEach(b => b.onclick = () => { ST.n = +b.dataset.cgn; render(); });
   $$('[data-cgg]', cb).forEach(b => b.onclick = () => { ST.group = b.dataset.cgg === '1'; render(); });
+  $$('[data-cgf]', cb).forEach(b => b.onclick = () => { ST.free = b.dataset.cgf === '1'; S.cg.free = ST.free; save(); render(); });
   $$('[data-cgp]', cb).forEach(i => i.oninput = () => { ST.names[+i.dataset.cgp] = i.value; S.cg.names = ST.names; save(); });
   $$('[data-cgx]', cb).forEach(b => b.onclick = () => { ST.names.splice(+b.dataset.cgx, 1); S.cg.names = ST.names; save(); render(); });
   const add = $('#cg-add', cb); if (add) add.onclick = () => { ST.names.push(''); render(); };
@@ -80,7 +84,7 @@ function start() {
   if (!list.length) { toast('Pas encore de questions ici'); return; }
   S.cg.seen[ST.age] = recent.concat(list.map(x => x.q)).slice(-300); save();
   const players = ST.group ? ST.names.map((n, i) => (n || '').trim() || 'Joueur ' + (i + 1)) : ['Toi'];
-  const G = { list, n: 0, picked: null, players, score: players.map(() => 0) };
+  const G = { list, n: 0, picked: null, shown: false, ok: false, players, score: players.map(() => 0) };
   const who = () => G.n % players.length;
   const step = () => {
     if (G.n >= G.list.length) return end(G);
@@ -89,12 +93,15 @@ function start() {
       <div class="exbar"><i style="width:${(G.n / G.list.length) * 100}%"></i></div>
       ${ST.group ? `<div class="cgturn">🎯 Au tour de <b>${esc(players[p])}</b></div>` : ''}
       <h3 class="exq">${esc(q.q)}</h3>
-      <div class="exopts">${q.opts.map((o, i) => { let c = ''; if (G.picked !== null) { if (o === q.good) c = 'good'; else if (i === G.picked) c = 'bad'; } return `<button class="exo ${c}" data-cgo="${i}">${esc(o)}</button>`; }).join('')}</div>
-      ${G.picked !== null ? `<div class="exfb ${q.opts[G.picked] === q.good ? 'ok' : 'ko'}"><b>${q.opts[G.picked] === q.good ? 'Bravo ! ✅' : 'Pas tout à fait ❌'}</b>${q.e ? '<br>' + esc(q.e) : ''}</div>
+      ${ST.free ? (G.shown ? `<div class="cgans"><small>La réponse</small><b>${esc(q.good)}</b></div>${G.picked === null ? `<div class="cgself"><button class="exo good" data-cgok="1">✅ J'avais bon</button><button class="exo bad" data-cgok="0">❌ Raté</button></div>` : ''}` : `<button class="btn" id="cg-show" style="margin-top:6px">👀 Voir la réponse</button>`)
+      : `<div class="exopts">${q.opts.map((o, i) => { let c = ''; if (G.picked !== null) { if (o === q.good) c = 'good'; else if (i === G.picked) c = 'bad'; } return `<button class="exo ${c}" data-cgo="${i}">${esc(o)}</button>`; }).join('')}</div>`}
+      ${G.picked !== null ? `<div class="exfb ${G.ok ? 'ok' : 'ko'}"><b>${G.ok ? 'Bravo ! ✅' : (ST.free ? 'Ce sera pour la prochaine ! ❌' : 'Pas tout à fait ❌')}</b>${q.e ? '<br>' + esc(q.e) : ''}</div>
         <button class="btn" id="cg-next" style="margin-top:12px">${G.n + 1 < G.list.length ? 'Question suivante' : 'Voir les résultats'}</button>` : ''}
       ${ST.group ? `<div class="cgscore">${players.map((n, i) => `<span class="${i === p ? 'me' : ''}">${esc(n)} <b>${G.score[i]}</b></span>`).join('')}</div>` : `<div class="cgscore"><span class="me">Score <b>${G.score[0]}</b></span></div>`}`);
-    $$('[data-cgo]').forEach(b => b.onclick = () => { if (G.picked !== null) return; G.picked = +b.dataset.cgo; if (q.opts[G.picked] === q.good) G.score[p]++; step(); });
-    const nx = $('#cg-next'); if (nx) nx.onclick = () => { G.n++; G.picked = null; step(); };
+    $$('[data-cgo]').forEach(b => b.onclick = () => { if (G.picked !== null) return; G.picked = +b.dataset.cgo; G.ok = q.opts[G.picked] === q.good; if (G.ok) G.score[p]++; step(); });
+    const sh = $('#cg-show'); if (sh) sh.onclick = () => { G.shown = true; step(); };
+    $$('[data-cgok]').forEach(b => b.onclick = () => { if (G.picked !== null) return; G.picked = 0; G.ok = b.dataset.cgok === '1'; if (G.ok) G.score[p]++; step(); });
+    const nx = $('#cg-next'); if (nx) nx.onclick = () => { G.n++; G.picked = null; G.shown = false; G.ok = false; step(); };
   };
   step();
 }
@@ -124,6 +131,8 @@ st.textContent = `
 .cgnames{display:flex;flex-direction:column;gap:8px}.cgname{display:flex;gap:8px;align-items:center}.cgname .input{flex:1;border-radius:999px;padding:12px 16px}
 .cgname .chip{width:40px!important;height:40px!important;flex:none}
 .cggo{margin-top:18px;font-size:18px;padding:16px}
+.cgans{margin:6px 0 12px;padding:16px 20px;border-radius:30px;background:rgba(255,255,255,.85);border:1.5px solid #fff;text-align:center}.cgans small{display:block;font-size:12px;opacity:.65;text-transform:uppercase;letter-spacing:.06em}.cgans b{display:block;font-size:20px;margin-top:4px}
+.cgself{display:grid;grid-template-columns:1fr 1fr;gap:10px}
 .cgturn{margin:12px 0 0;padding:10px 16px;border-radius:999px;background:rgba(255,255,255,.7);text-align:center;font-size:16px}
 .cgscore{display:flex;flex-wrap:wrap;gap:6px;justify-content:center;margin-top:16px}
 .cgscore span{padding:6px 12px;border-radius:999px;background:rgba(255,255,255,.6);font-size:13px}.cgscore span.me{background:#7A2C4E;color:#fff}
