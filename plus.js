@@ -182,8 +182,8 @@ animation:pfloat 5s ease-in-out infinite;transition:transform .2s,opacity .2s}
 .tab.on svg{transform:translateY(-4px) scale(1.12);background:radial-gradient(circle at 28% 24%,rgba(255,255,255,.95) 0 8%,rgba(255,255,255,0) 26%),radial-gradient(circle at 50% 50%,rgba(232,195,209,.6) 50%,rgba(201,91,118,.55) 100%)}
 .tab{gap:1px}
 /* ===== Onglets du bas : chaque onglet dans sa bulle ovale ===== */
-nav.bar-nav{gap:4px;padding-left:6px;padding-right:6px;padding-top:9px}
-.tab{flex:1 1 auto;gap:2px;padding:7px 4px 6px;border-radius:999px;font-size:9.5px;letter-spacing:-.15px;white-space:nowrap;color:var(--ink);
+nav.bar-nav{gap:3px;padding-left:5px;padding-right:5px;padding-top:9px;overflow-x:auto;scrollbar-width:none;justify-content:flex-start}nav.bar-nav::-webkit-scrollbar{display:none}
+.tab{flex:1 0 auto;gap:2px;padding:7px 3px 6px;border-radius:999px;font-size:9px;letter-spacing:-.2px;white-space:nowrap;color:var(--ink);
   background:radial-gradient(ellipse at 22% 10%,rgba(255,255,255,.95) 0 9%,rgba(255,255,255,0) 32%),linear-gradient(180deg,rgba(255,255,255,.62),rgba(255,236,246,.3));
   border:1.5px solid rgba(255,255,255,.92);
   box-shadow:inset 0 0 9px rgba(255,255,255,.75),inset -3px -4px 8px rgba(120,180,255,.3),inset 3px 4px 8px rgba(255,150,205,.28),0 4px 9px -6px rgba(60,30,60,.55);
