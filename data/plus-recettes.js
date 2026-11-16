@@ -34,6 +34,7 @@ window.RECETTES = [
   { t: "Gâteau nuage (au citron)", c: 'gateau', g: 'd', m: 50, n: 2, i: "œufs, sucre, farine, citron, yaourt", d: "Monte les blancs en neige et incorpore-les à l'appareil pour un gâteau très léger." },
   { t: "Brownie", c: 'gateau', g: 'd', m: 30, n: 1, e: 1, i: "chocolat, beurre, sucre, œufs, farine, noix en option", d: "Mélange, verse dans un moule et cuis 20 minutes à 180 °C : l'intérieur doit rester moelleux." },
   { t: "Gâteau d'anniversaire en couches", c: 'gateau', g: 'd', m: 120, n: 3, i: "génoise ou gâteau au yaourt, crème au beurre ou chantilly, décorations", d: "Fais cuire deux gâteaux ronds, coupe-les en deux, garnis de crème et décore. Laisse refroidir complètement avant." },
+  { t: "Pain d'épices moelleux", c: 'gateau', g: 'd', m: 70, n: 1, e: 1, i: "farine, miel, lait, sucre roux, épices à pain d'épices, levure, œuf", d: "Fais tiédir le lait avec le miel, mélange avec la farine, les épices et l'œuf. Cuis environ 50 minutes à four doux : il est encore meilleur le lendemain." },
   /* mijotés */
   { t: "Blanquette de veau", c: 'mijote', g: 's', m: 120, n: 3, i: "veau, carottes, oignons, crème, champignons, riz", d: "Fais mijoter la viande avec les légumes, puis lie la sauce avec la crème et un jaune d'œuf." },
   { t: "Pot-au-feu", c: 'mijote', g: 's', m: 180, n: 2, i: "bœuf à bouillir, carottes, poireaux, navets, pommes de terre", d: "Plonge la viande dans l'eau froide, écume, ajoute les légumes en cours de cuisson." },
@@ -55,6 +56,7 @@ window.RECETTES = [
   { t: "Sablés à la cannelle", c: 'gouter', g: 'd', m: 40, n: 1, e: 1, i: "beurre, sucre, farine, cannelle", d: "Forme une pâte, étale, découpe avec des emporte-pièces et cuis 12 minutes à 170 °C." },
   { t: "Gaufres", c: 'gouter', g: 'd', m: 25, n: 1, e: 1, i: "farine, œufs, lait, beurre fondu, sucre, levure", d: "Prépare la pâte et cuis dans le gaufrier. Sers avec du sucre glace ou du chocolat." },
   { t: "Compote maison", c: 'gouter', g: 'd', m: 25, n: 1, e: 1, i: "pommes, un peu d'eau, cannelle", d: "Épluche, coupe, cuis doucement 15 à 20 minutes puis écrase." },
+  { t: "Chocolat chaud maison", c: 'gouter', g: 'd', m: 10, n: 1, e: 1, i: "lait, chocolat noir ou au lait, cacao, sucre, cannelle", d: "Fais chauffer le lait sans le faire bouillir, ajoute le chocolat en morceaux et fouette jusqu'à ce qu'il soit bien mousseux." },
   /* petit-déjeuner */
   { t: "Porridge aux fruits", c: 'matin', g: 'd', m: 10, n: 1, i: "flocons d'avoine, lait, fruits, miel (pas avant 1 an)", d: "Chauffe les flocons dans le lait en remuant et garnis de fruits." },
   { t: "Pain perdu", c: 'matin', g: 'd', m: 15, n: 1, e: 1, i: "pain rassis, œufs, lait, sucre", d: "Trempe le pain dans le mélange œufs-lait et fais-le dorer à la poêle." },
@@ -79,5 +81,6 @@ window.RECETTES = [
   { t: "Sablés à décorer", c: 'enfant', g: 'd', m: 45, n: 1, e: 1, i: "pâte sablée, glaçage, bonbons ou vermicelles", d: "Découpe des formes, cuis et laisse les enfants décorer à leur façon." },
   { t: "Pâte à crêpes en bouteille", c: 'enfant', g: 'd', m: 20, n: 1, e: 1, i: "farine, œufs, lait", d: "Verse la pâte dans une bouteille propre et fais des dessins dans la poêle." },
   { t: "Mini-pizzas de pain de mie", c: 'enfant', g: 's', m: 20, n: 1, e: 1, i: "pain de mie, sauce tomate, fromage, jambon", d: "Garnis les tranches et passe-les 8 minutes au four. Parfait pour débuter en cuisine." },
-  { t: "Truffes en chocolat", c: 'enfant', g: 'd', m: 30, n: 1, e: 1, i: "chocolat, crème, cacao en poudre", d: "Fais fondre chocolat et crème, laisse prendre, forme des boules et roule-les dans le cacao." }
+  { t: "Truffes en chocolat", c: 'enfant', g: 'd', m: 30, n: 1, e: 1, i: "chocolat, crème, cacao en poudre", d: "Fais fondre chocolat et crème, laisse prendre, forme des boules et roule-les dans le cacao." },
+  { t: "Mendiants au chocolat", c: 'enfant', g: 'd', m: 30, n: 1, e: 1, i: "chocolat, fruits secs, raisins secs, écorces d'orange", d: "Fais fondre le chocolat, forme des petits disques sur du papier cuisson et décore-les de fruits secs avant qu'ils durcissent." }
 ];

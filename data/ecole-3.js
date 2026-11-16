@@ -106,6 +106,8 @@ window.ECOLE_CYCLES = {
       "Dans quel sport utilise-t-on une raquette et un volant ?|Le badminton;Le tennis de table;Le hockey|Le volant a des plumes.",
       "Qu'est-ce que le fair-play ?|Respecter les règles et l'adversaire;Gagner à tout prix;Tricher|On serre la main à la fin du match.",
       "Combien d'heures de sommeil pour un enfant de 8 ans environ ?|10 à 11 heures;5 heures;15 heures|Le sommeil aide à grandir et à apprendre.",
+      "Que faut-il faire après un effort ?|Boire de l'eau et s'étirer doucement;Manger des bonbons;Repartir en courant très vite|Boire et s'étirer aide le corps à récupérer.",
+      "Dans quel sport fait-on des roulades et des équilibres ?|La gymnastique;Le football;Le basket|En gymnastique, on travaille les roulades, les équilibres et les sauts.",
     ],
   },
   eps2: {
@@ -119,6 +121,8 @@ window.ECOLE_CYCLES = {
       "Qu'est-ce que la fréquence cardiaque ?|Le nombre de battements du cœur par minute;La vitesse de course;La taille du cœur|Elle augmente pendant l'effort.",
       "Quel aliment est conseillé avant un effort long ?|Des féculents (pâtes, riz);Des chips;Des bonbons uniquement|Les féculents donnent une énergie durable.",
       "En course d'orientation, quel objet utilise-t-on ?|Une carte et une boussole;Un ballon;Une raquette|On cherche des balises avec la carte.",
+      "Au basket, combien de points vaut un panier marqué derrière la ligne à 3 points ?|3;2;1|Derrière la ligne, le panier vaut 3 points. Un lancer franc vaut 1 point.",
+      "Au rugby, combien de points vaut un essai ?|5;3;7|Un essai vaut 5 points, et la transformation réussie en ajoute 2.",
     ],
   },
   tech: {
@@ -153,6 +157,7 @@ window.ECOLE_CYCLES = {
       "Comment dit-on « quinze » ?|Quince;Cinco;Cincuenta|Cinco = 5, quince = 15, cincuenta = 50.",
       "Quelle est la capitale de l'Espagne ?|Madrid;Barcelone;Séville|Madrid est la capitale.",
       "Que veut dire « ¿Qué hora es? » ?|Quelle heure est-il ?;Qu'est-ce que c'est ?;Quel temps fait-il ?|Hora = heure.",
+      "Comment dit-on « Joyeux Noël » en espagnol ?|¡Feliz Navidad!;¡Buenas noches!;¡Feliz cumpleaños!|Navidad veut dire Noël. Feliz cumpleaños veut dire joyeux anniversaire.",
     ],
   },
   de: {
@@ -168,6 +173,7 @@ window.ECOLE_CYCLES = {
       "Que veut dire « Wie alt bist du? » ?|Quel âge as-tu ?;Comment vas-tu ?;Où vas-tu ?|Alt = vieux, âgé.",
       "Où se place le verbe conjugué dans une phrase déclarative allemande ?|En 2e position;À la fin;En premier toujours|Heute gehe ich ins Kino.",
       "Quelle est la capitale de l'Allemagne ?|Berlin;Munich;Hambourg|Berlin est la capitale.",
+      "Comment dit-on « Joyeux Noël » en allemand ?|Frohe Weihnachten;Gute Nacht;Alles Gute zum Geburtstag|Weihnachten veut dire Noël. Gute Nacht veut dire bonne nuit.",
     ],
   },
 };

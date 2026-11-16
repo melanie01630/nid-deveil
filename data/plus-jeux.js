@@ -16,6 +16,7 @@ window.BLAGUES = [
   { a: 'p', q: "Pourquoi les éléphants ne peuvent pas aller sur l'ordinateur ?", r: "Parce qu'ils ont peur de la souris !" },
   { a: 'p', q: "Qu'est-ce qui est jaune et qui attend ?", r: "Jonathan !" },
   { a: 'p', q: "Quel est le comble de l'électricien ?", r: "De ne pas être au courant !" },
+  { a: 'p', q: "Comment appelle-t-on un bonhomme de neige qui a trop chaud ?", r: "Une flaque d'eau !" },
   /* moyens */
   { a: 'm', q: "Pourquoi les plongeurs plongent-ils toujours en arrière ?", r: "Parce que sinon ils tomberaient dans le bateau !" },
   { a: 'm', q: "Que dit un fantôme quand il est pressé ?", r: "Je me volatilise !" },
@@ -26,6 +27,7 @@ window.BLAGUES = [
   { a: 'm', q: "Comment appelle-t-on un boomerang qui ne revient pas ?", r: "Un bâton !" },
   { a: 'm', q: "Que dit une poule quand elle a trouvé un couteau ?", r: "Un couteau ?!" },
   { a: 'm', q: "Que dit un mur à un autre mur ?", r: "On se retrouve au coin !" },
+  { a: 'm', q: "Pourquoi le Père Noël a-t-il toujours le sourire ?", r: "Parce qu'il ne travaille qu'une nuit par an !" },
   /* grands */
   { a: 'g', q: "Pourquoi les mathématiciens aiment la forêt ?", r: "Parce qu'il y a plein de racines à extraire !" },
   { a: 'g', q: "Que dit un informaticien quand il se noie ?", r: "F1 ! F1 !" },
@@ -37,6 +39,7 @@ window.BLAGUES = [
   { a: 'g', q: "Pourquoi les oiseaux volent vers le sud en hiver ?", r: "Parce que c'est trop loin pour y aller à pied !" },
   { a: 'g', q: "Comment fait-on rire un squelette ?", r: "On lui chatouille le fémur !" },
   { a: 'g', q: "Que dit un escargot sur le dos d'une tortue ?", r: "Youhou, ça va vite !" },
+  { a: 'g', q: "Qu'est-ce qui fait « oh oh oh » ?", r: "Le Père Noël qui marche à reculons !" },
   /* entre mams */
   /* adultes : pour tout le monde, sans vulgarité */
   { a: 'f', q: "Mon médecin m'a dit de faire attention à ce que je mange.", r: "Alors maintenant, je mange avec des lunettes." },
@@ -101,7 +104,12 @@ window.BLAGUES = [
   { a: 'f', q: "Qu'est-ce qui est jaune et qui attend ?", r: "Jonathan." },
   { a: 'f', q: "Qu'est-ce qu'un yaourt dans la forêt ?", r: "Un yaourt nature." },
   { a: 'f', q: "Mon horoscope m'a dit : « Aujourd'hui, évitez les décisions importantes. »", r: "Alors je n'ai pas choisi quoi manger. J'ai faim." },
-  { a: 'f', q: "Pourquoi la tomate est-elle toute rouge ?", r: "Parce qu'elle a vu la salade se déshabiller." }
+  { a: 'f', q: "Pourquoi la tomate est-elle toute rouge ?", r: "Parce qu'elle a vu la salade se déshabiller." },
+  { a: 'f', q: "J'ai réglé mon réveil en mode « doux et progressif ».", r: "Résultat : je me réveille doucement, et progressivement en retard." },
+  { a: 'f', q: "Ma montre connectée m'a félicité pour mes 10 000 pas de la matinée.", r: "Je cherchais juste mes clés." },
+  { a: 'f', q: "Cette année, j'ai voulu un sapin vraiment écolo.", r: "Le vendeur m'a donné une graine et m'a dit de revenir dans dix ans." },
+  { a: 'f', q: "Le groupe des parents de la classe affiche 147 messages non lus.", r: "La question de départ, c'était : « Il y a école demain ? »" },
+  { a: 'f', q: "Un sandwich entre dans un bar.", r: "Le serveur lui dit : « Désolé, ici, on ne sert pas à manger. »" }
 ];
 
 window.DEVINETTES = [
@@ -114,6 +122,7 @@ window.DEVINETTES = [
   { a: 'p', q: "J'ai une queue et une trompe, je suis très gros et gris. Qui suis-je ?", r: "L'éléphant" },
   { a: 'p', q: "Je tombe sans me faire mal, je suis blanche en hiver. Qui suis-je ?", r: "La neige" },
   { a: 'p', q: "J'ai un chapeau mais pas de tête, un pied mais pas de chaussure. Qui suis-je ?", r: "Un champignon" },
+  { a: 'p', q: "Je suis tout blanc, j'ai un nez en carotte et je fonds au soleil. Qui suis-je ?", r: "Le bonhomme de neige" },
   { a: 'm', q: "Qu'est-ce qui monte et qui descend sans bouger ?", r: "L'escalier" },
   { a: 'm', q: "Qu'est-ce qui a un cou mais pas de tête ?", r: "Une bouteille" },
   { a: 'm', q: "Je suis toujours devant toi mais tu ne peux pas me voir. Qui suis-je ?", r: "L'avenir" },
@@ -124,10 +133,12 @@ window.DEVINETTES = [
   { a: 'm', q: "Qu'est-ce qui se casse dès qu'on prononce son nom ?", r: "Le silence" },
   { a: 'm', q: "Je suis plein de trous mais je retiens l'eau. Qui suis-je ?", r: "Une éponge" },
   { a: 'm', q: "Qu'est-ce qui a des aiguilles mais ne pique pas ?", r: "Une horloge" },
+  { a: 'm', q: "On me décore une fois par an et j'ai des aiguilles, mais je ne sais pas coudre. Qui suis-je ?", r: "Le sapin de Noël" },
   { a: 'g', q: "Je commence la nuit et je finis le matin, je suis au milieu de la minute. Qui suis-je ?", r: "La lettre N" },
   { a: 'g', q: "Je peux être cassée sans être touchée, donnée sans être reçue. Qui suis-je ?", r: "Une promesse" },
   { a: 'g', q: "Plus il y en a, moins tu vois. Qu'est-ce que c'est ?", r: "L'obscurité" },
-  { a: 'g', q: "Qu'est-ce qui voyage partout dans le monde en restant dans son coin ?", r: "Un timbre" }
+  { a: 'g', q: "Qu'est-ce qui voyage partout dans le monde en restant dans son coin ?", r: "Un timbre" },
+  { a: 'g', q: "Je commence par un E, je finis par un E, et je ne contiens souvent qu'une seule lettre. Qui suis-je ?", r: "Une enveloppe" }
 ];
 
 window.ENIGMES = [
@@ -141,11 +152,13 @@ window.ENIGMES = [
   { a: 'm', q: "Tu es dans une course et tu dépasses la personne en deuxième position. Tu es maintenant :", r: "Deuxième ! Tu prends sa place." },
   { a: 'm', q: "Combien de fois peut-on soustraire 5 de 25 ?", r: "Une seule fois : après, ce n'est plus 25 mais 20 !" },
   { a: 'm', q: "Qu'est-ce qui est à toi mais que tout le monde utilise ?", r: "Ton prénom." },
+  { a: 'm', q: "Le papa de Marie a cinq filles : Lala, Lélé, Lili, Lolo. Comment s'appelle la cinquième ?", r: "Marie, bien sûr ! C'est écrit au début." },
   { a: 'g', q: "Trois interrupteurs sont dehors, une ampoule est dans une pièce fermée. Tu n'as le droit d'entrer qu'une fois. Comment sais-tu quel interrupteur commande l'ampoule ?", r: "Allume le 1er pendant quelques minutes, éteins-le, allume le 2e, entre : allumée = 2e, éteinte et chaude = 1er, éteinte et froide = 3e." },
   { a: 'g', q: "Un homme regarde une photo : « Je n'ai ni frère ni sœur, mais le père de cet homme est le fils de mon père. » Qui est sur la photo ?", r: "Son fils." },
   { a: 'g', q: "Quel est le prochain nombre : 2, 4, 8, 16, … ?", r: "32 : on double à chaque fois." },
   { a: 'g', q: "Deux pères et deux fils vont à la pêche. Chacun attrape un poisson, il y en a 3 au total. Comment ?", r: "Ils sont trois : un grand-père, son fils et son petit-fils." },
-  { a: 'g', q: "Un escargot monte un mur de 10 m : 3 m le jour, il redescend de 2 m la nuit. En combien de jours arrive-t-il en haut ?", r: "8 jours : le 8e jour il atteint 10 m en journée et n'a plus à redescendre." }
+  { a: 'g', q: "Un escargot monte un mur de 10 m : 3 m le jour, il redescend de 2 m la nuit. En combien de jours arrive-t-il en haut ?", r: "8 jours : le 8e jour il atteint 10 m en journée et n'a plus à redescendre." },
+  { a: 'g', q: "Dans un tiroir tout noir, il y a 10 chaussettes rouges et 10 chaussettes bleues. Combien dois-tu en prendre au minimum pour être sûr d'avoir deux chaussettes de la même couleur ?", r: "3 : avec 3 chaussettes et seulement 2 couleurs, deux sont forcément pareilles." }
 ];
 
 window.QUIZ = [
@@ -158,6 +171,7 @@ window.QUIZ = [
   { a: 'p', q: "Quel est le contraire de « grand » ?", o: ["Gros", "Petit", "Long"], r: 1 },
   { a: 'p', q: "Quelle saison est la plus froide ?", o: ["L'été", "Le printemps", "L'hiver"], r: 2 },
   { a: 'p', q: "Quel animal vit dans la mer ?", o: ["La baleine", "La girafe", "Le lion"], r: 0 },
+  { a: 'p', q: "Que met-on souvent tout en haut du sapin de Noël ?", o: ["Une étoile", "Une chaussure", "Une carotte"], r: 0 },
   /* moyens */
   { a: 'm', q: "Quelle est la capitale de la France ?", o: ["Lyon", "Paris", "Marseille"], r: 1 },
   { a: 'm', q: "Combien y a-t-il de continents ?", o: ["5", "7", "9"], r: 1 },
@@ -169,6 +183,7 @@ window.QUIZ = [
   { a: 'm', q: "Combien de joueurs y a-t-il dans une équipe de football sur le terrain ?", o: ["9", "11", "15"], r: 1 },
   { a: 'm', q: "De quoi est fait le verre ?", o: ["De sable", "De papier", "De bois"], r: 0 },
   { a: 'm', q: "Quel organe pompe le sang ?", o: ["Le cœur", "Le foie", "Le poumon"], r: 0 },
+  { a: 'm', q: "Combien de cases a un calendrier de l'Avent classique ?", o: ["12", "24", "31"], r: 1 },
   /* grands */
   { a: 'g', q: "Quel est le plus long fleuve de France ?", o: ["La Seine", "La Loire", "Le Rhône"], r: 1 },
   { a: 'g', q: "Qui a peint la Joconde ?", o: ["Picasso", "Léonard de Vinci", "Monet"], r: 1 },
@@ -180,6 +195,7 @@ window.QUIZ = [
   { a: 'g', q: "Quelle planète est surnommée « la planète rouge » ?", o: ["Jupiter", "Mars", "Saturne"], r: 1 },
   { a: 'g', q: "Quel est le plus grand désert chaud du monde ?", o: ["Le Sahara", "Le Gobi", "L'Atacama"], r: 0 },
   { a: 'g', q: "Quel est le résultat de 12 × 12 ?", o: ["124", "144", "154"], r: 1 },
+  { a: 'g', q: "Où auront lieu les Jeux olympiques d'hiver de 2030 ?", o: ["Dans les Alpes françaises", "À Oslo", "À Sapporo"], r: 0 },
   /* entre mams */
   { a: 'f', q: "Combien d'heures de sommeil recommande-t-on à un adulte (environ) ?", o: ["4 à 5 h", "7 à 9 h", "11 à 12 h"], r: 1 },
   { a: 'f', q: "À partir de quel âge peut-on donner du miel à un bébé ?", o: ["6 mois", "1 an", "3 mois"], r: 1 },

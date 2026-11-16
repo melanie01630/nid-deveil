@@ -26,6 +26,8 @@ Object.assign(window.ECOLE, {
     "Quel nombre est un multiple de 9 ?|81;56;100|9 × 9 = 81.",
     "Quelle est l'écriture décimale de 3/4 ?|0,75;0,34;3,4|3 ÷ 4 = 0,75.",
     "Quel est le périmètre d'un cercle de diamètre 10 cm (π ≈ 3,14) ?|31,4 cm;78,5 cm;15,7 cm|Périmètre = π × diamètre ≈ 31,4 cm.",
+    "Quel est le quotient de 84 par 7 ?|12;14;11|7 × 12 = 84, donc 84 ÷ 7 = 12.",
+    "Combien vaut 0,1 × 45 ?|4,5;0,45;45,1|Multiplier par 0,1, c'est diviser par 10 : 45 ÷ 10 = 4,5.",
   ],
   sci: [
     "Quelle est l'unité de base du vivant ?|La cellule;L'atome;L'organe|Tous les êtres vivants sont faits de cellules.",
@@ -88,6 +90,8 @@ Object.assign(window.ECOLE, {
     "Combien vaut 3 + 4 × 2 ?|11;14;10|La multiplication passe avant l'addition : 3 + 8.",
     "Quel nombre est premier ?|13;15;21|13 n'est divisible que par 1 et par lui-même.",
     "Dans un parallélogramme, les côtés opposés sont…|parallèles et de même longueur;perpendiculaires;toujours différents|C'est la définition du parallélogramme.",
+    "Combien vaut 5 - 9 ?|-4;4;-14|On part de 5 et on recule de 9 : on arrive à -4.",
+    "Quelle est la moyenne de 8, 12 et 16 ?|12;36;10|On additionne puis on divise par le nombre de valeurs : 36 ÷ 3 = 12.",
   ],
   sci: [
     "Quel organe permet les échanges de gaz chez l'humain ?|Les poumons;L'estomac;Le foie|Dans les alvéoles des poumons, le sang prend le dioxygène.",
@@ -150,6 +154,8 @@ Object.assign(window.ECOLE, {
     "Solution de 2x + 3 = 11 ?|x = 4;x = 7;x = 5,5|2x = 8, donc x = 4.",
     "Combien vaut 1/2 + 1/3 ?|5/6;2/5;1/6|3/6 + 2/6 = 5/6.",
     "Un article à 40 € est soldé à -25 %. Son nouveau prix ?|30 €;15 €;35 €|25 % de 40 = 10 ; 40 - 10 = 30 €.",
+    "Combien vaut 2⁻¹ ?|1/2;-2;2|Une puissance négative est un inverse : 2⁻¹ = 1/2 = 0,5.",
+    "Un triangle est rectangle. Les côtés de l'angle droit mesurent 3 cm et 4 cm. Combien mesure l'hypoténuse ?|5 cm;7 cm;6 cm|Théorème de Pythagore : 3² + 4² = 9 + 16 = 25, et √25 = 5.",
   ],
   sci: [
     "Quel est le symbole chimique de l'oxygène ?|O;Ox;Og|O pour oxygène, H pour hydrogène, C pour carbone.",
@@ -212,6 +218,8 @@ Object.assign(window.ECOLE, {
     "On lance un dé équilibré. Probabilité d'obtenir 6 ?|1/6;1/2;6|Une issue favorable sur six.",
     "f(x) = 2x. Combien vaut f(5) ?|10;7;25|On remplace x par 5 : 2 × 5.",
     "Un prix augmente de 10 % puis baisse de 10 %. Il est…|plus bas qu'au départ;égal;plus haut|×1,1 puis ×0,9 = ×0,99.",
+    "Quelles sont les solutions de l'équation x² = 25 ?|x = 5 ou x = -5;x = 5 seulement;x = 12,5|5 × 5 = 25 et (-5) × (-5) = 25 : il y a deux solutions.",
+    "Quel est le plus grand diviseur commun de 12 et 18 ?|6;3;36|Les diviseurs communs de 12 et 18 sont 1, 2, 3 et 6. Le plus grand est 6.",
   ],
   sci: [
     "Qu'est-ce que l'ADN ?|La molécule qui porte l'information génétique;Une protéine du muscle;Un sucre|L'ADN se trouve dans le noyau des cellules.",

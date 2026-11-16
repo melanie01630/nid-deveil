@@ -3,8 +3,12 @@
    On ne garantit pas la plateforme : cherche le titre dans ton abonnement ou à la médiathèque.
    Vérifie toujours l'interdiction d'âge avant de regarder. */
 window.ADULTES = [
-  /* ===================== NOUVEAUTÉS ET AU CINÉMA (relevées le 15/11/2026) =====================
+  /* ===================== NOUVEAUTÉS ET AU CINÉMA (relevées le 16/11/2026) =====================
      ou : où le voir (Au cinéma, Netflix...) ; d : date de sortie AAAA-MM-JJ. À mettre à jour chaque semaine. */
+  { type: 'film', g: 'Émotion', titre: "Fatherland", an: '2026', d: '2026-12-02', ou: 'Au cinéma', note: "En 1949, l'écrivain Thomas Mann revient dans l'Allemagne d'après-guerre avec sa fille Erika. Le nouveau film de Pawel Pawlikowski (Cold War), avec Sandra Hüller et August Diehl." },
+  { type: 'film', g: 'Émotion', titre: "Behemoth!", an: '2026', d: '2026-12-02', ou: 'Au cinéma', note: "Un violoncelliste revient à Los Angeles après vingt ans passés en tournée. Un drame avec de la musique, réalisé par Tony Gilroy, avec Pedro Pascal et Will Arnett." },
+  { type: 'film', g: 'Émotion', titre: "Un peu avant minuit", an: '2026', d: '2026-12-02', ou: 'Au cinéma', note: "Un homme apprend la mort d'un père biologique qu'il n'a jamais connu. Comédie douce-amère de Nicolas Pariser avec Melvil Poupaud, Chiara Mastroianni et Golshifteh Farahani." },
+  { type: 'film', g: 'Rire et se détendre', titre: "Mon fils président", an: '2026', d: '2026-12-02', ou: 'Au cinéma', note: "Un fils se met en tête de réunir les 500 parrainages nécessaires pour une candidature à la présidentielle. Comédie de et avec Mathias Mlekuz, avec Philippe Rebbot." },
   { type: 'film', g: 'Rire et se détendre', titre: "Mon beau-père, ma belle-fille et moi", an: '2026', d: '2026-11-25', ou: 'Au cinéma', note: "La famille Focker revient : Robert De Niro, Ben Stiller et Ariana Grande dans une nouvelle comédie de John Hamburg." },
   { type: 'film', g: 'Suspense', titre: "Paper Tiger", an: '2026', d: '2026-11-25', ou: 'Au cinéma', note: "Deux frères du Queens se retrouvent pris dans une affaire de la mafia russe. Film de James Gray avec Adam Driver, Miles Teller et Scarlett Johansson." },
   { type: 'film', g: 'Émotion', titre: "Un bon petit soldat", an: '2026', d: '2026-11-25', ou: 'Au cinéma', note: "Un responsable des ressources humaines se heurte à un management toxique. Film de Stéphane Brizé avec Vincent Lindon." },
@@ -22,11 +26,16 @@ window.ADULTES = [
   { type: 'film', g: 'Rire et se détendre', titre: "Un bon patron", an: '2026', d: '2026-11-04', ou: 'Au cinéma', note: "Comédie de Philippe de Chauveron avec Didier Bourdon et Catherine Frot." },
   { type: 'film', g: 'Suspense', titre: "Moulin", an: '2026', d: '2026-10-28', ou: 'Au cinéma', note: "Juin 1943 : Jean Moulin (Gilles Lellouche), chef de la Résistance, est arrêté et interrogé par Klaus Barbie. Scènes de violence." },
   { type: 'film', g: 'Émotion', titre: "Les Misérables", an: '2026', d: '2026-10-14', ou: 'Au cinéma', note: "La grande fresque de Victor Hugo par Fred Cavayé, avec Vincent Lindon en Jean Valjean et Tahar Rahim en Javert. Près de 3 heures." },
+  { type: 'film', g: 'Romance', titre: "Un Noël sans fin", an: '2026', d: '2026-12-02', ou: 'Netflix', note: "Une comédie romantique de Noël avec Maddie Ziegler et Rob Lowe, idéale pour une soirée douce sous le plaid." },
   { type: 'film', g: 'Grand spectacle', titre: "Quasimodo, l'âme de Paris", an: '2026', d: '2026-11-27', ou: 'Netflix', note: "Dans le Paris de 1830, l'histoire de l'homme qui aurait inspiré Victor Hugo. Avec Vincent Cassel et Benjamin Voisin." },
   { type: 'film', g: 'Grand spectacle', titre: "The Mosquito Bowl", an: '2026', d: '2026-11-25', ou: 'Netflix', note: "La Seconde Guerre mondiale racontée sous un angle inattendu." },
   { type: 'film', g: 'Émotion', titre: "Madden", an: '2026', d: '2026-11-18', ou: 'Prime Video', note: "Un film biographique porté par Nicolas Cage." },
   { type: 'film', g: 'Romance', titre: "Possible Love", an: '2026', d: '2026-11-06', ou: 'Netflix', note: "Le nouveau Lee Chang-dong (Burning), Lion d'argent à Venise : les destins croisés de deux couples. Long (2 h 44) et tout en finesse." },
   { type: 'film', g: 'Émotion', titre: "Le Théorème de Marguerite", an: '2023', d: '2026-11-01', ou: 'Netflix', note: "Une brillante étudiante en maths voit sa vie bousculée après une erreur, et doit tout réinventer. Touchant et original." },
+  { type: 'serie', g: 'Suspense', titre: "Only Murders in the Building, saison 6", an: '2021', d: '2026-12-08', ou: 'Disney+', note: "Le trio d'enquêteurs amateurs (Steve Martin, Martin Short, Selena Gomez) part résoudre un nouveau mystère à Londres. Drôle et plein de rebondissements." },
+  { type: 'serie', g: 'Émotion', titre: "Alice", an: '2026', d: '2026-12-04', ou: 'HBO Max', note: "Bérénice Bejo incarne Alice Guy, pionnière du cinéma et l'une des premières réalisatrices de l'histoire. Mini-série historique en six épisodes." },
+  { type: 'serie', g: 'Romance', titre: "Orgueil et préjugés, la série", an: '2026', d: '2026-12-03', ou: 'Netflix', note: "Le grand roman de Jane Austen en six épisodes, adapté par Dolly Alderton, avec Emma Corrin, Jack Lowden et Olivia Colman." },
+  { type: 'serie', g: 'Suspense', titre: "Trinity", an: '2026', d: '2026-12-01', ou: 'Netflix', note: "Un thriller politique signé Jed Mercurio (Bodyguard), avec Richard Madden en ministre de la Défense et Gugu Mbatha-Raw en officier de marine." },
   { type: 'serie', g: 'Grand spectacle', titre: "Blade Runner 2099", an: '2026', d: '2026-11-25', ou: 'Prime Video', note: "La nouvelle série de l'univers Blade Runner. Science-fiction." },
   { type: 'serie', g: 'Suspense', titre: "The Altruists", an: '2026', d: '2026-11-19', ou: 'Netflix', note: "Mini-série sur l'ascension et la chute de la plateforme de cryptomonnaies FTX." },
   { type: 'serie', g: 'Suspense', titre: "Black Doves, saison 2", an: '2024', d: '2026-11-05', ou: 'Netflix', note: "Le retour de l'espionne jouée par Keira Knightley, dans un Londres plein de dangers." },

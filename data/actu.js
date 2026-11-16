@@ -1,8 +1,10 @@
 /* Page Actu : à mettre à jour souvent.
    ARTICLES : d = date, s = source, t = titre court, x = résumé en une phrase (avec tes mots), u = lien
    RECHERCHES : boutons qui ouvrent une recherche (YouTube ou TikTok). Ajoute les tiennes. */
-window.ACTU_DATE = '14/11/2026';
+window.ACTU_DATE = '16/11/2026';
 window.ARTICLES = [
+  { d: '2026-11', s: 'CAF', t: "Attention : pas d'aide surprise de 1 366 € en novembre", x: "La CAF dément une rumeur qui tourne sur les réseaux : aucune aide exceptionnelle n'existe. Ne donne jamais tes coordonnées bancaires sur un lien reçu par message, et vérifie tes droits sur le site officiel.", u: 'https://caf.fr/allocataires/actualites/actualites-nationales/attention-aucune-nouvelle-aide-de-1-366-euros-n-est-versee-par-la-caf-en-novembre-2026' },
+  { d: '2026-11', s: 'MoneyVox', t: "Prime de Noël 2026 : versée le 15 décembre", x: "Les familles qui touchent le RSA, l'ASS ou l'AER la recevront sans démarche, avec les mêmes montants que l'an dernier. Le virement peut mettre quelques jours à arriver selon la banque.", u: 'https://www.moneyvox.fr/votre-argent/actualites/111154/prime-de-noel-2026-c-est-officiel-le-virement-aura-lieu-le-15-decembre' },
   { d: '2026-07', s: 'CAF', t: "Santé mentale et parentalité : comment se préserver ?", x: "Un article sur la fatigue des parents et les moyens de souffler, dans une société où tout va vite.", u: 'https://caf.fr/allocataires/vies-de-famille/articles/sante-mentale-et-parentalite-comment-se-preserver' },
   { d: '2026-04', s: 'CAF', t: "3018 : un numéro contre le cyberharcèlement", x: "Le numéro gratuit d'e-Enfance aide les enfants et les parents face au harcèlement et aux violences en ligne.", u: 'https://www.caf.fr/allocataires/vies-de-famille/articles?page=1' },
   { d: '2026-05', s: 'RTBF Les Grenades', t: "Nouveau congé naissance en France : un petit pas vers plus d'égalité ?", x: "Un article sur ce que change le nouveau congé naissance pour les parents.", u: 'https://www.rtbf.be/mot-cle/mere' },

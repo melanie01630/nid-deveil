@@ -73,6 +73,8 @@ Object.assign(window.CULTURE, {
     "De quel pays vient le reggae ?|La Jamaïque;Cuba;Le Brésil|Bob Marley en est la figure la plus célèbre.",
     "Quel groupe britannique a chanté « Bohemian Rhapsody » ?|Queen;The Beatles;Coldplay|Avec Freddie Mercury.",
     "Quelle chanteuse française a chanté « La Vie en rose » ?|Édith Piaf;Dalida;Céline Dion|Une chanson de 1947.",
+    "Quel duo français a sorti l'album « Random Access Memories » en 2013, avec le tube « Get Lucky » ?|Daft Punk;Justice;Air|L'album a gagné le Grammy Award de l'album de l'année.",
+    "De quel instrument jouait Jimi Hendrix ?|La guitare électrique;La batterie;Le saxophone|Il est considéré comme l'un des plus grands guitaristes de l'histoire du rock.",
   ],
   sport: [
     "Quel athlète jamaïcain détient le record du monde du 100 m ?|Usain Bolt;Carl Lewis;Christian Coleman|9,58 secondes en 2009.",
@@ -80,6 +82,8 @@ Object.assign(window.CULTURE, {
     "Combien de fois la France a-t-elle gagné la Coupe du monde de football (hommes) ?|2;1;3|En 1998 et en 2018.",
     "Quel joueur de tennis espagnol a gagné Roland-Garros 14 fois ?|Rafael Nadal;Carlos Alcaraz;Novak Djokovic|Un record absolu dans un même tournoi du Grand Chelem.",
     "Quel judoka français a gagné plusieurs médailles d'or olympiques en poids lourds ?|Teddy Riner;David Douillet;Clarisse Agbégnénou|Il a notamment été sacré à Londres, Rio et Paris.",
+    "Dans quel sport l'Europe et les États-Unis s'affrontent-ils lors de la Ryder Cup ?|Le golf;Le tennis;La voile|La Ryder Cup a lieu tous les deux ans.",
+    "Combien de temps dure un match de basket NBA, sans prolongation ?|48 minutes;40 minutes;60 minutes|4 quarts-temps de 12 minutes. Dans les matchs internationaux, c'est 4 fois 10 minutes.",
   ],
   art: [
     "Qui a écrit « Roméo et Juliette » ?|William Shakespeare;Molière;Victor Hugo|Une tragédie de la fin du XVIe siècle.",
@@ -95,11 +99,21 @@ Object.assign(window.CULTURE, {
     "Quel insecte communique en dansant pour indiquer les fleurs ?|L'abeille;La fourmi;Le papillon|C'est la « danse frétillante ».",
     "Combien de temps dure environ la gestation d'un éléphant ?|22 mois;9 mois;4 mois|C'est la plus longue des mammifères terrestres.",
     "Quel animal dort debout ?|Le cheval;Le chat;Le chien|Ses pattes ont un système de blocage.",
+    "Quel est le plus grand oiseau du monde ?|L'autruche;Le condor;L'albatros|Elle ne vole pas, mais elle peut courir à environ 70 km/h.",
+    "Quel conifère perd ses aiguilles en automne, contrairement au sapin ?|Le mélèze;L'épicéa;Le pin|Le mélèze devient jaune doré en automne avant de perdre ses aiguilles.",
+    "Parmi ces animaux marins, lequel est un mammifère ?|Le dauphin;Le requin;Le thon|Le dauphin respire de l'air et allaite ses petits.",
   ],
   lang: [
     "Que signifie l'expression « avoir le compas dans l'œil » ?|Évaluer précisément à vue d'œil;Avoir mal aux yeux;Être distrait|Elle vient des métiers manuels.",
     "Que veut dire « une fake news » en français ?|Une fausse information;Un faux nom;Un faux journal|Le terme officiel recommandé est « infox ».",
     "Quel est le sens de « procrastiner » ?|Remettre au lendemain;Travailler vite;Se dépêcher|Du latin cras, « demain ».",
+    "Que signifie « mettre la charrue avant les bœufs » ?|Faire les choses dans le mauvais ordre;Travailler très dur;Aller trop lentement|La charrue doit être tirée par les bœufs, donc placée derrière eux.",
+    "Que veut dire l'adjectif « éphémère » ?|Qui dure très peu de temps;Qui est très lourd;Qui dure pour toujours|Le mot vient du grec et veut dire « qui ne dure qu'un jour ».",
+    "Quel mot recommandé en français remplace « e-mail » ?|Courriel;Texto;Messagerie|Le mot courriel a été inventé au Québec.",
+  ],
+  cuis: [
+    "De quel pays vient le guacamole ?|Le Mexique;L'Inde;La Grèce|C'est une purée d'avocat avec du citron vert, de l'oignon et de la coriandre.",
+    "Quelle épice donne sa couleur jaune à la poudre de curry ?|Le curcuma;La cannelle;Le poivre|Le curcuma est une racine jaune-orangé très utilisée en Inde.",
   ],
 },
 adultes: {
@@ -118,6 +132,8 @@ adultes: {
     "Quelle dynastie a régné sur la Chine de 1644 à 1912 ?|Les Qing;Les Ming;Les Han|La dernière dynastie impériale chinoise.",
     "Quelle reine a régné le plus longtemps sur le Royaume-Uni ?|Élisabeth II;Victoria;Élisabeth Ire|70 ans de règne, de 1952 à 2022.",
     "En quelle année Nelson Mandela devient-il président de l'Afrique du Sud ?|1994;1990;1985|Il est libéré en 1990 et élu en 1994.",
+    "En quelle année les femmes ont-elles voté pour la première fois en France ?|1945;1918;1968|Le droit de vote leur est accordé en 1944, et elles votent pour la première fois au printemps 1945.",
+    "Quel roi de France était surnommé le « Roi-Soleil » ?|Louis XIV;Louis XVI;François Ier|Il a régné 72 ans et fait construire le château de Versailles.",
   ],
   perso: [
     "Qui a découvert la pénicilline en 1928 ?|Alexander Fleming;Louis Pasteur;Robert Koch|Le premier antibiotique.",
@@ -166,6 +182,8 @@ adultes: {
     "Quelle est la formule chimique du sel de table ?|NaCl;KCl;CaCO₃|Du chlorure de sodium.",
     "En quelle année le premier iPhone a-t-il été présenté ?|2007;2001;2010|Présenté par Steve Jobs en janvier 2007.",
     "Comment s'appelle le télescope spatial lancé fin 2021, successeur de Hubble ?|James Webb;Kepler;Galileo|Il observe surtout dans l'infrarouge.",
+    "Combien de litres de sang le corps d'un adulte contient-il environ ?|Environ 5 litres;Environ 1 litre;Environ 15 litres|Le cœur fait circuler tout ce sang dans le corps en environ une minute.",
+    "Combien de chromosomes contient une cellule humaine habituelle ?|46;23;64|Ils vont par paires : 23 paires de chromosomes.",
   ],
   cine: [
     "Quel film a remporté 11 Oscars, comme « Titanic » et « Ben-Hur » ?|Le Seigneur des anneaux : Le Retour du roi;Avatar;Forrest Gump|Trois films détiennent ce record.",
@@ -192,6 +210,8 @@ adultes: {
     "Quel chanteur a sorti l'album « Thriller » en 1982 ?|Michael Jackson;Prince;Stevie Wonder|L'un des albums les plus vendus de l'histoire.",
     "Quel artiste français a composé « Le Poinçonneur des Lilas » et « La Javanaise » ?|Serge Gainsbourg;Georges Brassens;Alain Souchon|Un auteur majeur de la chanson française.",
     "Quelle chanteuse est surnommée la « reine de la pop » ?|Madonna;Lady Gaga;Britney Spears|Une carrière commencée au début des années 1980.",
+    "Quel chanteur a écrit et chanté « La Bohème » ?|Charles Aznavour;Jacques Brel;Georges Brassens|La chanson raconte la jeunesse d'un peintre à Montmartre.",
+    "Quel compositeur a écrit le ballet « Casse-Noisette », souvent joué à Noël ?|Tchaïkovski;Ravel;Chopin|Le ballet a été créé à Saint-Pétersbourg en 1892.",
   ],
   star: [
     "Quel footballeur argentin a remporté la Coupe du monde 2022 en tant que capitaine ?|Lionel Messi;Diego Maradona;Ángel Di María|L'Argentine a battu la France en finale aux tirs au but.",
@@ -214,6 +234,9 @@ adultes: {
     "Quel tennisman serbe détient le record de titres du Grand Chelem masculins ?|Novak Djokovic;Roger Federer;Rafael Nadal|Il a remporté au moins 24 titres du Grand Chelem.",
     "Dans quel sport l'équipe de France masculine, avec Antoine Dupont, a-t-elle gagné l'or aux JO de Paris 2024 ?|Le rugby à 7;Le handball;Le volley|Une première médaille d'or olympique pour la France dans ce sport.",
     "Quel nageur américain est l'athlète le plus médaillé de l'histoire des JO ?|Michael Phelps;Mark Spitz;Ryan Lochte|28 médailles, dont 23 en or.",
+    "Dans quelle ville se joue le tournoi de tennis de Wimbledon ?|Londres;Manchester;Dublin|C'est le plus ancien tournoi du Grand Chelem, joué sur gazon.",
+    "Combien de trous compte un parcours de golf classique ?|18;9;12|Certains petits parcours n'en ont que 9.",
+    "Quelle est la longueur d'un bassin olympique de natation ?|50 mètres;25 mètres;100 mètres|Le petit bassin, souvent utilisé à la piscine municipale, fait 25 mètres.",
   ],
   art: [
     "Qui a écrit « À la recherche du temps perdu » ?|Marcel Proust;Gustave Flaubert;Émile Zola|La célèbre madeleine se trouve dans le premier tome.",
@@ -234,6 +257,10 @@ adultes: {
     "Combien de dents a un adulte humain avec ses dents de sagesse ?|32;28;36|Sans les dents de sagesse, 28.",
     "Quel animal est le symbole du WWF ?|Le panda géant;Le tigre;L'ours polaire|Le logo a été créé en 1961.",
     "Quel mammifère pond des œufs ?|L'ornithorynque;Le kangourou;Le koala|Comme l'échidné.",
+    "Quel est le plus grand félin du monde ?|Le tigre;Le lion;Le jaguar|Le tigre de Sibérie peut dépasser 250 kg.",
+    "Quel oiseau est capable de voler en marche arrière ?|Le colibri;Le pigeon;L'aigle|Ses ailes battent si vite qu'il peut aussi faire du surplace.",
+    "De quel type d'arbre est le plus haut arbre connu au monde, qui dépasse 115 mètres ?|Un séquoia;Un baobab;Un chêne|Il s'appelle Hyperion et pousse en Californie.",
+    "Combien de temps dure environ la gestation d'une vache ?|9 mois;3 mois;18 mois|Environ 280 jours, presque comme chez l'humain.",
   ],
   cuis: [
     "De quelle ville vient la bouillabaisse ?|Marseille;Nice;Bordeaux|Une soupe de poissons de roche.",
@@ -243,12 +270,19 @@ adultes: {
     "Quel plat japonais est fait de bouillon, nouilles et garnitures ?|Les ramen;Les sushis;Les tempura|Les ramen sont devenus très populaires en France.",
     "Quel vin effervescent porte le nom d'une région française ?|Le champagne;Le bordeaux;Le muscadet|Seul celui produit en Champagne peut porter ce nom.",
     "De quel pays vient la paella ?|L'Espagne;L'Italie;Le Portugal|Elle vient de la région de Valence.",
+    "De quelle région française vient la choucroute ?|L'Alsace;La Bretagne;La Provence|Du chou fermenté servi avec des saucisses et de la charcuterie.",
+    "Quel fruit sec est indispensable au nougat de Montélimar ?|L'amande;La noix de coco;La cacahuète|Le nougat est fait de miel, de blanc d'œuf et d'amandes, souvent avec des pistaches.",
+    "Combien de desserts sont traditionnellement servis à Noël en Provence ?|13;7;24|On dit qu'ils représentent le Christ et les douze apôtres.",
   ],
   lang: [
     "Que signifie « tirer les marrons du feu » ?|Profiter du travail d'un autre (ou prendre des risques pour un autre);Faire griller des châtaignes;Éteindre un incendie|L'expression vient d'une fable de La Fontaine.",
     "D'où vient l'expression « mettre les points sur les i » ?|Préciser les choses clairement;Écrire avec soin les lettres;Corriger une dictée|Au Moyen Âge, le i n'avait pas de point.",
     "Quel mot français vient de l'arabe ?|Algèbre;Château;Fenêtre|Comme sirop, sucre ou café.",
     "Combien de mots environ contient le dictionnaire Le Petit Robert ?|Environ 60 000;Environ 5 000;Environ 1 million|Le français compte bien plus de mots au total.",
+    "Que signifie « être sur la sellette » ?|Être mis en cause, menacé d'une sanction;Être à cheval;Être en vacances|La sellette était le petit siège où l'on faisait asseoir l'accusé au tribunal.",
+    "Que signifie « avoir maille à partir avec quelqu'un » ?|Avoir un différend avec lui;Tricoter avec lui;Partir en voyage avec lui|La maille était une toute petite pièce de monnaie, impossible à partager.",
+    "Comment appelle-t-on une personne qui ne consomme aucun produit d'origine animale ?|Végan;Végétarien;Flexitarien|Le végétarien ne mange ni viande ni poisson, mais peut manger des œufs et du fromage.",
+    "Que désigne le mot « sinécure » ?|Un poste bien payé qui demande peu de travail;Une maladie grave;Un remède de grand-mère|Du latin sine cura, qui veut dire « sans souci ».",
   ],
 },
 });

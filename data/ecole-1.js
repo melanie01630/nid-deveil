@@ -28,6 +28,7 @@ ps: {
     "Quel est le plus petit ?|La fourmi 🐜;Le chien 🐶;Le cheval 🐴|La fourmi est toute petite.",
     "Combien as-tu de nez ?|1;2;3|On a un seul nez.",
     "Combien as-tu de mains ?|2;1;5|On a deux mains : la droite et la gauche.",
+    "Combien y a-t-il de 🎄 ?  🎄 🎄 🎄|3;2;4|On compte en montrant chaque sapin du doigt : 1, 2, 3.",
   ],
   monde: [
     "De quelle couleur est la banane ?|Jaune 💛;Bleue 💙;Rouge ❤️|Une banane bien mûre est jaune.",
@@ -70,6 +71,7 @@ ms: {
     "Qu'est-ce qui est le plus long ?|Un train 🚆;Une voiture 🚗;Un vélo 🚲|Le train est très long, avec beaucoup de wagons.",
     "Combien de doigts sur une main ?|5;4;10|On a 5 doigts sur une main.",
     "Qu'est-ce qui vient ensuite ? 🔴 🔵 🔴 🔵 🔴 …|🔵;🔴;🟢|Rouge, bleu, rouge, bleu… après rouge vient bleu.",
+    "Quel nombre vient après 5 ?|6;4;7|On compte : 4, 5, 6. Après 5 vient 6.",
   ],
   monde: [
     "Quelle saison arrive après l'hiver ?|Le printemps 🌷;L'été ☀️;L'automne 🍂|Hiver, printemps, été, automne.",
@@ -112,6 +114,7 @@ gs: {
     "Combien font 5 + 5 ?|10;9;11|5 doigts + 5 doigts = 10 doigts.",
     "Quel jour vient après lundi ?|Mardi;Mercredi;Dimanche|Lundi, mardi, mercredi, jeudi, vendredi, samedi, dimanche.",
     "Combien y a-t-il de jours dans une semaine ?|7;5;10|Une semaine a 7 jours.",
+    "Combien font 4 + 2 ?  🍪🍪🍪🍪 + 🍪🍪|6;5;7|4 biscuits et encore 2 biscuits, ça fait 6 biscuits.",
   ],
   monde: [
     "De quoi une plante a-t-elle besoin pour pousser ?|D'eau et de lumière;De chocolat;De bruit|Une plante a besoin d'eau, de lumière et de terre.",
@@ -152,6 +155,8 @@ cp: {
     "Quelle forme a 3 côtés et 3 sommets ?|Le triangle;Le carré;Le cercle|Le triangle a 3 côtés et 3 sommets (les « coins »).",
     "Une pièce de 2 € et une pièce de 1 €, ça fait ?|3 €;2 €;21 €|2 € + 1 € = 3 €.",
     "Quel est le double de 4 ?|8;6;4|Le double, c'est deux fois : 4 + 4 = 8.",
+    "Combien font 7 + 3 ?|10;9;11|7 + 3 = 10 : c'est un complément à 10 à connaître par cœur.",
+    "Quel nombre vient juste avant 20 ?|19;21;10|On compte : 18, 19, 20. Juste avant 20, il y a 19.",
   ],
   monde: [
     "Combien y a-t-il de saisons dans une année ?|4;2;12|Printemps, été, automne, hiver : 4 saisons.",
@@ -200,6 +205,8 @@ ce1: {
     "Un billet de 10 € et 2 pièces de 2 €, ça fait ?|14 €;12 €;22 €|10 + 2 + 2 = 14 €.",
     "Quel est le nombre « soixante-dix » ?|70;60;17|Soixante-dix = 60 + 10 = 70.",
     "Quel nombre a 4 dizaines et 7 unités ?|47;74;11|4 dizaines = 40, plus 7 unités = 47.",
+    "Combien font 36 + 20 ?|56;38;54|On ajoute 2 dizaines : 3 dizaines + 2 dizaines = 5 dizaines, donc 56.",
+    "Quel est le double de 15 ?|30;25;20|Le double, c'est deux fois le nombre : 15 + 15 = 30.",
   ],
   monde: [
     "À quel état est l'eau dans un glaçon ?|Solide;Liquide;Gazeux|La glace est de l'eau à l'état solide.",
@@ -248,6 +255,8 @@ ce2: {
     "Quel solide roule et n'a pas de sommet ?|La boule;Le cube;La pyramide|La boule (sphère) est toute ronde.",
     "Quelle est la moitié de 50 ?|25;20;30|50 partagé en 2 = 25.",
     "Un angle droit ressemble au coin…|d'une feuille;d'une assiette;d'un ballon|Le coin d'une feuille forme un angle droit.",
+    "Combien font 7 × 8 ?|56;54;48|Dans la table de 7 (ou de 8) : 7 × 8 = 56.",
+    "Combien de jours y a-t-il au mois de décembre ?|31;30;28|Décembre a 31 jours. On peut le vérifier en comptant sur les bosses des poings.",
   ],
   monde: [
     "Qu'est-ce qu'un herbivore ?|Un animal qui mange des plantes;Un animal qui mange de la viande;Une plante|Herbivore : qui mange de l'herbe et des plantes.",
@@ -296,6 +305,8 @@ cm1: {
     "Quel nombre est le plus grand ?|3,5;3,05;3,45|3,5 = 3,50 : c'est le plus grand.",
     "Combien de millilitres dans 1 litre ?|1 000;100;10|1 L = 1 000 mL.",
     "Combien de côtés a un hexagone ?|6;5;8|Hexa veut dire six.",
+    "Combien font 125 × 4 ?|500;400;525|4 fois 100 = 400 et 4 fois 25 = 100, donc 400 + 100 = 500.",
+    "Quel est le reste de la division de 17 par 5 ?|2;3;1|17 = 5 × 3 + 2 : le quotient est 3 et le reste est 2.",
   ],
   monde: [
     "De quoi sont composés les aliments qui construisent les muscles ?|Des protéines;Des sucres rapides;De l'eau seulement|Viande, poisson, œufs, légumineuses apportent des protéines.",
@@ -304,6 +315,8 @@ cm1: {
     "Qu'est-ce qu'une énergie renouvelable ?|Une énergie qui ne s'épuise pas, comme le vent;Le pétrole;Le charbon|Soleil, vent et eau se renouvellent, contrairement au pétrole.",
     "Quel matériau conduit l'électricité ?|Le cuivre;Le plastique;Le bois|Les métaux comme le cuivre laissent passer le courant.",
     "Pourquoi trie-t-on les déchets ?|Pour les recycler;Pour les cacher;Pour les brûler tous|Le tri permet de recycler le verre, le papier, le plastique…",
+    "À quelle température l'eau pure se transforme-t-elle en glace ?|0 °C;10 °C;-20 °C|Au niveau de la mer, l'eau pure gèle à 0 °C : c'est la solidification.",
+    "Comment s'appelle le passage de l'eau liquide à la vapeur ?|La vaporisation;La solidification;La fusion|Quand l'eau chauffe et bout, elle se vaporise et devient un gaz.",
   ],
   hg: [
     "Comment s'appelaient les habitants de la Gaule ?|Les Gaulois;Les Romains;Les Vikings|Avant les Romains, la Gaule était habitée par les Gaulois.",
@@ -350,6 +363,8 @@ cm2: {
     "Combien de centimètres dans 2,5 m ?|250;25;2 500|2,5 × 100 = 250 cm.",
     "Combien de degrés dans un angle droit ?|90°;180°;45°|Un angle droit mesure 90°.",
     "Quel est le diamètre d'un cercle de rayon 4 cm ?|8 cm;4 cm;2 cm|Diamètre = 2 × rayon.",
+    "Combien font 3,5 + 2,75 ?|6,25;5,80;6,15|On aligne les virgules : 3,50 + 2,75 = 6,25.",
+    "Combien de minutes y a-t-il dans 2 heures et demie ?|150 minutes;250 minutes;130 minutes|2 heures = 120 minutes, plus une demi-heure = 30 minutes, donc 150 minutes.",
   ],
   monde: [
     "Quel organe filtre le sang ?|Les reins;Les poumons;L'estomac|Les reins filtrent le sang et fabriquent l'urine.",
@@ -358,6 +373,8 @@ cm2: {
     "Combien de planètes dans le système solaire ?|8;9;7|Depuis 2006, Pluton n'est plus une planète : il en reste 8.",
     "Qu'est-ce qu'un volcan en éruption rejette ?|De la lave;De l'eau salée;Du sable seulement|La lave est de la roche fondue.",
     "Qu'est-ce qu'une chaîne alimentaire ?|Qui mange qui dans la nature;Un magasin;Une recette|Exemple : herbe → lapin → renard.",
+    "Comment s'appelle le mouvement de la Terre qui tourne sur elle-même en 24 heures ?|La rotation;La révolution;L'éclipse|La rotation de la Terre crée l'alternance du jour et de la nuit.",
+    "Combien de temps met la Terre pour faire le tour du Soleil ?|Environ 365 jours (un an);24 heures;Un mois|C'est la révolution de la Terre : elle dure environ 365 jours et un quart.",
   ],
   hg: [
     "En quelle année a commencé la Révolution française ?|1789;1492;1914|La prise de la Bastille a eu lieu le 14 juillet 1789.",

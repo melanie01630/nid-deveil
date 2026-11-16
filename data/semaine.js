@@ -5,17 +5,19 @@
    k possibles : 'Activité', 'Recette', 'Blague', 'Devinette', 'Énigme', 'Astuce', 'Film' (FILMS), 'Nouveauté' (NOUV),
                  'Adulte' (ADULTES, visible seulement dans l'espace adultes), 'Vidéos', 'Bon plan', 'Info' (texte libre dans x) */
 window.SEMAINE = {
-  date: '15/11/2026',
+  date: '16/11/2026',
   items: [
-    { k: 'Info', t: "Toutes les recettes ont leurs quantités", x: "Les 62 recettes ont maintenant le nombre de personnes, les quantités exactes, les temps de préparation et de cuisson, des idées pour varier et la conservation. Les 216 activités ont aussi des étapes beaucoup plus détaillées." },
-    { k: 'Activité', t: "Le calendrier de l'Avent maison", x: "À préparer maintenant pour le 1er décembre" },
-    { k: 'Activité', t: "Les décorations de sapin en pâte à sel", x: "Des décorations faites maison pour Noël" },
-    { k: 'Recette', t: "Truffes en chocolat", x: "Le cadeau gourmand parfait pour les fêtes" },
-    { k: 'Recette', t: "Velouté de potimarron", x: "La soupe douce de saison" },
-    { k: 'Nouveauté', t: "Le Noël d'Ernest et Célestine", x: "Au cinéma le 25 novembre, dès 3 ans" },
-    { k: 'Nouveauté', t: "Hunger Games : Lever de soleil sur la moisson", x: "Au cinéma le 18 novembre, plutôt pour les ados" },
-    { k: 'Adulte', t: "Il faut brûler Maman", x: "Le nouveau Dupontel, au cinéma" },
-    { k: 'Adulte', t: "Possible Love", x: "Sur Netflix, Lion d'argent à Venise" },
-    { k: 'Adulte', t: "Mon beau-père, ma belle-fille et moi", x: "Au cinéma le 25 novembre" }
+    { k: 'Activité', t: "La boule à neige maison", x: "Un petit bocal où il neige quand on le secoue" },
+    { k: 'Recette', t: "Chocolat chaud maison", x: "Bien mousseux, prêt en 10 minutes" },
+    { k: 'Activité', t: "La guirlande d'oranges séchées", x: "La déco de Noël qui parfume toute la maison" },
+    { k: 'Nouveauté', t: "Astérix : Le Royaume de Nubie", x: "Au cinéma le 2 décembre, dès 6 ans" },
+    { k: 'Nouveauté', t: "Journal d'un dégonflé Noël : Sauve qui peut", x: "Sur Disney+ le 4 décembre" },
+    { k: 'Recette', t: "Mendiants au chocolat", x: "Le petit cadeau gourmand que les enfants décorent" },
+    { k: 'Activité', t: "Les rennes en empreintes de mains", x: "Un souvenir de Noël tout doux pour les petits" },
+    { k: 'Activité', t: "La boîte solidaire de décembre", x: "Un objet par jour à offrir avant Noël" },
+    { k: 'Blague', t: "Comment appelle-t-on un bonhomme de neige qui a trop chaud ?", x: "La blague de la semaine pour les petits" },
+    { k: 'Info', t: "Nouveaux exercices, histoires et coloriages", x: "Cette semaine : 31 nouveaux exercices d'école, 60 nouvelles questions de culture G, 2 coloriages de Noël et d'automne et un coloriage magique « La boule de Noël », 2 nouvelles histoires à lire (« Le sapin tout nu d'Amir » et « Le mystère des bonnets de la rue des Tilleuls »), 3 recettes de fête et 5 nouvelles blagues pour adultes." },
+    { k: 'Adulte', t: "Fatherland", x: "Au cinéma le 2 décembre, avec Sandra Hüller" },
+    { k: 'Adulte', t: "Orgueil et préjugés, la série", x: "Sur Netflix le 3 décembre" }
   ]
 };

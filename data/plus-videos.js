@@ -2,13 +2,15 @@
    Chaque bouton ouvre la recherche dans l'appli (TikTok, Instagram) ou YouTube.
    c = catégorie, t = titre, d = description, q = recherche TikTok/YouTube, h = hashtag (sans #), y = recherche YouTube (facultatif)
    Pour ajouter une idée : copie une ligne et change les mots. */
-window.VIDEOS_DATE = '14 novembre 2026';
+window.VIDEOS_DATE = '16 novembre 2026';
 window.VIDEOS_CATS = { buzz: 'Ça cartonne', quotidien: 'Vie de quartier', humour: 'Fous rires', astuces: 'Astuces', recettes: 'Recettes', activites: 'Activités enfants', fetes: 'Fêtes et Noël' };
 window.VIDEOS = [
   /* Ça cartonne en ce moment */
   { c: 'buzz', t: 'Le calendrier de l’Avent fait maison', d: 'Les idées qui font le tour des réseaux avant décembre : cases à remplir, petits défis, DIY.', q: 'calendrier de l avent maison enfants', h: 'calendrierdelavent' },
   { c: 'buzz', t: 'Le lutin farceur : les idées de bêtises', d: 'Une bêtise différente chaque matin, des idées faciles avec ce qu’on a à la maison.', q: 'lutin farceur idées bêtises', h: 'lutinfarceur' },
   { c: 'buzz', t: 'Black Friday : les bons plans des mamans', d: 'Les jouets, vêtements et cadeaux à bon prix. Compare toujours avant d’acheter.', q: 'black friday bons plans maman jouets', h: 'blackfriday' },
+  { c: 'buzz', t: 'Le panier cadeau d’hiver', d: 'La tendance du moment : un panier rempli pièce par pièce avec un plaid, des chaussons, un chocolat chaud, une bougie. Une idée de cadeau douce pour une maîtresse, une mamie ou une copine.', q: 'panier cadeau hiver idée burr basket', h: 'burrbasket' },
+  { c: 'buzz', t: 'Le compte à rebours avant Noël', d: 'Chaque semaine, les familles filment où elles en sont : sapin, décos, lettre au Père Noël, biscuits. À regarder pour piocher des idées de rituels.', q: 'compte à rebours noël famille idées', h: 'christmascountdown' },
   { c: 'buzz', t: 'Cadeaux de Noël malins et pas chers', d: 'Des idées par âge et par budget, vues par d’autres parents.', q: 'idées cadeaux noël enfants pas cher', h: 'ideecadeau' },
   { c: 'buzz', t: 'Défis du moment à faire en famille', d: 'Les défis et trends qui tournent en ce moment, à regarder avec les enfants et à refaire à la maison.', q: 'défi famille enfants trend', h: 'defifamille' },
   { c: 'buzz', t: 'Les vidéos de mams qui font le plus rire', d: 'Les extraits de vie de famille les plus partagés du moment.', q: 'maman drôle enfants compilation', h: 'mamandrole' },
@@ -51,6 +53,7 @@ window.VIDEOS = [
   { c: 'activites', t: 'Danse et chansons pour les petits', d: 'Comptines, danses et jeux pour bouger ensemble.', q: 'comptines danse enfants bouger', h: 'comptines', y: 'comptines et chansons à gestes' },
   /* Fêtes */
   { c: 'fetes', t: 'Décorations de Noël faites maison', d: 'Guirlandes, boules, couronnes : à faire avec les enfants.', q: 'décoration noël maison enfants diy', h: 'noeldiy' },
+  { c: 'fetes', t: 'Décorations en oranges séchées', d: 'Des rondelles d’orange séchées au four pour faire des guirlandes et des suspensions qui sentent bon Noël.', q: 'oranges séchées décoration noël guirlande', h: 'orangesechee' },
   { c: 'fetes', t: 'Recettes de Noël faciles', d: 'Bûches, biscuits, plats de fête sans se ruiner.', q: 'recette noël facile famille', h: 'recettenoel' },
   { c: 'fetes', t: 'Idées de thème d’anniversaire', d: 'Décoration, gâteau et jeux pour un anniversaire réussi.', q: 'anniversaire enfant idées thème déco', h: 'anniversaireenfant' },
   { c: 'fetes', t: 'Soirée pyjama réussie', d: 'Programme, jeux, repas et coucher d’une soirée pyjama.', q: 'soirée pyjama enfants idées', h: 'soireepyjama' }

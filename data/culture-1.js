@@ -34,6 +34,7 @@ Object.assign(window.CULTURE, {
     "Comment s'appelle une très haute montagne qui crache du feu ?|Un volcan 🌋;Une colline;Un lac|Le volcan crache de la lave très chaude.",
     "Quelle est la capitale de la France ?|Paris;Lyon;Nice|Paris, avec la tour Eiffel !",
     "Quel grand monument de Paris est en fer ?|La tour Eiffel;Le château de Versailles;Le mont Blanc|La tour Eiffel a été construite en 1889.",
+    "Où va-t-on faire de la luge en hiver ?|À la montagne 🏔️;À la plage 🏖️;Dans le désert 🏜️|En hiver, il y a de la neige à la montagne.",
   ],
   cine: [
     "Quel animal est Bambi ?|Un faon (petit cerf) 🦌;Un lapin;Un ours|Bambi est un jeune cerf dans le dessin animé de Disney.",
@@ -49,12 +50,16 @@ Object.assign(window.CULTURE, {
     "Que fait-on avec une flûte ?|On souffle dedans;On tape dessus;On la secoue|On souffle pour faire de la musique.",
     "Comment s'appelle une chanson pour s'endormir ?|Une berceuse;Une marche;Un rap|La berceuse aide les bébés à s'endormir.",
     "Quel instrument a des cordes et se joue en pinçant ?|La guitare 🎸;La trompette;Le tambour|On pince les cordes de la guitare.",
+    "Quel instrument fait « boum boum » quand on tape dessus ?|Le tambour 🥁;La flûte;Le violon 🎻|On tape sur le tambour avec les mains ou des baguettes.",
+    "Quelle chanson chante-t-on à quelqu'un pour sa fête ?|Joyeux anniversaire 🎂;Frère Jacques;Au clair de la lune|On la chante avant de souffler les bougies du gâteau.",
   ],
   sport: [
     "Avec quoi joue-t-on au football ?|Un ballon ⚽;Une raquette;Un vélo|On tape dans le ballon avec les pieds.",
     "Dans quel sport nage-t-on ?|La natation 🏊;Le tennis;Le judo|En natation, on nage dans une piscine.",
     "Que faut-il pour faire du ski ?|De la neige ❄️;Du sable;De l'herbe|On fait du ski à la montagne, sur la neige.",
     "Combien de roues a un vélo ?|2;3;4|Un vélo a deux roues.",
+    "Dans quel sport glisse-t-on sur la glace avec des patins ?|Le patinage ⛸️;Le tennis 🎾;Le judo|Les patins ont une lame en dessous pour glisser sur la glace.",
+    "Avec quoi frappe-t-on la balle au tennis ?|Une raquette 🎾;Une batte;Le pied|Au tennis, on renvoie la balle par-dessus le filet avec une raquette.",
   ],
   cuis: [
     "Avec quoi fait-on les frites ?|Des pommes de terre 🥔;Des pommes;Des carottes|Les frites sont faites avec des pommes de terre.",
@@ -62,11 +67,14 @@ Object.assign(window.CULTURE, {
     "Quel fruit est jaune et allongé ?|La banane 🍌;La fraise;La cerise|La banane est jaune quand elle est mûre.",
     "Avec quoi fait-on le pain ?|De la farine;Du chocolat;Du fromage|Le boulanger fait le pain avec de la farine, de l'eau, du sel et de la levure.",
     "Quel légume est vert et ressemble à un petit arbre ?|Le brocoli 🥦;La carotte;La tomate|Le brocoli ressemble à un petit arbre.",
+    "Avec quel fruit fait-on le jus d'orange ?|L'orange 🍊;La fraise 🍓;La banane 🍌|On presse l'orange pour faire sortir son jus.",
   ],
   hist: [
     "Quels gros animaux vivaient il y a très, très longtemps ?|Les dinosaures 🦕;Les chats;Les poules|Les dinosaures ont disparu bien avant les humains.",
     "Qui vivait dans les châteaux forts ?|Les chevaliers et les seigneurs 🏰;Les astronautes;Les dinosaures|Au Moyen Âge, les seigneurs vivaient dans les châteaux.",
     "Qui porte une couronne ?|Le roi et la reine 👑;Le facteur;Le boulanger|La couronne est le symbole des rois et des reines.",
+    "Avec quoi écrivait-on autrefois, en trempant une plume ?|De l'encre ✒️;Du lait 🥛;De la confiture|On trempait la plume dans un petit pot d'encre appelé encrier.",
+    "Avant les voitures, quel animal tirait souvent les charrettes ?|Le cheval 🐴;Le chat 🐱;Le lapin 🐰|Les chevaux tiraient les charrettes et les calèches.",
   ],
 },
 '7-9': {
@@ -140,6 +148,8 @@ Object.assign(window.CULTURE, {
     "Quel grand compositeur était déjà célèbre enfant, au XVIIIe siècle ?|Mozart;Elvis Presley;Beyoncé|Mozart composait dès l'âge de 5 ans.",
     "Comment s'appellent les 7 notes de musique ?|Do, ré, mi, fa, sol, la, si;A, B, C, D, E, F, G seulement;1, 2, 3, 4, 5, 6, 7|En anglais on utilise aussi les lettres A à G.",
     "Quel instrument est le plus grand de l'orchestre parmi ceux-ci ?|La contrebasse;Le violon;La flûte|La contrebasse est plus grande qu'un adulte !",
+    "Quel instrument a des touches et un soufflet qu'on ouvre et qu'on ferme ?|L'accordéon;La trompette;La harpe|En ouvrant et en fermant le soufflet, l'air fait chanter l'accordéon.",
+    "Comment appelle-t-on un groupe de deux musiciens ?|Un duo;Un trio;Un quatuor|Deux, c'est un duo. Trois, un trio. Quatre, un quatuor.",
   ],
   sport: [
     "Combien de joueurs par équipe sur le terrain au football ?|11;5;7|Dix joueurs et un gardien.",
@@ -148,6 +158,8 @@ Object.assign(window.CULTURE, {
     "Dans quel sport utilise-t-on un panier ?|Le basket;Le handball;Le golf|Il faut lancer le ballon dans le panier.",
     "Quel tournoi de tennis se joue à Paris sur terre battue ?|Roland-Garros;Wimbledon;Le Tour de France|Roland-Garros a lieu chaque printemps.",
     "Quelles couleurs ont les anneaux olympiques ?|Bleu, jaune, noir, vert, rouge;Rose et violet;Tout blancs|Les cinq anneaux représentent les continents unis par le sport.",
+    "Quel sport se pratique sur un tapis appelé tatami, en kimono ?|Le judo;La natation;Le cyclisme|Le judo est un sport de combat venu du Japon.",
+    "Combien de joueurs y a-t-il sur le court dans un match de tennis en simple ?|2;4;6|En simple, un joueur contre un autre. En double, deux contre deux.",
   ],
   cuis: [
     "De quel pays vient la pizza ?|L'Italie;La Chine;Le Mexique|La pizza vient de Naples, en Italie.",
@@ -155,18 +167,24 @@ Object.assign(window.CULTURE, {
     "Quel fromage a des trous, dans les dessins animés ?|L'emmental;Le camembert;La mozzarella|Les trous viennent de bulles de gaz pendant la fabrication.",
     "Quel pain français est long et fin ?|La baguette;Le croissant;La brioche|La baguette est un symbole de la France.",
     "De quel pays viennent les sushis ?|Le Japon;L'Italie;Le Brésil|Les sushis sont faits de riz et souvent de poisson.",
+    "Quel gâteau en forme de bûche mange-t-on souvent à Noël en France ?|La bûche de Noël;La galette des rois;Le fraisier|La galette des rois se mange plutôt en janvier.",
+    "Avec quel fruit fabrique-t-on le cidre ?|La pomme;La banane;La cerise|Le cidre est fait avec du jus de pomme. On en fait beaucoup en Normandie et en Bretagne.",
   ],
   art: [
     "Qui a peint « La Nuit étoilée » ?|Vincent van Gogh;Léonard de Vinci;Picasso|Van Gogh l'a peinte en 1889.",
     "Comment s'appelle le grand musée de Paris où se trouve la Joconde ?|Le Louvre;Le musée Grévin;Le Centre spatial|Le Louvre a une grande pyramide de verre.",
     "Qui a écrit « Le Petit Prince » ?|Antoine de Saint-Exupéry;Jules Verne;Roald Dahl|Il a été publié en 1943.",
     "Dans « Le Petit Prince », que demande le petit prince au pilote ?|Dessine-moi un mouton;Donne-moi un gâteau;Emmène-moi à la plage|C'est la phrase la plus célèbre du livre.",
+    "Quelle couleur obtient-on en mélangeant du bleu et du jaune ?|Le vert;Le violet;L'orange|Le bleu et le jaune sont deux couleurs primaires. Ensemble, elles font du vert.",
+    "Comment s'appelle un tableau qui représente le visage d'une personne ?|Un portrait;Un paysage;Une nature morte|Un paysage montre la nature, une nature morte montre des objets ou des fruits.",
   ],
   lang: [
     "Quel est le contraire de « grand » ?|Petit;Gros;Haut|Grand et petit sont des contraires.",
     "Que veut dire « avoir un chat dans la gorge » ?|Avoir la voix enrouée;Avoir mangé un chat;Avoir peur des chats|C'est une expression !",
     "Que veut dire « il pleut des cordes » ?|Il pleut très fort;Il pleut des ficelles;Il fait beau|C'est une image pour dire qu'il pleut beaucoup.",
     "Combien de lettres dans l'alphabet français ?|26;24;30|De A à Z, il y a 26 lettres.",
+    "Que veut dire « avoir la tête dans les nuages » ?|Être distrait, rêvasser;Être très grand;Avoir froid aux oreilles|On pense à autre chose et on n'écoute plus ce qui se passe.",
+    "Quel est le féminin de « roi » ?|Reine;Princesse;Duchesse|Le roi et la reine. Le féminin de prince est princesse.",
   ],
 },
 '10-12': {
@@ -241,6 +259,8 @@ Object.assign(window.CULTURE, {
     "Quelles petites créatures jaunes servent un méchant dans « Moi, moche et méchant » ?|Les Minions;Les Schtroumpfs;Les Lapins crétins|Leur maître s'appelle Gru.",
     "Dans « Toy Story », quelle est la phrase de Buzz l'Éclair ?|Vers l'infini et au-delà !;Hakuna matata;Libérée, délivrée|« To infinity and beyond! » en version originale.",
     "Quel ogre vert vit dans un marais ?|Shrek;Hulk;Grinch|Son ami est un âne bavard.",
+    "Dans « Ratatouille », quel animal rêve de devenir un grand chef cuisinier ?|Un rat;Un chat;Un chien|Il s'appelle Rémy et cuisine dans un restaurant à Paris.",
+    "Dans « La Reine des neiges », comment s'appelle la sœur d'Elsa ?|Anna;Raiponce;Vaiana|Anna part à la recherche de sa sœur avec Kristoff et Olaf.",
   ],
   mus: [
     "Quel compositeur a continué à composer en étant devenu sourd ?|Beethoven;Mozart;Bach|Il a composé sa 9e symphonie en étant presque totalement sourd.",
@@ -248,6 +268,8 @@ Object.assign(window.CULTURE, {
     "Combien de touches a un piano classique ?|88;52;100|52 blanches et 36 noires.",
     "Quel groupe anglais des années 1960 est surnommé les « Fab Four » ?|Les Beatles;Les Rolling Stones;Queen|John, Paul, George et Ringo.",
     "Quel chanteur est surnommé le « roi de la pop » ?|Michael Jackson;Elvis Presley;Stromae|Son album « Thriller » est l'un des plus vendus au monde.",
+    "Quel compositeur a écrit l'opéra « La Flûte enchantée » ?|Mozart;Beethoven;Bach|Mozart l'a créé à Vienne en 1791, quelques semaines avant sa mort.",
+    "Combien de lignes compte une portée de musique ?|5;4;7|Les notes s'écrivent sur les 5 lignes de la portée et entre elles.",
   ],
   sport: [
     "Combien de temps dure un match de football sans prolongation ?|90 minutes;60 minutes;120 minutes|Deux mi-temps de 45 minutes.",
@@ -256,6 +278,8 @@ Object.assign(window.CULTURE, {
     "Dans quel sport parle-t-on de « jeu, set et match » ?|Le tennis;Le judo;La natation|Pour gagner un match, il faut remporter des sets.",
     "En judo, quelle ceinture vient juste avant la ceinture noire ?|Marron;Bleue;Verte|L'ordre classique : blanc, jaune, orange, vert, bleu, marron, noir.",
     "Quel nageur français a remporté 4 médailles d'or aux JO de Paris 2024 ?|Léon Marchand;Florent Manaudou;Teddy Riner|Il a été l'une des grandes stars de ces Jeux.",
+    "Au bowling, comment s'appelle le lancer qui renverse toutes les quilles d'un coup ?|Un strike;Un smash;Un ace|Il y a 10 quilles à faire tomber.",
+    "Comment s'appelle la course de voile autour du monde, en solitaire et sans escale, qui part des Sables-d'Olonne ?|Le Vendée Globe;Le Dakar;La Transat Jacques Vabre|Les marins naviguent seuls pendant environ deux à trois mois.",
   ],
   cuis: [
     "De quel pays vient le couscous ?|Du Maghreb (Afrique du Nord);Du Japon;De Suède|Il est inscrit au patrimoine immatériel de l'Unesco depuis 2020.",
@@ -263,6 +287,8 @@ Object.assign(window.CULTURE, {
     "La tomate est botaniquement…|Un fruit;Un légume racine;Une céréale|Elle contient des graines : c'est un fruit pour les botanistes.",
     "De quelle région vient la quiche lorraine ?|La Lorraine;La Bretagne;La Provence|Son nom le dit !",
     "Quelle céréale est l'aliment de base de la moitié de l'humanité ?|Le riz;L'avoine;Le seigle|Le riz est surtout cultivé en Asie.",
+    "Quel fromage met-on sur une pizza Margherita ?|La mozzarella;Le roquefort;Le comté|Tomate, mozzarella et basilic : les couleurs du drapeau italien.",
+    "De quelle plante vient la vanille ?|D'une orchidée;D'un palmier;D'un cactus|Les gousses de vanille sont les fruits d'une orchidée grimpante.",
   ],
   art: [
     "Qui a écrit « Les Misérables » ?|Victor Hugo;Émile Zola;Molière|Publié en 1862, avec Jean Valjean et Cosette.",
@@ -277,6 +303,8 @@ Object.assign(window.CULTURE, {
     "Quel est le synonyme de « joyeux » ?|Gai;Triste;Fatigué|Gai et joyeux veulent dire presque la même chose.",
     "Que veut dire « avoir le cafard » ?|Être triste;Avoir un insecte;Être en colère|Avoir le cafard, c'est avoir le moral à zéro.",
     "Quel mot est un palindrome (il se lit pareil dans les deux sens) ?|Kayak;Bateau;Canoë|K-A-Y-A-K, de gauche à droite ou de droite à gauche.",
+    "Que signifie « tomber dans les pommes » ?|S'évanouir;Adorer les fruits;Glisser dans un verger|On perd connaissance quelques instants.",
+    "Quel est le pluriel de « un cheval » ?|Des chevaux;Des chevals;Des chevaus|La plupart des noms en -al font leur pluriel en -aux.",
   ],
 },
 });

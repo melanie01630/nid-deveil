@@ -138,4 +138,38 @@ window.HISTOIRES = [
     "Dans le vestiaire, Mehdi, essoufflé mais rayonnant, résuma la journée : « On n'a pas gagné le tournoi. Mais plus personne ne nous appellera les Remplaçants. » Et l'année suivante, la moitié des élèves voulurent rejoindre l'équipe de Yasmine.",
   ],
   q: "Quelle était la force de chaque joueur ? Et toi, quelle est ta force cachée dans un groupe ?" },
+{ t: "Le sapin tout nu d'Amir", a: '4-6', e: '🎄', m: 4,
+  d: "Les décorations de Noël ont disparu dans le déménagement : Amir et Lina vont en inventer de nouvelles.",
+  p: [
+    "Amir et sa petite sœur Lina viennent d'arriver dans un nouvel appartement. Il y a des cartons partout, partout, partout.",
+    "Papa a rapporté un petit sapin. Il sent bon la forêt. « Vite, les décorations ! » crie Lina. Mais Maman cherche, cherche… Le carton des décorations a disparu pendant le déménagement.",
+    "Le sapin reste tout nu dans son coin. Lina a les larmes aux yeux. « Un sapin sans boules, ce n'est pas un vrai sapin de Noël », dit-elle tout bas.",
+    "Amir réfléchit très fort. Puis il sourit : « On n'a pas de décorations ? Alors on va les fabriquer ! »",
+    "Ils découpent des étoiles dans les cartons du déménagement. Ils les peignent en jaune, en rouge et en bleu. Lina met des paillettes partout, même sur son nez.",
+    "Au parc, ils ramassent des pommes de pin. Maman coupe des oranges en rondelles, et le four les sèche doucement. Toute la maison sent l'orange. Mmmh !",
+    "Le soir, ils accrochent tout : les étoiles en carton, les pommes de pin, la guirlande d'oranges. Papa allume une petite lumière.",
+    "Toc, toc, toc ! C'est la voisine du dessus, Madame Rose. « J'ai vu votre sapin par la fenêtre. Qu'il est beau ! Vous voulez bien m'apprendre à faire ces étoiles ? »",
+    "Le lendemain, Madame Rose arrive avec du chocolat chaud. Et tous ensemble, ils fabriquent des étoiles pour son sapin à elle.",
+    "Lina regarde leur sapin qui brille. « Finalement, dit-elle, c'est le plus beau sapin du monde. Parce que c'est nous qui l'avons fait. »"
+  ],
+  q: "Toi, avec quoi aimerais-tu décorer un sapin si tu devais tout fabriquer ?" },
+{ t: "Le mystère des bonnets de la rue des Tilleuls", a: '8-11', e: '🧶', m: 8,
+  d: "Chaque matin d'hiver, des bonnets tricotés apparaissent dans la rue. Inès et Tom mènent l'enquête.",
+  p: [
+    "Le premier bonnet est apparu un lundi matin de décembre. Il était rouge, avec un gros pompon, et il était posé bien droit sur la tête de la statue du petit chien, au coin de la rue des Tilleuls.",
+    "« Quelqu'un a eu pitié de lui, avec ce froid », a dit Inès en riant. Tom, son meilleur ami, a sorti son carnet. Tom avait toujours un carnet. « Note bien la date, a-t-il dit. C'est peut-être le début d'une affaire. »",
+    "Il avait raison. Le mardi, un bonnet vert couvrait la boîte aux lettres jaune. Le mercredi, une écharpe à rayures entourait le lampadaire devant la boulangerie. Le jeudi, sur le banc de l'arrêt de bus, il y avait trois bonnets bien pliés et un petit papier : « Servez-vous si vous avez froid. »",
+    "Dans le quartier, tout le monde en parlait. La boulangère pensait que c'était une association. Le facteur était sûr que c'était un artiste célèbre. Monsieur Ba, le gardien de l'immeuble, disait que c'était le Père Noël qui faisait des essais.",
+    "Inès et Tom, eux, voulaient la vérité. Ils ont étudié les bonnets. Ils étaient tous tricotés à la main, avec la même petite maille serrée et, à l'intérieur, un minuscule nœud de laine bleue. « C'est comme une signature », a murmuré Inès.",
+    "Le vendredi, ils se sont levés très tôt. Il faisait encore nuit. Cachés derrière la haie du square, emmitouflés jusqu'aux yeux, ils ont attendu. Les minutes passaient lentement. Tom commençait à ne plus sentir ses orteils.",
+    "Soudain, une silhouette est apparue sous le lampadaire. Elle marchait doucement, avec une canne et un grand sac en tissu. Elle s'est arrêtée près du banc, a sorti des bonnets du sac, et les a posés avec soin.",
+    "« C'est Monsieur Kowalski ! » a soufflé Inès. Monsieur Kowalski habitait au rez-de-chaussée. Il ne parlait presque à personne. Les enfants le trouvaient un peu grognon.",
+    "Inès est sortie de sa cachette. « Bonjour, Monsieur Kowalski. C'est vous qui tricotez les bonnets ? » Le vieil homme a sursauté, puis il a souri, un peu gêné. « Ma femme tricotait beaucoup, a-t-il expliqué. Depuis qu'elle n'est plus là, j'ai repris ses aiguilles. Je pense à ceux qui attendent le bus dans le froid, aux gens qui dorment dehors. Mais chut… je préférais que personne ne le sache. »",
+    "Puis il a regardé ses mains. « Le problème, c'est que mes doigts sont de plus en plus raides. Bientôt, je ne pourrai plus tricoter assez vite. »",
+    "Tom a refermé son carnet. Inès a eu une idée. « Et si vous nous appreniez ? »",
+    "Le samedi suivant, le salon de Monsieur Kowalski était plein. Il y avait Inès, Tom, la boulangère, deux camarades de classe, la maman de Tom et même Monsieur Ba. Monsieur Kowalski montrait les gestes, patiemment : on pique, on enroule, on tire, on fait glisser. Les premiers bonnets étaient un peu tordus. Celui de Tom ressemblait plutôt à une chaussette. Tout le monde a beaucoup ri, et Monsieur Kowalski le premier.",
+    "Pendant tout l'hiver, le club des tricoteurs s'est retrouvé chaque samedi. Ils ont apporté des dizaines de bonnets et d'écharpes à l'accueil de jour pour les personnes sans abri, à l'autre bout de la ville.",
+    "Et chaque matin, rue des Tilleuls, la statue du petit chien portait un nouveau bonnet. À l'intérieur, il y avait toujours un minuscule nœud de laine bleue. Mais maintenant, tout le monde savait ce qu'il voulait dire."
+  ],
+  q: "À ton avis, pourquoi Monsieur Kowalski ne voulait-il pas que l'on sache que c'était lui ? Et toi, qu'est-ce que tu pourrais faire pour les gens qui ont froid en hiver ?" }
 ];
