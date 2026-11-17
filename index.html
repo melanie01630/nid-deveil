@@ -253,26 +253,32 @@ nav.bar-nav{position:fixed;left:0;right:0;bottom:0;max-width:560px;margin:auto;b
       <div><b>Histoires</b>À écouter sans écran ou à lire, pour tous les âges, à imprimer en PDF.</div>
       <div><b>Jeux et blagues</b>Quiz, énigmes, devinettes et blagues du jour.</div>
       <div><b>Fêtes et anniversaires</b>Thèmes, gâteaux, soirées pyjama.</div>
+      <div><b>Mes papiers</b>Les dates de validité de tous les papiers de la famille, avec des rappels.</div>
+      <div><b>Carnet de santé</b>Vaccins, rendez-vous, taille et poids, fiche d'urgence à partager.</div>
+      <div><b>Frigo anti-gaspi</b>Ce qu'il faut finir en premier, et les recettes possibles avec ce qu'il reste.</div>
       <div><b>Communauté des mams</b>Ton profil et des sorties entre mamans.</div>
       <div><b>Mon journal</b>Garde un souvenir de vos activités.</div>
       <div><b>7 langues</b>Français, anglais, espagnol, portugais, russe, chinois et arabe.</div>
     </div>
   </details>
 
-  <div class="section" id="week" style="margin-top:14px"></div>
+  <div class="section" id="home-tools" style="margin-top:14px"></div>
 
+  <div class="section" id="week"></div>
+
+  <div id="planned"></div>
+
+  <!-- Idées d'activités : retirées de l'accueil pour l'alléger (toujours dans l'onglet « Idées ») -->
+  <div id="home-acts" hidden>
   <div class="label">Pour qui</div>
   <div class="chips" id="who"></div>
   <div class="label">Temps disponible</div>
   <div class="chips" id="f-time"></div>
   <div class="label">Où</div>
   <div class="chips" id="f-where"></div>
-
   <div id="hero"></div>
-
-  <div id="planned"></div>
-
   <div class="section"><div class="sec-title"><h3>Autres idées</h3></div><div id="now"></div></div>
+  </div>
 
   <div class="section" id="home-fun"></div>
 
@@ -1131,7 +1137,7 @@ initAbout(); renderToday(); renderExplore(); renderCine(); renderPlan(); renderN
   show(0); timer = setInterval(next, 2800);
 })();
 </script>
-<script src="plus.js?v=93"></script>
+<script src="plus.js?v=95"></script>
 <script src="data/ecole-1.js"></script>
 <script src="data/ecole-2.js"></script>
 <script src="data/ecole-3.js"></script>
@@ -1144,5 +1150,6 @@ initAbout(); renderToday(); renderExplore(); renderCine(); renderPlan(); renderN
 <script src="data/culture-2.js"></script>
 <script src="culture.js?v=86"></script>
 <script src="commu.js?v=91"></script>
+<script src="outils.js?v=95"></script>
 </body>
 </html>

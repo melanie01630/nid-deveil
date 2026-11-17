@@ -680,7 +680,7 @@ function renderWeek() {
     return open ? { ...it, open, emo } : null;
   }).filter(Boolean);
   if (!list.length) { el.innerHTML = ''; return; }
-  const LIM = 4, all = el.dataset.all === '1';
+  const LIM = 3, all = el.dataset.all === '1';
   el.innerHTML = `<div class="sec-title"><h3>✨ Nouveau cette semaine</h3><span class="sub" style="font-size:12px">mis à jour le ${esc(W.date)}</span></div>` +
     (all ? list : list.slice(0, LIM)).map((it, n) => `<button class="act" data-wk="${n}" style="width:100%;text-align:left"><div class="em">${it.emo}</div><div style="flex:1;min-width:0"><h4>${esc(it.t)}</h4><p>${esc((it.x || it.k).length > 80 ? (it.x || it.k).slice(0, 78) + '…' : (it.x || it.k))}</p><span class="sub">${esc(it.k === 'Adulte' ? 'Entre adultes' : it.k)}</span></div></button>`).join('') +
     (list.length > LIM ? `<button class="btn alt small" id="wk-more" style="margin-top:6px">${all ? 'Voir moins' : 'Voir les ' + list.length + ' nouveautés'}</button>` : '');
