@@ -42,6 +42,69 @@
     <button class="btn alt" data-ics="1">📥 Autre agenda (fichier)</button></div>`;
   const bindIcs = (root, title, date, details) => { const b = $('[data-ics]', root); if (b) b.onclick = () => icsDownload(title, date, details); };
 
+
+  /* ---------- Code secret (facultatif) pour Mes papiers et Carnet de santé ---------- */
+  let UNLOCK = false, hiddenAt = 0;
+  async function hashPin(pin) {
+    const txt = 'mams-pin:' + pin;
+    try { const b = await crypto.subtle.digest('SHA-256', new TextEncoder().encode(txt)); return [...new Uint8Array(b)].map(x => x.toString(16).padStart(2, '0')).join(''); }
+    catch (e) { let h = 5381; for (const ch of txt) h = ((h << 5) + h + ch.charCodeAt(0)) >>> 0; return 'x' + h.toString(16); }
+  }
+  const locked = () => !!O.pin && !UNLOCK;
+  const pinInput = (id, ph) => `<input id="${id}" type="password" inputmode="numeric" autocomplete="off" maxlength="4" pattern="[0-9]*" placeholder="${ph || '• • • •'}" style="${inp};text-align:center;font-size:24px;letter-spacing:10px;border-radius:999px;border:1.5px solid rgba(255,255,255,.95);background:rgba(255,255,255,.7)">`;
+  const lockScreen = (page, title) => `<h2 class="h2" data-otl="${page}">${title}</h2>
+      <div class="panel" style="margin-top:14px;text-align:center"><div style="font-size:44px">🔒</div>
+        <b>Cette rubrique est protégée</b><p class="sub" style="margin:6px 0 10px">Tape ton code secret à 4 chiffres.</p>
+        ${pinInput('pin-in')}<button class="btn" id="pin-ok">Déverrouiller</button>
+        <button class="link" id="pin-lost" style="margin-top:14px;font-size:13px;color:var(--accent);font-weight:600">Code oublié ?</button></div>`;
+  function bindLock(el) {
+    const go = async () => {
+      const v = $('#pin-in', el).value.trim();
+      if (!/^\d{4}$/.test(v)) { toast('Le code fait 4 chiffres'); return; }
+      if (await hashPin(v) === O.pin) { UNLOCK = true; refresh(); window.scrollTo(0, 0); }
+      else { toast('Code incorrect'); $('#pin-in', el).value = ''; $('#pin-in', el).focus(); }
+    };
+    $('#pin-ok', el).onclick = go;
+    $('#pin-in', el).onkeydown = e => { if (e.key === 'Enter') go(); };
+    $('#pin-in', el).oninput = e => { if (e.target.value.length === 4) go(); };
+    $('#pin-lost', el).onclick = () => {
+      openSheet(`<div class="kicker">Code oublié</div><h3 style="margin-top:4px">Impossible de retrouver le code</h3>
+        <p class="lead">Pour protéger tes informations, personne ne peut retrouver ton code, pas même Mams.</p>
+        <p>Tu peux supprimer le code, mais <b>tous tes papiers et tous les carnets de santé seront effacés</b> de ce téléphone. Le frigo et le reste de l'appli ne bougent pas.</p>
+        <button class="btn alt" id="pin-reset" style="margin-top:12px">Tout effacer et supprimer le code</button>`);
+      $('#pin-reset').onclick = () => { if (confirm('Effacer définitivement tes papiers et les carnets de santé ?')) { O.papiers = []; O.carnet = []; delete O.pin; UNLOCK = false; C.sel = null; saveO(); closeSheet(); toast('Code supprimé'); refresh(); } };
+    };
+  }
+  const pinPanel = () => `<div class="panel" style="margin-top:14px"><b>🔒 Code secret</b>
+      <p class="sub" style="margin:4px 0 10px">${O.pin ? 'Activé : il protège « Mes papiers » et le « Carnet de santé ».' : 'Facultatif : protège « Mes papiers » et le « Carnet de santé » si quelqu\'un d\'autre utilise ton téléphone.'}</p>
+      ${O.pin ? `<div style="display:flex;gap:8px;flex-wrap:wrap"><button class="btn small" id="pin-lock" style="width:auto">Verrouiller maintenant</button><button class="btn alt small" id="pin-chg" style="width:auto">Changer</button><button class="btn alt small" id="pin-del" style="width:auto">Supprimer le code</button></div>` : `<button class="btn alt" id="pin-new">Créer un code secret</button>`}</div>`;
+  function bindPinPanel(el) {
+    const n = $('#pin-new', el); if (n) n.onclick = () => pinForm(false);
+    const c = $('#pin-chg', el); if (c) c.onclick = () => pinForm(true);
+    const l = $('#pin-lock', el); if (l) l.onclick = () => { UNLOCK = false; C.sel = null; refresh(); window.scrollTo(0, 0); toast('Verrouillé'); };
+    const d = $('#pin-del', el); if (d) d.onclick = () => pinForm(true, true);
+  }
+  function pinForm(needOld, remove) {
+    openSheet(`<div class="kicker">Code secret</div><h3 style="margin-top:4px">${remove ? 'Supprimer le code' : needOld ? 'Changer le code' : 'Créer un code secret'}</h3>
+      ${needOld ? `<label class="sub" for="pf-old">Code actuel</label>${pinInput('pf-old')}` : ''}
+      ${remove ? '' : `<label class="sub" for="pf-a">Nouveau code (4 chiffres)</label>${pinInput('pf-a')}<label class="sub" for="pf-b">Confirme le code</label>${pinInput('pf-b')}
+      <p class="sub" style="margin:0 0 12px">⚠️ Retiens-le bien : si tu l'oublies, la seule solution est d'effacer tes papiers et les carnets de santé.</p>`}
+      <button class="btn" id="pf-go">${remove ? 'Supprimer le code' : 'Enregistrer le code'}</button>`);
+    $('#pf-go').onclick = async () => {
+      if (needOld) { const o = $('#pf-old').value.trim(); if (await hashPin(o) !== O.pin) { toast('Code actuel incorrect'); return; } }
+      if (remove) { delete O.pin; saveO(); closeSheet(); toast('Code supprimé'); refresh(); return; }
+      const a = $('#pf-a').value.trim(), b = $('#pf-b').value.trim();
+      if (!/^\d{4}$/.test(a)) { toast('Le code doit faire 4 chiffres'); return; }
+      if (a !== b) { toast('Les deux codes ne sont pas pareils'); return; }
+      O.pin = await hashPin(a); UNLOCK = true; saveO(); closeSheet(); toast('Code secret activé 🔒'); refresh();
+    };
+  }
+  /* Reverrouille si l'appli reste en arrière-plan plus de 2 minutes */
+  document.addEventListener('visibilitychange', () => {
+    if (document.hidden) hiddenAt = Date.now();
+    else if (O.pin && UNLOCK && hiddenAt && Date.now() - hiddenAt > 120000) { UNLOCK = false; C.sel = null; refresh(); }
+  });
+
   /* =====================================================================
      1. MES PAPIERS
      ===================================================================== */
@@ -74,15 +137,18 @@
     const l = sortedPap(), st = l.map(docState);
     const cnt = k => st.filter(s => s.lvl === k).length;
     CUR = 'papiers';
+    if (locked()) return lockScreen('papiers', 'Mes papiers');
     return `<h2 class="h2" data-otl="papiers">Mes papiers</h2>
       <p class="sub">Toutes les dates importantes de la famille au même endroit. Mams te prévient avant qu'il soit trop tard.</p>
       ${l.length ? `<div class="panel" style="margin:10px 0"><b>${cnt(0) ? '🔴 ' + cnt(0) + ' expiré' + (cnt(0) > 1 ? 's' : '') + ' · ' : ''}${cnt(1) ? '🟠 ' + cnt(1) + ' à renouveler · ' : ''}🟢 ${cnt(2)} en règle</b></div>` : ''}
       <div id="pap-list">${l.map((p, i) => { const d = DOCS[p.type] || DOCS.autre, s = st[i]; return `<button class="act" data-pap="${p.id}" style="width:100%;text-align:left"><div class="em">${d[0]}</div><div style="flex:1;min-width:0"><h4>${esc(papLabel(p))}</h4><p>${s.c} ${esc(s.t)}</p>${p.note ? `<span class="sub">${esc(p.note)}</span>` : ''}</div></button>`; }).join('') ||
         '<p class="empty">Aucun papier pour l\'instant. Commence par ta carte d\'identité ou ton passeport : tu ne seras plus jamais prise de court.</p>'}</div>
       <button class="btn" id="pap-add" style="margin-top:10px">＋ Ajouter un papier</button>
-      <div class="warn" style="margin-top:14px">🔒 Note seulement les <b>dates</b> : ne mets jamais de numéro de carte ou de document. Tout reste sur ton téléphone.</div>`;
+      <div class="warn" style="margin-top:14px">🔒 Note seulement les <b>dates</b> : ne mets jamais de numéro de carte ou de document. Tout reste sur ton téléphone.</div>${pinPanel()}`;
   }
   function bindPapiers(el) {
+    if (locked()) return bindLock(el);
+    bindPinPanel(el);
     $('#pap-add', el).onclick = () => papForm();
     $$('[data-pap]', el).forEach(b => b.onclick = () => papOpen(b.dataset.pap));
   }
@@ -141,6 +207,7 @@
 
   function renderCarnet() {
     CUR = 'carnet';
+    if (locked()) return lockScreen('carnet', 'Carnet de santé');
     const c = child();
     if (!c) {
       return `<h2 class="h2" data-otl="carnet">Carnet de santé</h2>
@@ -149,7 +216,7 @@
           '<p class="empty">Ajoute ton premier enfant pour commencer son carnet.</p>'}</div>
         <button class="btn" id="cs-add" style="margin-top:10px">＋ Ajouter un enfant</button>
         ${urgences()}
-        <div class="warn" style="margin-top:14px">Ce carnet ne remplace pas le carnet de santé officiel ni l'avis d'un médecin. Tout reste sur ton téléphone.</div>`;
+        <div class="warn" style="margin-top:14px">Ce carnet ne remplace pas le carnet de santé officiel ni l'avis d'un médecin. Tout reste sur ton téléphone.</div>${pinPanel()}`;
     }
     const nx = nextOf(c);
     const mes = (c.mesures || []).slice().sort((a, b) => a.date < b.date ? 1 : -1);
@@ -184,8 +251,10 @@
     <p class="sub" style="margin:8px 0 0">Intoxication, produit avalé : appelle le 15, qui te met en lien avec le centre antipoison.</p></div>`;
 
   function bindCarnet(el) {
+    if (locked()) return bindLock(el);
     const c = child();
     if (!c) {
+      bindPinPanel(el);
       $('#cs-add', el).onclick = () => kidForm();
       $$('[data-kid]', el).forEach(b => b.onclick = () => { C.sel = b.dataset.kid; refresh(); window.scrollTo(0, 0); });
       return;
@@ -325,9 +394,15 @@
 
   /* Alertes de l'accueil */
   function homeAlerts() {
-    const a = [];
+    let a = [];
     O.papiers.forEach(p => { const s = docState(p); if (s.lvl <= 1) a.push({ lvl: s.lvl, e: s.c, t: papLabel(p) + ' : ' + s.t.toLowerCase(), go: 'papiers' }); });
     O.carnet.forEach(c => nextOf(c).forEach(ev => { const n = daysTo(ev.d); if (n <= 14) a.push({ lvl: n < 0 ? 0 : 1, e: ev.e, t: ev.t + ' · ' + c.nom + ' : ' + (n < 0 ? 'en retard' : n === 0 ? 'aujourd\'hui' : 'dans ' + plural(n, 'jour')), go: 'carnet', kid: c.id }); }));
+    if (locked()) {
+      const np = a.filter(x => x.go === 'papiers').length, nc = a.filter(x => x.go === 'carnet').length;
+      a = [];
+      if (np) a.push({ lvl: 1, e: '🔒', t: plural(np, 'rappel') + ' dans Mes papiers', go: 'papiers' });
+      if (nc) a.push({ lvl: 1, e: '🔒', t: plural(nc, 'rappel') + ' dans le Carnet de santé', go: 'carnet' });
+    }
     const urg = O.frigo.filter(f => fState(f).lvl <= 1);
     if (urg.length) a.push({ lvl: 1, e: '🥕', t: plural(urg.length, 'aliment') + ' à finir vite : ' + urg.slice(0, 3).map(f => f.nom.toLowerCase()).join(', '), go: 'frigo' });
     return a.sort((x, y) => x.lvl - y.lvl);
